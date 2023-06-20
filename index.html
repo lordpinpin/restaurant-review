@@ -1,0 +1,184 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rest★r</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <h2 class="logo"><a class="logo" href="index.html"><b>Rest★r</b></a></h2>
+        <nav class="navigation">
+            <a class="navlink" href="">Restaurants</a>
+            <a class="navlink create-review" href="#">Create Review</a>
+            <button class="btnLogin-popup">Login</button>
+        </nav>
+    </header>
+
+    <div class="section">
+        <h2 class="title">Popular Restaurants</h2>
+
+        <div class="dashrestaurant-boxes">
+            <div class="dashrestaurant">
+                <div class="dashtop">
+                    <img class="dashrestaurant-image" src="/Images/restaurant1.png">
+                    <div class="list">
+                        <h3>Tags</h3>
+                        <ul>
+                            <li>Bars</li>
+                            <li>Asian</li>
+                            <li>Hawaiian</li>
+                            <li>Seafood</li>
+                        </ul>
+                    </div>
+                </div>
+                <a class="dashrestaurant-name" href="#">Liholiho Yacht Club</a>
+            </div>
+            <div class="dashrestaurant">
+                <div class="dashtop">
+                    <img class="dashrestaurant-image" src="/Images/restaurant2.jpg">
+                    <div class="list">
+                        <h3>Tags</h3>
+                        <ul>
+                            <li>Pancakes</li>
+                            <li>Waffles</li>
+                            <li>American</li>
+                            <li>Breakfast & Brunch</li>
+                        </ul>
+                    </div>
+                </div>
+                <a class="dashrestaurant-name" href="#">The Original Pancake House</a>
+            </div>
+            <div class="dashrestaurant">
+                <div class="dashtop">
+                    <img class="dashrestaurant-image" src="/Images/restaurant3.jpg">
+                    <div class="list">
+                        <h3>Tags</h3>
+                        <ul>
+                            <li>Ice Cream</li>
+                            <li>Frozen Yogurt</li>
+                            <li>Arcade</li>
+                        </ul>
+                    </div>
+                </div>
+                <a class="dashrestaurant-name" href="#">Full Tilt Columbia City</a>
+            </div>
+            <div class="dashrestaurant">
+                <div class="dashtop">
+                    <img class="dashrestaurant-image" src="/Images/restaurant4.jpg">
+                    <div class="list">
+                        <h3>Tags</h3>
+                        <ul>
+                            <li>Hotpot</li>
+                            <li>Chinese</li>
+                            <li>Asian</li>
+                            <li>Asian Fusion</li>
+                        </ul>
+                    </div>
+                </div>
+                <a class="dashrestaurant-name" href="#">Chengdu Memory</a>
+            </div>
+            <div class="dashrestaurant">
+                <div class="dashtop">
+                    <img class="dashrestaurant-image" src="/Images/restaurant5.jpg">
+                    <div class="list">
+                        <h3>Tags</h3>
+                        <ul>
+                            <li>Italian</li>
+                            <li>Pizza</li>
+                        </ul>
+                    </div>
+                </div>
+                <a class="dashrestaurant-name" href="#">Rubirosa</a>
+            </div>
+            <div class="dashrestaurant">
+                <div class="dashtop">
+                    <img class="dashrestaurant-image" src="/Images/restaurant6.jpg">
+                    <div class="list">
+                        <h3>Tags</h3>
+                        <ul>
+                            <li>Dim Sum</li>
+                            <li>Noodles</li>
+                            <li>Asian Fusion</li>
+                        </ul>
+                    </div>
+                </div>
+                <a class="dashrestaurant-name" href="#">Dumpling Home</a>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="wrapper">
+        <span class="icon-close">
+            <ion-icon name="close"></ion-icon>
+        </span>
+
+        <div class="form-box login">
+            <h2>Login</h2>
+            <form action="#">
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="mail"></ion-icon></span>
+                    <input type="text" required pattern=".*\S+.*">
+                    <label>Email</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
+                    <input type="password" required>
+                    <label>Password</label>
+                </div>
+                <div type="submit" class="btn">Login</div>
+                <div class="login-register">
+                    <p>Don't have an account? <a href="#" class="register-link">Register</a></p>
+                </div>
+            </form>
+        </div>
+
+        <div class="form-box register">
+            <h2>Registration</h2>
+            <form action="#">
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="person"></ion-icon></span>
+                    <input type="text" required pattern=".*\S+.*">
+                    <label>First Name</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="people-circle"></ion-icon></span>
+                    <input type="text" required pattern=".*\S+.*">
+                    <label>Last Name</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="mail"></ion-icon></span>
+                    <input type="text" required pattern=".*\S+.*">
+                    <label>Email</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
+                    <input type="password" required>
+                    <label>Password</label>
+                </div>
+                <div class="terms">
+                    <div class="squaredThree">
+                        <input type="checkbox" value="None" id="squaredThree" name="check" required/>
+                        <label for="squaredThree"></label>
+                        <p>I agree to the terms and conditions.</p>
+                    </div>
+                </div>
+                <div type="submit" class="btn">Register</div>
+                <div class="login-register">
+                    <p>Already have an account? <a href="#" class="login-link">Login</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+
+
+    <script src="login.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>
