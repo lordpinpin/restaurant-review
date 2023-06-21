@@ -8,6 +8,7 @@ const section = document.querySelector('.dashrestaurant-boxes');
 
 const btn = document.querySelectorAll(".btn");
 
+
  for (let i = 0; i < btn.length; i++) {
      btn[i].addEventListener("click", function() {
        location.href = './index-logged.html';
@@ -37,7 +38,6 @@ iconClose.addEventListener('click', ()=> {
     wrapper.classList.remove('active-popup');
     section.classList.remove('blocked');
 });
-
 
 
 

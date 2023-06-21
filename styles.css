@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap');
+@import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
 
 *{
     margin: 0;
@@ -48,6 +49,65 @@ header {
     display: flex;
     align-items: start;
 }
+
+.navigation .searchbar {
+    position: relative;
+    display: flex;
+    border-radius: 25px;
+    width: 250px;
+    height: 35px;
+    margin-left: 18px;
+    margin-top: 12px;
+    margin-right: 18px;
+    background: linear-gradient(top, #222 0%, #45484d 100%);
+    border-radius: 25px;
+    box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,.4);
+    transition: 0.5s ease;
+}
+
+.navigation .searchbar.expanded {
+    border-radius: 17px;
+    height: 105px;
+}
+
+.navigation .searchbar-text {
+    align-items: top;
+    background: transparent;
+    outline: none;
+    border: none;
+    height: 35px;
+    width: 210px;
+    margin-left: 10px;
+    color: #eeeeee;
+}
+
+
+.navigation .searcharea {
+    display: flex;
+    flex-direction: row;
+}
+
+.navigation .searchbar-text::placeholder {
+    color:#eeeeee;
+}
+
+.navigation .searchbar button {
+    background: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    height: 36px;
+    width: 36px;
+}
+
+.search {
+    position: relative;
+    right: 5px;
+
+    font-size: 25;
+    color: #eeeeee;
+}
+
 
 .navigation .navlink {
     position: relative;
@@ -477,7 +537,7 @@ header {
     background: transparent;
     border: 1px solid #014762;
     border-radius: 20px;
-    backdrop-filter: blur(20px);
+    backdrop-filter: url(filters.svg#filter) blur(30px) brightness(200%);
     box-shadow: 0 0 30px black;
 }
 
@@ -521,6 +581,48 @@ header {
     transition: .25s;
 }
 
+
+.rate {
+    display: inline-block;
+    border: 0;
+    margin-top: 12px;
+}
+/* Hide radio */
+.rate > input {
+    display: none;
+}
+/* Order correctly by floating highest to the right */
+.rate > label {
+    float: right;
+}
+/* The star of the show */
+.rate > label:before {
+    display: inline-block;
+    font-size: 2rem;
+    padding: .3rem .3rem;
+    margin: 0;
+    cursor: pointer;
+    font-family: FontAwesome;
+    content: "\f005 "; /* full star */
+}
+
+
+/* Half star trick */
+.rate .half:before {
+    content: "\f089 "; /* half star no outline */
+    position: absolute;
+    padding-right: 0;
+}
+/* Click + hover color */
+.rate input:checked ~ label, /* color current and previous stars on checked */
+.rate label:hover, label:hover ~ label { color: #eeeeee;  } /* color previous stars on hover */
+
+/* Hover highlights */
+.rate input:checked + label:hover, .rate input:checked ~ label:hover, /* highlight current and previous stars */
+.rate input:checked ~ label:hover ~ label, /* highlight previous selected stars for new rating */
+.rate label:hover ~ input:checked ~ label /* highlight previous selected stars */ { color: #c2daff;  }
+
+
 .dashtop ul li:hover {
     background: #eeeeee;
     color:#014762
@@ -532,7 +634,7 @@ header {
     color:#eeeeee;
     text-align: center;
     font-size: 1.9em;
-    margin-top: 18px;
-    margin-bottom: 18px;
+    margin-top: 3px;
+    margin-bottom: 12px;
     text-decoration: none;
 }
