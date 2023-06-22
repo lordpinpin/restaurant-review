@@ -174,6 +174,7 @@ header {
     overflow: hidden;
     transform: scale(0);
     transition: transform .65s ease, height .2s ease;
+    z-index: 9999;
 }
 
 .wrapper.active-popup{
@@ -198,7 +199,7 @@ header {
     align-items: center;
     border-bottom-left-radius: 20px;
     cursor: pointer;
-    z-index: 1;
+    z-index: 9999;
 }
 
 .wrapper .form-box {
@@ -505,11 +506,8 @@ header {
 .section {
     position: absolute;
     left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: 150px 50px 150px;
-    padding-bottom: 100px;
+    top: 50;
+    padding: 90px;
 }
 
 .title {
@@ -524,8 +522,8 @@ header {
     position: relative;
     width: 100%;
     grid-template-columns: 1fr 1fr 1fr;
-    column-gap: 2.5em;
-    row-gap: 2.5em;
+    column-gap: 3rem;
+    row-gap: 3rem;
 }
 
 .dashrestaurant {
@@ -533,11 +531,11 @@ header {
     flex-direction: column;
     justify-content: center;
     align-items: center;;
-    padding: 22px 24px 0px;
+    padding: 30px;
     background: transparent;
     border: 1px solid #014762;
     border-radius: 20px;
-    backdrop-filter: url(filters.svg#filter) blur(30px) brightness(200%);
+    backdrop-filter: url(filters.svg#filter) blur(5px) brightness(60%);
     box-shadow: 0 0 30px black;
 }
 
@@ -598,7 +596,7 @@ header {
 /* The star of the show */
 .rate > label:before {
     display: inline-block;
-    font-size: 2rem;
+    font-size: 1.4rem;
     padding: .3rem .3rem;
     margin: 0;
     cursor: pointer;
@@ -633,7 +631,7 @@ header {
     font-weight: 800;
     color:#eeeeee;
     text-align: center;
-    font-size: 1.9em;
+    font-size: 1.5rem;
     margin-top: 3px;
     margin-bottom: 12px;
     text-decoration: none;
