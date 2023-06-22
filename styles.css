@@ -158,7 +158,7 @@ header {
 }
 
 .wrapper {
-    position: relative;
+    position: absolute;
     margin-top: 150px;
     margin-bottom: 150px;
     width: 400px;
@@ -504,10 +504,9 @@ header {
 }
 
 .section {
-    position: absolute;
+    position: relative;
     left: 0;
-    top: 50;
-    padding: 90px;
+    margin: 150px 250px;
 }
 
 .title {
@@ -522,8 +521,8 @@ header {
     position: relative;
     width: 100%;
     grid-template-columns: 1fr 1fr 1fr;
-    column-gap: 3rem;
-    row-gap: 3rem;
+    column-gap: 2.9em;
+    row-gap: 2.9em;
 }
 
 .dashrestaurant {
