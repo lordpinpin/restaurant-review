@@ -1,0 +1,136 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rest★r</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <header>
+        <h2 class="logo"><a class="logo" href="index.html"><b>Rest★r</b></a></h2>
+        <nav class="navigation">
+            <form class="searchbar">
+                <div class="searcharea">
+                    <input class="searchbar-text" type="text" placeholder="Search for anything" />
+                    <button type="submit" value="Search">
+                        <span class="search"><ion-icon name="search-circle"></ion-icon></span>
+                        </button>
+                </div>
+            </form>
+            <a class="navlink" href="">Restaurants</a>
+            <a class="navlink create-review" href="#">Create Review</a>
+            <button class="btnLogin-popup">Login</button>
+        </nav>
+    </header>
+
+
+    <div class="wrapper">
+        <span class="icon-close">
+            <ion-icon name="close"></ion-icon>
+        </span>
+
+        <div class="form-box login">
+            <h2>Login</h2>
+            <form action="#">
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="mail"></ion-icon></span>
+                    <input type="text" required pattern=".*\S+.*">
+                    <label>Email</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
+                    <input type="password" required>
+                    <label>Password</label>
+                </div>
+                <div type="submit" class="btn">Login</div>
+                <div class="login-register">
+                    <p>Don't have an account? <a href="#" class="register-link">Register</a></p>
+                </div>
+            </form>
+        </div>
+
+        <div class="form-box register">
+            <h2>Registration</h2>
+            <form action="#">
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="person"></ion-icon></span>
+                    <input type="text" required pattern=".*\S+.*">
+                    <label>First Name</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="people-circle"></ion-icon></span>
+                    <input type="text" required pattern=".*\S+.*">
+                    <label>Last Name</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="mail"></ion-icon></span>
+                    <input type="text" required pattern=".*\S+.*">
+                    <label>Email</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
+                    <input type="password" required>
+                    <label>Password</label>
+                </div>
+                <div class="terms">
+                    <div class="squaredThree">
+                        <input type="checkbox" value="None" id="squaredThree" name="check" required/>
+                        <label for="squaredThree"></label>
+                        <p>I agree to the terms and conditions.</p>
+                    </div>
+                </div>
+                <div type="submit" class="btn">Register</div>
+                <div class="login-register">
+                    <p>Already have an account? <a href="#" class="login-link">Login</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="dashtop">
+            <h2 class="title">Restaurants</h2>
+            <div class="sortby">Sort By<ion-icon name="chevron-down"></ion-icon></div>
+        </div>
+
+        <div class="restaurant-results">
+            <div class="restaurant-item">
+                <img class="restaurant-result-image" src="/Images/restaurant1.png">
+                <div class="restaurant-result-details">
+                    <div class="first-line">
+                        <div class="restaurant-name">
+                        </div>
+                        STARS HERE
+                    </div>
+                    <div class="second-line">
+                        <div class="tags"></div>
+                        <div class="numberofreviews"></div>
+                    </div>
+                    <div class="description">
+                        <p class="description-text"></p>
+                    </div>
+                    <div class="sample-review">
+                        <div class="profile-details">
+                            <img src="" alt="" class="profile-pic">
+                            <h3 class="name"></h3>
+                            <h4 class="date"></h4>
+                        </div>
+                        <div class="starrating">
+
+                        </div>
+                        <div class="review-details">
+                            <p class="review-description"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="login.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>
