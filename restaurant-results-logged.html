@@ -9,9 +9,9 @@
 
 <body>
     <header>
-        <h2 class="logo"><a class="logo" href="index.html"><b>Rest★r</b></a></h2>
+        <h2 class="logo"><a class="logo" href="index-logged.html"><b>Rest★r</b></a></h2>
         <nav class="navigation">
-            <form class="searchbar" method="POST" action="restaurant-results.html">
+            <form class="searchbar" method="POST" action="restaurant-results-logged.html">
                 <div class="searcharea">
                     <input class="searchbar-text" type="text" placeholder="Search for anything" />
                     <button class="searchbar-enter" type="submit" value="Search">
@@ -19,11 +19,34 @@
                     </button>
                 </div>
             </form>
-            <a class="navlink" href="restaurant-results-logged.html">Restaurants</a>
-            <a class="navlink create-review" href="#">Create Review</a>
-            <button class="btnLogin-popup">Login</button>
+            <a class="navlink" href="restaurant-results.html">Restaurants</a>
+            <a class="navlink" href="">Create Review</a>
+            <div class="dropdown">
+                <div class="dropdown-profile">
+                    <img src="/Images/profile-1.jpg">
+                    <div class="name">Emily Wang</div>
+                    <div class="icon"><ion-icon name="menu"></ion-icon></div>
+                </div>
+                <nav class="dropdown-nav">
+                    <ul class="dropdown-group">
+                        <li class="dropdown-item">
+                            <span class="icon-dropdown"><ion-icon name="person-circle"></ion-icon></span>
+                            <a href="profile-page.html" class="profile">Profile</a>
+                        </li>
+                        <li class="dropdown-item">
+                            <span class="icon-dropdown"><ion-icon name="settings"></ion-icon></span>
+                            <a href="#" class="settings">Settings</a>
+                        </li>
+                        <li class="dropdown-item">
+                            <span class="icon-dropdown"><ion-icon name="exit"></ion-icon></span>
+                            <a href="index.html" class="logout">Log out</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </nav>
     </header>
+
     <div class="section">
         <div class="resulttop">
             <h2 class="title">Restaurants</h2>
@@ -414,71 +437,9 @@
         </div>
     </div>
 
-    <div class="wrapper">
-        <span class="icon-close">
-            <ion-icon name="close"></ion-icon>
-        </span>
-
-        <div class="form-box login">
-            <h2>Login</h2>
-            <form action="#">
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="mail"></ion-icon></span>
-                    <input type="text" required pattern=".*\S+.*">
-                    <label>Email</label>
-                </div>
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
-                    <input type="password" required>
-                    <label>Password</label>
-                </div>
-                <div type="submit" class="btn">Login</div>
-                <div class="login-register">
-                    <p>Don't have an account? <a href="#" class="register-link">Register</a></p>
-                </div>
-            </form>
-        </div>
-
-        <div class="form-box register">
-            <h2>Registration</h2>
-            <form action="#">
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="person"></ion-icon></span>
-                    <input type="text" required pattern=".*\S+.*">
-                    <label>First Name</label>
-                </div>
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="people-circle"></ion-icon></span>
-                    <input type="text" required pattern=".*\S+.*">
-                    <label>Last Name</label>
-                </div>
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="mail"></ion-icon></span>
-                    <input type="text" required pattern=".*\S+.*">
-                    <label>Email</label>
-                </div>
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
-                    <input type="password" required>
-                    <label>Password</label>
-                </div>
-                <div class="terms">
-                    <div class="squaredThree">
-                        <input type="checkbox" value="None" id="squaredThree" name="check" required/>
-                        <label for="squaredThree"></label>
-                        <p>I agree to the terms and conditions.</p>
-                    </div>
-                </div>
-                <div type="submit" class="btn">Register</div>
-                <div class="login-register">
-                    <p>Already have an account? <a href="#" class="login-link">Login</a></p>
-                </div>
-            </form>
-        </div>
-    </div>
 
 
-    <script src="login.js"></script>
+    <script src="logged.js"></script>
     <script src="results.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>

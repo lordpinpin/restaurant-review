@@ -29,3 +29,4 @@ for (let i = 0; i < dropdown.length; i++) {
         dropdown[i].classList.toggle('active');
     });
 }
+
