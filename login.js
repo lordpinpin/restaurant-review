@@ -4,7 +4,7 @@ const registerLink = document.querySelector('.register-link');
 const btnPopup = document.querySelector('.btnLogin-popup');
 const createReview = document.querySelector('.create-review');
 const iconClose = document.querySelector('.icon-close');
-const section = document.querySelector('.dashrestaurant-boxes');
+const section = document.querySelector('.section');
 
 const btn = document.querySelectorAll(".btn");
 
