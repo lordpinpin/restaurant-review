@@ -1534,6 +1534,7 @@ header {
   .subtitle {
     color:#eeeeee;
     font-weight: 200;
+    margin-bottom: 5px;
   }
 
   .profile-details-container input[type=text] {
@@ -1542,7 +1543,7 @@ header {
     border: none;
     padding: 5px;
     border-radius: 10px;
-    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
+    box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,.4);
   }
 
   .gender-choices, .pronouns-choices {
@@ -1562,3 +1563,59 @@ header {
   }
 
 
+  .pronoun-choice-item, .gender-choice-item{
+    display: flex;
+    align-items: center;
+    position: relative;
+    margin-bottom: 5px;
+  }
+
+
+
+.pronoun-choice-item label, .gender-choice-item label {
+    display: flex;
+    align-items: center;
+    position: relative;
+    background: linear-gradient(top, #222 0%, #45484d 100%);
+    border-radius: 4px;
+
+    width: 30px;
+    height: 30px;
+    box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,.4);
+}
+
+.pronoun-choice-item input, .gender-choice-item input {
+    cursor: pointer;
+    position: absolute;
+    margin-left: 9px;
+    opacity: 100;
+    transform: scale(1.8);
+    visibility: hidden;
+}
+
+.pronoun-choice-item ion-icon, .gender-choice-item ion-icon {
+    position: absolute;
+    margin-left: 1px;
+    font-size: 28px;
+    --ionicon-stroke-width: 75px;
+    opacity: 0;
+    transition: 0.5s;
+
+}
+
+.pronoun-choice-item input:hover + ion-icon,
+.gender-choice-item input:hover + ion-icon {
+    opacity: 0.3;
+}
+
+.pronoun-choice-item input:checked + ion-icon,
+.gender-choice-item input:checked + ion-icon {
+    opacity: 1;
+}
+
+.pronoun-choice-item p,
+.gender-choice-item p {
+    margin-left: 5px;
+    color: #eeeeee;
+    font-weight: 200;
+}
