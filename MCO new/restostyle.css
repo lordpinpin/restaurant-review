@@ -1,0 +1,286 @@
+@import url("https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&family=Poppins:wght@100;200;300;400;500;600;700;800&display=swap");
+@import url(//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css);
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: url(images/background.jpg);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  z-index: 99999;
+  background: transparent;
+  backdrop-filter: blur(20px);
+}
+
+.logo {
+  font-size: 1.5em;
+  color: #eeeeee;
+  user-select: none;
+  text-decoration: none;
+}
+
+.navigation {
+  display: flex;
+  align-items: start;
+}
+
+.navigation .searchbar {
+  position: relative;
+  display: flex;
+  border-radius: 25px;
+  width: 250px;
+  height: 35px;
+  margin-left: 18px;
+  margin-top: 12px;
+  margin-right: 18px;
+  background: linear-gradient(top, #222 0%, #45484d 100%);
+  border-radius: 25px;
+  box-shadow: inset 0px 1px 1px rgba(0, 0, 0, 0.5),
+    0px 1px 0px rgba(255, 255, 255, 0.4);
+  transition: 0.5s ease;
+}
+
+.navigation .searchbar.expanded {
+  border-radius: 17px;
+  height: 105px;
+}
+
+.navigation .searchbar-text {
+  align-items: top;
+  background: transparent;
+  outline: none;
+  border: none;
+  height: 35px;
+  width: 210px;
+  margin-left: 10px;
+  color: #eeeeee;
+}
+
+.navigation .searcharea {
+  display: flex;
+  flex-direction: row;
+}
+
+.navigation .searchbar-text::placeholder {
+  color: #eeeeee;
+}
+
+.navigation .searchbar button {
+  background: transparent;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  height: 36px;
+  width: 36px;
+}
+
+.search {
+  position: relative;
+  right: 5px;
+
+  font-size: 25;
+  color: #eeeeee;
+}
+
+.navigation .navlink {
+  position: relative;
+  margin-top: 17px;
+  font-size: 1.1em;
+  color: #eeeeee;
+  text-decoration: none;
+  font-weight: 500;
+  margin-right: 20px;
+}
+
+.navigation .navlink::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3;
+  width: 100%;
+  height: 2px;
+  background: #eeeeee;
+  border-radius: 5px;
+  transform-origin: right;
+  transform: scaleX(0);
+  transition: transform 0.4s;
+}
+
+.navigation a:hover::after {
+  transform-origin: left;
+  transform: scaleX(1);
+}
+
+.navigation .btnLogin-popup {
+  width: 130px;
+  height: 50px;
+  background: transparent;
+  border: 2px solid #eeeeee;
+  outline: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.1em;
+  color: #eeeeee;
+  margin-top: 5px;
+  transition: 0.25s;
+}
+
+.navigation .btnLogin-popup:hover {
+  background-color: #eeeeee;
+  color: #014762;
+}
+
+/* Photo Banner */
+
+.restaurant-banner {
+  margin-top: 100px;
+  /*border: 10px solid #66e;*/
+  background: url("images/restaurant1.png");
+  width: 100%;
+  height: 60vh;
+}
+
+.banner-content {
+  color: steelblue;
+  width: 55%;
+  padding-top: 250px;
+  padding-left: 150px;
+}
+
+.banner-content span {
+  font-size: 43px;
+  font-weight: 500;
+  letter-spacing: 3px;
+}
+
+.banner-content .tags-container {
+  display: flex;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid steelblue;
+  font-size: 1em;
+  font-weight: 300;
+}
+
+.banner-content .time-open-container {
+  display: flex;
+}
+
+/* Write a Review Button */
+.restaurant-review {
+  margin-top: 40px;
+}
+.btn {
+  font-size: 18px;
+  font-weight: bold;
+  background: steelblue;
+  width: 160px;
+  padding: 18px;
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Sort and Search Button */
+
+.options-content {
+  display: flex;
+  flex-direction: row;
+  margin-top: 100px;
+  justify-content: space-between;
+}
+
+.sortby {
+  margin-left: 0;
+  color: rgb(245, 247, 248);
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  border: none;
+  outline: none;
+  backdrop-filter: none;
+  transition: 0.5s;
+}
+
+/* Sample User-Review/Comment  */
+
+.sample-comment {
+  margin-top: 100px;
+  margin-bottom: 100px;
+  /*border: 10px solid rgb(102, 218, 238);*/
+}
+
+.comment-header {
+  display: flex;
+}
+
+.username {
+  color: rgb(248, 250, 252);
+}
+
+.user-comment {
+  color: rgb(248, 250, 252);
+}
+
+.comment-header img {
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #eeeeee;
+  height: 2.5em;
+  width: 2.5em;
+}
+
+.prompt {
+  margin-top: 10;
+  font-size: 12px;
+  color: rgb(193, 193, 197);
+}
+
+.btn-option1 {
+  font-size: 10px;
+  background: steelblue;
+  width: 300px;
+  padding: 5px;
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-option2 {
+  font-size: 10px;
+  background: steelblue;
+  width: 300px;
+  padding: 5px;
+  text-align: center;
+  text-decoration: none;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
