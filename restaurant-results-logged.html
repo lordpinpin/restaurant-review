@@ -20,7 +20,7 @@
                 </div>
             </form>
             <a class="navlink" href="restaurant-results.html">Restaurants</a>
-            <a class="navlink" href="">Create Review</a>
+            <a class="navlink" href="create-review.html">Create Review</a>
             <div class="dropdown">
                 <div class="dropdown-profile">
                     <img src="/Images/profile-1.jpg">
@@ -47,6 +47,7 @@
         </nav>
     </header>
 
+
     <div class="section">
         <div class="resulttop">
             <h2 class="title">Restaurants</h2>
@@ -56,6 +57,7 @@
                     <span class="sortby-icon"><ion-icon name="chevron-down"></ion-icon></span>
                 </div>
                 <nav class="sortby-nav">
+
                     <ul class="sortby-group">
                         <li class="sortby-item">
                             <p>Highest Rated</p>
@@ -78,6 +80,7 @@
                     <div class="first-line">
                         <a class="link-effect" href="#"><h1>Liholiho Yacht Club</h1></a>
                         <div class="result-rate">
+                            <p>4.6</p>
                             <fieldset class="rate blocked">
                                 <input type="radio" id="rating10" name="rating1" value="10" /><label for="rating10" title="5 stars"></label>
                                 <input checked type="radio" id="rating9" name="rating1" value="9" /><label class="half" for="rating9" title="4 1/2 stars"></label>
@@ -148,6 +151,7 @@
                     <div class="first-line">
                         <a class="link-effect" href="#"><h1>Dumpling Home</h1></a>
                         <div class="result-rate">
+                            <p>4.2</p>
                             <fieldset class="rate blocked">
                                 <input type="radio" id="rating10" name="rating2" value="10" /><label for="rating10" title="5 stars"></label>
                                 <input type="radio" id="rating9" name="rating2" value="9" /><label class="half" for="rating9" title="4 1/2 stars"></label>
@@ -217,6 +221,7 @@
                     <div class="first-line">
                         <a class="link-effect" href="#"><h1>Full Tilt Columbia City</h1></a>
                         <div class="result-rate">
+                            <p>3.7</p>
                             <fieldset class="rate blocked">
                                 <input type="radio" id="rating10" name="rating3" value="10" /><label for="rating10" title="5 stars"></label>
                                 <input type="radio" id="rating9" name="rating3" value="9" /><label class="half" for="rating9" title="4 1/2 stars"></label>
@@ -288,6 +293,7 @@
                     <div class="first-line">
                         <a class="link-effect" href="#"><h1>Chengdu Memory</h1></a>
                         <div class="result-rate">
+                            <p>3.5</p>
                             <fieldset class="rate blocked">
                                 <input type="radio" id="rating10" name="rating4" value="10" /><label for="rating10" title="5 stars"></label>
                                 <input type="radio" id="rating9" name="rating4" value="9" /><label class="half" for="rating9" title="4 1/2 stars"></label>
@@ -360,6 +366,7 @@
                     <div class="first-line">
                         <a class="link-effect" href="#"><h1>Rubirosa</h1></a>
                         <div class="result-rate">
+                            <p>2.9</p>
                             <fieldset class="rate blocked">
                                 <input type="radio" id="rating10" name="rating5" value="10" /><label for="rating10" title="5 stars"></label>
                                 <input type="radio" id="rating9" name="rating5" value="9" /><label class="half" for="rating9" title="4 1/2 stars"></label>
@@ -434,6 +441,69 @@
             <a class="page-link" href="#">4</a>
             <a class="page-link" href="#">5</a>
             <span class="right-icon"><ion-icon name="arrow-forward-circle"></ion-icon></span>
+        </div>
+    </div>
+
+    <div class="wrapper">
+        <span class="icon-close">
+            <ion-icon name="close"></ion-icon>
+        </span>
+
+        <div class="form-box login">
+            <h2>Login</h2>
+            <form action="#">
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="mail"></ion-icon></span>
+                    <input type="text" required pattern=".*\S+.*">
+                    <label>Email</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
+                    <input type="password" required>
+                    <label>Password</label>
+                </div>
+                <div type="submit" class="btn">Login</div>
+                <div class="login-register">
+                    <p>Don't have an account? <a href="#" class="register-link">Register</a></p>
+                </div>
+            </form>
+        </div>
+
+        <div class="form-box register">
+            <h2>Registration</h2>
+            <form action="#">
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="person"></ion-icon></span>
+                    <input type="text" required pattern=".*\S+.*">
+                    <label>First Name</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="people-circle"></ion-icon></span>
+                    <input type="text" required pattern=".*\S+.*">
+                    <label>Last Name</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="mail"></ion-icon></span>
+                    <input type="text" required pattern=".*\S+.*">
+                    <label>Email</label>
+                </div>
+                <div class="input-box">
+                    <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
+                    <input type="password" required>
+                    <label>Password</label>
+                </div>
+                <div class="terms">
+                    <div class="squaredThree">
+                        <input type="checkbox" value="None" id="squaredThree" name="check" required/>
+                        <label for="squaredThree"></label>
+                        <p>I agree to the terms and conditions.</p>
+                    </div>
+                </div>
+                <div type="submit" class="btn">Register</div>
+                <div class="login-register">
+                    <p>Already have an account? <a href="#" class="login-link">Login</a></p>
+                </div>
+            </form>
         </div>
     </div>
 
