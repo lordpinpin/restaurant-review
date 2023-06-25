@@ -431,6 +431,7 @@ header {
 }
 
 .dropdown-profile img {
+    object-fit: cover;
     border-radius: 50%;
     border: 2px solid #eeeeee;
     height: 2.5em;
@@ -541,6 +542,7 @@ header {
 
 
 .dashrestaurant-image {
+    object-fit: cover;
     width: 150px;
     height: 150px;
     border-radius: 20px;
@@ -635,7 +637,7 @@ header {
 /* Hover highlights */
 .rate input:checked + label:hover, .rate input:checked ~ label:hover, /* highlight current and previous stars */
 .rate input:checked ~ label:hover ~ label, /* highlight previous selected stars for new rating */
-.rate label:hover ~ input:checked ~ label /* highlight previous selected stars */ { color: #c2daff;  }
+.rate label:hover ~ input:checked ~ label /* highlight previous selected stars */ { color: rgb(128, 194, 255);  }
 
 
 .dashrestaurant-name {
@@ -795,8 +797,18 @@ header {
 }
 
 .result-rate {
-    width: 150px;
+    display: flex;
+    align-items: center;
+    margin-right: 20px;
     margin-left: 0px;
+}
+
+.result-rate p {
+    margin-top: 11px;
+    margin-right: 10px;
+    color: #eeeeee;
+    font-weight: 200;
+    font-size: 20px;
 }
 
 .first-line a {
@@ -874,10 +886,11 @@ header {
 
 .second-line .numberofreviews {
     position: relative;
-    top: -5px;
+    top: -15px;
     color: white;
     margin-right: 35px;
     font-size: .8em;
+    font-weight: 200;
 }
 
 .description {
@@ -936,6 +949,7 @@ header {
 }
 
 .profile-details img {
+    object-fit: cover;
     border-radius: 50%;
     border: 2px solid #eeeeee;
     height: 2.5em;
@@ -1008,4 +1022,409 @@ header {
 .pagination-container span:hover, .pagination-container a:hover, a.current-page {
     color:#042e3f;
     backdrop-filter:  url(filters.svg#filter) blur(10px) brightness(900%);
+}
+
+.division {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 120px;
+}
+
+.create-review {
+    margin-left: 50px;
+}
+
+.choose {
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+    border: none;
+    outline: none;
+    backdrop-filter: none;
+    margin: 20px;
+    transition: .5s;
+}
+
+.choose.revealed {
+    margin: 0;
+    margin-bottom: 20px;
+    padding: 20px;
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
+    outline: none;
+}
+
+.choose-title {
+    width: 100%;
+    background: transparent;
+    outline: none;
+    cursor: pointer;
+    font-size: 2.25em;
+    font-weight: 700;
+    color: #eeeeee;
+    transition: .25s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.choose-icon ion-icon {
+    margin-left: 10px;
+    transform: rotate(0deg);
+    transition: transform 0.5s;
+}
+
+.choose-icon.active ion-icon {
+    transform: rotate(180deg);
+}
+
+.choose-nav {
+    position: relative;
+    top: 0;
+    left: 0;
+    height: 0;
+    overflow-y: scroll;
+    transition: height .2s;
+}
+
+.choose-nav.revealed {
+    margin-top: 35px;
+    display: block;
+    height: 130px;
+}
+
+
+.choose-nav::-webkit-scrollbar {
+    width: 1em;
+}
+
+.choose-nav::-webkit-scrollbar-track {
+    border-radius: 10px;
+    box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,.4);
+}
+
+.choose-nav::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #eeeeee;
+    box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,.4);
+}
+
+
+.choose-item {
+    position: relative;
+    margin-top: 10px;
+    margin-right: 10px;
+    text-align: right;
+}
+
+.choose-item p {
+    cursor: pointer;
+    font-size: 1em;
+    color:#eeeeee;
+    text-decoration: none;
+    font-weight: 200;
+}
+
+.choose-item p::after{
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: -3;
+    width: 100%;
+    height: 2px;
+    background: #eeeeee;
+    border-radius: 5px;
+    transform-origin: right;
+    transform: scaleX(0);
+    transition: transform 0.4s;
+}
+
+.choose-item p:hover::after{
+    transform-origin: left;
+    transform: scaleX(1);
+}
+
+.choose .searchbar {
+    position: relative;
+    display: none;
+    flex-direction: row;
+    align-items: right;
+    border-radius: 25px;
+}
+
+.choose .searchbar.active {
+    display: flex;
+    height: 35px;
+    margin-left: 18px;
+    margin-top: 12px;
+    margin-right: 18px;
+    background: linear-gradient(top, #222 0%, #45484d 100%);
+    border-radius: 25px;
+    box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,.4);
+}
+
+.choose .searchbar-text {
+    position: relative;
+    background: transparent;
+    outline: none;
+    border: none;
+    height: 35px;
+    width: 100%;
+    margin-left: 10px;
+    margin-right: 10px;
+    color: #eeeeee;
+    font-size: 1rem;
+}
+
+.choose .searchbar::placeholder {
+    align-items: top;
+    background: transparent;
+    outline: none;
+    border: none;
+    height: 35px;
+    width: 210px;
+    color: #eeeeee;
+}
+
+.choose .searchbar-text::placeholder {
+    color:#eeeeee;
+}
+
+
+.choose .search-icon {
+    position: relative;
+    margin-top: 2px;
+    right: 5px;
+    font-size: 25;
+    color: #eeeeee;
+}
+
+.review-enter {
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
+    margin-bottom: 20px;
+}
+
+.review-rate {
+    position: relative;
+    top: 8;
+    left: 145;
+    transform: scale(1.4);
+}
+
+.review-space textarea {
+    position: relative;
+    margin: 20px;
+    padding-right: 10px;
+    width: 600px;
+    height: 230px;
+    background-color: transparent;
+    border: none;
+    color:#eeeeee;
+    font-size: 1.1rem;
+    font-weight: 200;
+    overflow-y: scroll;
+    resize:none;
+}
+
+.review-space textarea::placeholder {
+    color:#eeeeee;
+    font-size: 1.1rem;
+    font-weight: 200;
+}
+
+.review-space textarea:focus {
+    outline: none;
+}
+
+.review-space textarea::-webkit-scrollbar {
+    width: 1em;
+    right: 100px;
+}
+
+.review-space textarea::-webkit-scrollbar-track {
+    border-radius: 10px;
+    box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,.4);
+}
+
+.review-space textarea::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #eeeeee;
+    box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,.4);
+}
+
+.attach-title {
+    color:#eeeeee;
+    margin-left: 15px;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.media {
+    display: grid;
+    grid-template-columns: 100px 100px 100px 100px 100px;
+    column-gap: 20px;
+    grid-template-rows: 100px;
+    margin: 20px 0px;
+}
+
+.attach-media-square {
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.attach-media-button {
+    cursor: pointer;
+    border: none;
+    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
+    border-radius: 20px;
+    background-color: transparent;
+    width: 100px;
+    height: 100px;
+    transition: 0.5s;
+}
+
+.attach-media-button:hover {
+    background-color: #eeeeee;
+}
+
+.media-square {
+    cursor: pointer;
+    width: 100px;
+    height: 100px;
+    border-radius: 20px;
+    border: none;
+    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
+}
+
+.media-square img {
+    border-radius: 20px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: none;
+    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
+}
+
+.media-square .icon-close {
+    display: flex;
+    position: relative;
+    align-items: center;
+    top: -98px;
+    left: 73px;
+    width: 25px;
+    height: 25px;
+    border: none;
+    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
+    border-top-right-radius: 18px;
+    border-bottom-left-radius: 10px;
+    background-color: transparent;
+    backdrop-filter: url(filters.svg#filter) blur(10px) brightness(80%) saturate(2);
+    transition: 0.5s;
+    z-index: 9999;
+}
+
+.media-square .icon-close:hover {
+    background-color: #eeeeee;
+}
+
+.media-square .icon-close ion-icon {
+    position: relative;
+    top: 2px;
+    left: 2px;
+    font-size: 1.15rem;
+    color: #eeeeee;
+}
+
+.media-square .icon-close:hover ion-icon {
+    color: #042e3f;
+}
+
+.icon-attach {
+    color:#eeeeee;
+    font-size: 2rem;
+    transition: 0.5s;
+}
+
+.attach-media-button:hover .icon-attach {
+    color:#042e3f;
+}
+
+
+.btnSubmit {
+    width: 130px;
+    height: 50px;
+    background: transparent;
+    outline: none;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.1em;
+    color: #eeeeee;
+    margin: 20px 0px;
+    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
+    backdrop-filter:  url(filters.svg#filter) blur(10px) brightness(100%);
+    transition: 0.5s;
+    transition: .25s;
+}
+
+.btnSubmit:hover {
+    background-color:#eeeeee;
+    color:#042e3f;
+}
+
+.preview {
+    width: 300px;
+    backdrop-filter:  url(filters.svg#filter) blur(10px) brightness(100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 50px;
+    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
+    border-radius: 20px;
+}
+
+.preview-title {
+    color:#eeeeee;
+    padding-top: 20px;
+    margin-bottom: 20px;
+}
+
+.preview-image {
+    width: 100%;
+    height: 200px;
+    margin-bottom: 10px;
+}
+
+.preview-image img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
+    border: none;
+}
+
+.preview-name {
+    color: #eeeeee;
+    margin-bottom: 10px;
+}
+
+.preview-rating {
+    display: flex;
+    align-items: center;
+    font-weight: 200;
+}
+
+.preview-rating p {
+    margin-top: 12px;
+    margin-right: 10px;
+    color: #eeeeee;
+}
+
+.preview-description {
+    color: #eeeeee;
+    padding: 20px;
+    font-weight: 200;
 }
