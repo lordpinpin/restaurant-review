@@ -1561,4 +1561,176 @@ header {
     color: white;
   }
 
+  .profile-title {
+    font-size: 1.25em;
+    color: #eeeeee;
+}
+
+.profile-section {
+    width: 1000px;
+    min-height: 700px;
+    margin-top: 100px;
+    position: center;
+    border-radius: 30px 30px 30px 30px;
+    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
+    transition: all 0.5s;
+    background: transparent;
+    backdrop-filter: blur(20px);
+}
+
+.avatar {
+    display: flex;
+    width: 180px;
+    height: 200px;
+    border-radius: 50%;
+    margin-top: 25px;
+    margin-left: 80px;
+    overflow: hidden;
+    border-color: #222;
+}
+
+.avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.profile-title {
+    float: right;
+    font-size: 2.7em;
+    color: #eeeeee;
+    margin-right: 480px;
+    margin-top: -160px;
+}
+
+.profile-subtext {
+    position: absolute;
+    color: #eeeeee;
+    font-size: 1.2rem;
+    font-weight: 200;
+    margin-left: 335px;
+    margin-top: -95px;
+}
+
+.profile-side {
+    float: left;
+    margin-left: 75px;
+    margin-top: 20px;
+    width: 180px;
+    max-width: 180px;
+    min-height: 350px; 
+    position: center;
+    border-radius: 30px 30px 30px 30px;
+    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
+    transition: all 0.5s;
+    background: transparent;
+    backdrop-filter: blur(20px);
+}
+
+.profile-side ul{
+    list-style-type: none;
+    margin-left: 2px;
+    padding: 0;
+    width: 175px;
+    color: #eeeeee;
+}
+
+.profile-side li a {
+    display: block;
+    color: #eeeeee;
+    padding: 8px 16px;
+    text-decoration: none;
+  }
+  
+  .profile-side li {
+    text-align: center;
+  }
+  
+  .profile-side li:last-child {
+    border-bottom: none;
+  }
+  
+  
+  .profile-side li a:hover {
+    background-color: #555;
+    color: white;
+  }
+
+.profile-option {
+    position: relative;
+    top:15px;
+    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
+    transition: all 0.5s;
+    background: transparent;
+    backdrop-filter: blur(20px);
+    text-align: center;
+}
+
+.profile-review {
+    margin-left: 325px;
+    margin-top: 20px;
+    width: 630px;
+    min-height: 500px; 
+    position: center;
+}
+
+.review {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    padding: 30px;
+    margin-top: 20px;
+    background: transparent;
+    border-radius: 20px;
+    backdrop-filter: url(filters.svg#filter) blur(10px) brightness(100%);
+    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
+}
+
+.review-img {
+    position: absolute;
+    left:30px;
+    bottom: 70px;
+    width: 135px;
+    height: 135px;
+    border-radius: 20px;
+}
+
+.review-details .first-line{
+    position: relative;
+    top: -30px;
+    justify-content: space-between;
+}
+
+.review-details .second-line{
+    position: relative;
+    top: -30px;
+    left: -10px;
+    justify-content: space-between;
+}
+
+.review-rating h2 {
+    color: white;
+    font-size: 1.0rem;
+    position: relative;
+    right:315px;
+}
+
+.own-review {
+    display: flex;
+    width: 430px;
+    height: 140px;
+    margin-left: 150px;
+}
+
+.rev {
+    position: relative;
+    font: 1.5rem;
+    color: white;
+    margin-left:10px;
+    bottom: 25px;
+}
+
 
