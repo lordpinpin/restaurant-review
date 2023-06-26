@@ -103,9 +103,8 @@ header {
 
 .search {
     position: relative;
-    right: 5px;
-
-    font-size: 25;
+    right: 7px;
+    font-size: 30px;
     color: #eeeeee;
 }
 
@@ -124,7 +123,7 @@ header {
     content: '';
     position:absolute;
     left: 0;
-    bottom: -3;
+    margin-top: 25px;
     width: 100%;
     height: 2px;
     background: #eeeeee;
@@ -181,8 +180,12 @@ header {
     transform: scale(1);
 }
 
-.wrapper.active {
+.wrapper.active-register {
     height: 600px;
+}
+
+.wrapper.active-login-restaurant {
+    height: 400px;
 }
 
 .wrapper .icon-close {
@@ -212,7 +215,8 @@ header {
     transform: translateX(0);
 }
 
-.wrapper.active .form-box.login {
+.wrapper.active-register .form-box.login,
+.wrapper.active-login-restaurant .form-box.login {
     transition: none;
     transform: translateX(-400px);
 }
@@ -223,10 +227,23 @@ header {
     transform: translateX(400px);
 }
 
-.wrapper.active .form-box.register {
+.wrapper.active-register .form-box.register {
     transition: transform .20s ease;
     transform: translateX(0);
 }
+
+.wrapper .form-box.login-restaurant {
+    position: absolute;
+    transition: none;
+    transform: translateX(400px);
+}
+
+.wrapper.active-login-restaurant .form-box.login-restaurant {
+    transition: transform .20s ease;
+    transform: translateX(0);
+}
+
+
 
 
 .form-box h2 {
@@ -306,11 +323,13 @@ header {
     color:#eeeeee;
     text-align:center;
     font-weight: 500;
-    margin: 25px 0 10px;
+    margin: 15px 0 10px;
 }
 
 .login-link,
-.register-link {
+.register-link,
+.login-restaurant-link,
+.backtologin-link {
     position: relative;
     color: #eeeeee;
     text-decoration: none;
@@ -319,7 +338,9 @@ header {
 }
 
 .login-link::after,
-.register-link::after{
+.register-link::after,
+.backtologin-link::after,
+.login-restaurant-link::after{
     content: '';
   position: absolute;
   width: 100%;
@@ -333,7 +354,9 @@ header {
 }
 
 .login-link:hover::after,
-.register-link:hover::after {
+.register-link:hover::after,
+.backtologin-link:hover::after,
+.login-restaurant-link:hover::after  {
     transform: scaleX(1);
     transform-origin: bottom left;
 }
@@ -435,6 +458,7 @@ header {
     border-radius: 50%;
     border: 2px solid #eeeeee;
     height: 2.5em;
+    min-width: 2.5em;
     width: 2.5em;
 }
 
@@ -819,7 +843,7 @@ header {
 
 
 .first-line a h1 {
-    color: white;
+    color: #eeeeee;
     font-size: 1.6rem;
     padding-left: 10px;
     padding-top: 10px;
@@ -887,7 +911,7 @@ header {
 .second-line .numberofreviews {
     position: relative;
     top: -15px;
-    color: white;
+    color: #eeeeee;
     margin-right: 35px;
     font-size: .8em;
     font-weight: 200;
@@ -896,6 +920,13 @@ header {
 .description {
     display: flex;
     justify-content: space-between;
+}
+
+.description-title {
+    margin: 0px 20px 0px 20px;
+    color:#eeeeee;
+    font-size: 1.3rem;
+    font-weight: 700;
 }
 
 .description-text {
@@ -911,7 +942,7 @@ header {
     color: #eeeeee;
     font-size: 3rem;
     top: -10;
-    margin-left: 25px;
+    margin-left: 10px;
     margin-right: 25px;
     cursor: pointer;
 }
@@ -935,7 +966,7 @@ header {
     max-height: 250;
 }
 
-.review-top {
+.review-top, .profile-review-top {
     display: flex;
     margin-left: 20px;
     margin-bottom: 10px;
@@ -964,7 +995,7 @@ header {
     text-decoration: none;
 }
 
-.review-top .date {
+.review-top .date, .profile-review-top .date {
     color:#eeeeee;
     font-size: .8em;
     font-weight: 300;
@@ -1021,7 +1052,7 @@ header {
 
 .pagination-container span:hover, .pagination-container a:hover, a.current-page {
     color:#042e3f;
-    backdrop-filter:  url(filters.svg#filter) blur(10px) brightness(900%);
+    background-color: #eeeeee;
 }
 
 .division {
@@ -1214,9 +1245,39 @@ header {
     transform: scale(1.4);
 }
 
+
+.review-title-space{
+    border-radius: 25px;
+    display: flex;
+    height: 35px;
+    margin-top: 20px;
+    margin-left: 5px;
+}
+
+.review-title-space .titlebar {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: transparent;
+    outline: none;
+    border: none;
+    height: 35px;
+    width: 100%;
+    margin-left: 15px;
+    margin-right: 10px;
+    color: #eeeeee;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.review-title-space  .titlebar::placeholder {
+    font-weight: 600;
+    color:#eeeeee;
+}
+
 .review-space textarea {
     position: relative;
-    margin: 20px;
+    margin: 5px 20px 20px 20px;
     padding-right: 10px;
     width: 600px;
     height: 230px;
@@ -1305,7 +1366,6 @@ header {
     height: 100%;
     object-fit: cover;
     border: none;
-    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
 }
 
 .media-square .icon-close {
@@ -1386,6 +1446,12 @@ header {
     border-radius: 20px;
 }
 
+.preview .review-date {
+    color: #eeeeee;
+    font-weight: 200;
+    font-size: 0.8rem;
+}
+
 .preview-title {
     color:#eeeeee;
     padding-top: 20px;
@@ -1402,7 +1468,6 @@ header {
     height: 100%;
     width: 100%;
     object-fit: cover;
-    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
     border: none;
 }
 
@@ -1430,7 +1495,7 @@ header {
 }
 
 
-.settings {
+.settings-container {
     display: flex;
     margin-top: 150px;
     margin-bottom: 50px;
@@ -1481,7 +1546,7 @@ header {
     transform: scaleX(0);
 }
 
-.account-information-container a.current p {
+.account-information-container a.current {
     padding: 5px;
     padding-left: 10px;
     border-radius: 10px;
@@ -1491,10 +1556,10 @@ header {
   .vl {
     margin: 20px 0px;;
     border-left: 1px solid #eeeeee;
-    height: 500px;
+    max-height: 1500px;
   }
 
-  .profile-details-container {
+  .profile-details-container, .password-settings-container, .email-settings-container {
     position:relative;
     padding: 20px;
   }
@@ -1505,25 +1570,51 @@ header {
     position: relative;
     top:0px;
     right: 0px;
-    color: white;
+    color: #eeeeee;
   }
 
-  .profile-details-container .profile-photo-details .profile-picture {
-    border-radius: 50px;
+  .profile-photos{
+    display: flex;
+  }
+
+.current-profile-pic {
+    border:none;
+    border-radius: 50%;
     width: 100px;
     height: 100px;
-    border: 2px solid white;
     position: relative;
     top: 10px;
-    overflow: hidden;
     margin-bottom: 20px;
-  }
+}
 
-  .profile-picture img {
+.current-profile-pic img {
+    border-radius: 50%;
     width: 100%;
     height: 100%;
     object-fit: cover;
-  }
+}
+
+.attach-media-circle {
+    border-radius: 50%;
+    backdrop-filter: blur(10px);
+}
+
+.attach-media-circle .attach-media-button {
+    cursor: pointer;
+    border: none;
+    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
+    border-radius: 50%;
+    background-color: transparent;
+    width: 100px;
+    height: 100px;
+    transition: 0.5s;
+    margin-top: 10px;
+    margin-left: 20px;
+}
+
+.attach-media-button:hover {
+    background-color: #eeeeee;
+}
 
   .option-setting {
     color: #eeeeee;
@@ -1552,7 +1643,7 @@ header {
     flex-direction: column;
   }
 
-  .profile-details-container .option{
+  .option{
     margin-bottom: 30px;
   }
 
@@ -1560,7 +1651,7 @@ header {
     font-weight: 200;
     font-size: 17px;
     position: relative;
-    color: white;
+    color: #eeeeee;
   }
 
   .pronoun-choice-item, .gender-choice-item{
@@ -1620,16 +1711,48 @@ header {
     font-weight: 200;
 }
 
-  .profile-title {
+.password-settings-container input[type=password]{
+    background: transparent;
+    color: #eeeeee;
+    border: none;
+    padding: 5px;
+    border-radius: 10px;
+    font-weight: 800;
+    box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,.4);
+}
+
+.email-settings-container input[type=email]{
+    background: transparent;
+    color: #eeeeee;
+    border: none;
+    padding: 5px;
+    border-radius: 10px;
+    font-weight: 200;
+    box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,.4);
+}
+
+.password-settings-container button, .email-settings-container button {
+    margin-right: 20px;
+}
+
+.password-settings-container .cancel, .email-settings-container .cancel {
+    top: -12;
+}
+
+.profile-title {
     font-size: 1.25em;
     color: #eeeeee;
 }
 
 .profile-section {
-    width: 1000px;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 150px 100px 50px;
+    padding: 20px;
     min-height: 700px;
-    margin-top: 100px;
     position: center;
+    margin-top: 150px;
     border-radius: 30px 30px 30px 30px;
     box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
     transition: all 0.5s;
@@ -1637,15 +1760,41 @@ header {
     backdrop-filter: blur(20px);
 }
 
+.latest-reviews {
+    display: flex;
+    flex-direction: column;
+}
+
+.all-reviews {
+    display: none;
+    flex-direction: column;
+}
+
+.show {
+    display: flex;
+}
+
+.hide {
+    display: none;
+}
+
+.profile-top {
+    display: flex;
+    padding: 20px;
+
+}
+
 .avatar {
     display: flex;
-    width: 180px;
-    height: 200px;
+    min-width: 150px;
+    min-height: 150px;
+    max-width: 150px;
+    max-height: 150px;
     border-radius: 50%;
-    margin-top: 25px;
-    margin-left: 80px;
+    margin-right: 40px;
+    margin-bottom: 20px;
     overflow: hidden;
-    border-color: #222;
+    box-shadow: inset 0px 3px 3px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
 }
 
 .avatar img {
@@ -1655,30 +1804,71 @@ header {
     border-radius: 50%;
 }
 
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    top: -15px;
+}
+
 .profile-title {
-    float: right;
-    font-size: 2.7em;
+    display: flex;
+    justify-content: left;
+    align-items: end;
+    position: relative;
+
+}
+
+.profile-name {
+    font-size: 2.5em;
     color: #eeeeee;
-    margin-right: 480px;
-    margin-top: -160px;
+    margin-right: 10px;
 }
 
 .profile-subtext {
-    position: absolute;
+    position: relative;
     color: #eeeeee;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: 200;
-    margin-left: 335px;
-    margin-top: -95px;
+    margin-bottom: 15px;
+}
+
+.total-reviews {
+    position: relative;
+    display: flex;
+    align-items: center;
+    color: #eeeeee;
+    top: -6;
+}
+
+.total-reviews p {
+    font-weight: 200;
+}
+
+.icon-reviews {
+    position: relative;
+    top: -2;
+    margin-right: 5px;
+}
+
+.icon-reviews ion-icon {
+    position: relative;
+    top: 0;
+}
+
+.profile-description {
+    top: -5;
+    position: relative;
+    color: #eeeeee;
+    font-size: 1.1rem;
+    font-weight: 200;
+    margin-bottom: 15px;
 }
 
 .profile-side {
     float: left;
-    margin-left: 75px;
-    margin-top: 20px;
-    width: 180px;
-    max-width: 180px;
-    min-height: 350px;
+    min-width: 200px;
+    max-width: 200px;
+    min-height: 200px;
     position: center;
     border-radius: 30px 30px 30px 30px;
     box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
@@ -1687,51 +1877,123 @@ header {
     backdrop-filter: blur(20px);
 }
 
-.profile-side ul{
-    list-style-type: none;
-    margin-left: 2px;
-    padding: 0;
-    width: 175px;
-    color: #eeeeee;
+.profile-side {
+    margin: 20px;
+    height: 100px;
 }
 
-.profile-side li a {
-    display: block;
-    color: #eeeeee;
-    padding: 8px 16px;
-    text-decoration: none;
-  }
-
-  .profile-side li {
-    text-align: center;
-  }
-
-  .profile-side li:last-child {
-    border-bottom: none;
-  }
-
-
-  .profile-side li a:hover {
-    background-color: #555;
-    color: white;
-  }
+.profile-body {
+    display: flex;
+}
 
 .profile-option {
-    position: relative;
-    top:15px;
-    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
-    transition: all 0.5s;
-    background: transparent;
-    backdrop-filter: blur(20px);
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     text-align: center;
+    position: relative;
+    background: transparent;
+    transition: all 0.5s;
 }
 
+.profile-option a {
+    position: relative;
+    cursor: pointer;
+    color: #eeeeee;
+    margin-top: 10px;
+    transition: all 0.5s;
+    border: 0;
+    box-shadow: 0;
+}
+
+.profile-option a::after {
+    z-index: 99;
+    display: flex;
+    content: "";
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: #eeeeee;
+    border-radius: 5px;
+    transform-origin: right;
+    transform: scaleX(0);
+    transition: transform 0.4s;
+}
+
+.profile-option a:hover::after {
+    transform-origin: left;
+    transform: scaleX(1);
+}
+
+.profile-option a.current:hover::after {
+    transform-origin: left;
+    transform: scaleX(0);
+}
+
+.profile-option a.current {
+    padding: 5px;
+    padding-left: 10px;
+    border-radius: 10px;
+    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
+}
+
+
 .profile-review {
-    margin-left: 325px;
-    margin-top: 20px;
-    width: 630px;
-    min-height: 500px;
-    position: center;
+    position: relative;
+    margin: 20px;
+}
+
+.profile-review  .searchbar {
+    position: relative;
+    flex-direction: row;
+    align-items: right;
+    border-radius: 25px;
+    display: flex;
+    height: 35px;
+    margin-bottom: 20px;
+    background: linear-gradient(top, #222 0%, #45484d 100%);
+    border-radius: 25px;
+    box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,.4);
+}
+
+.profile-review  .searchbar-text {
+    position: relative;
+    background: transparent;
+    outline: none;
+    border: none;
+    height: 35px;
+    width: 100%;
+    margin-left: 15px;
+    margin-right: 10px;
+    color: #eeeeee;
+    font-size: 0.9rem;
+    font-weight: 200;
+}
+
+.profile-review  .searchbar::placeholder {
+    align-items: top;
+    background: transparent;
+    outline: none;
+    border: none;
+    height: 35px;
+    width: 210px;
+    color: #eeeeee;
+}
+
+.profile-review  .searchbar-text::placeholder {
+    color:#eeeeee;
+}
+
+
+.profile-review  .search-icon {
+    position: relative;
+    margin-top: 4px;
+    right: 5px;
+    font-size: 25;
+    color: #eeeeee;
 }
 
 .review {
@@ -1741,55 +2003,615 @@ header {
     align-items: center;
     min-height: 200px;
     padding: 30px;
-    margin-top: 20px;
     background: transparent;
     border-radius: 20px;
     backdrop-filter: url(filters.svg#filter) blur(10px) brightness(100%);
     box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
 }
 
+.profile-review .review {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.review-details {
+    display: flex;
+    flex-direction: column;
+    max-height: 180px;
+    overflow-y: scroll;
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+
+.review-details .media {
+    position: relative;
+    top: -10px;
+    margin-left: 20px;
+}
+
+
+.review-details::-webkit-scrollbar {
+    width: 1em;
+}
+
+.review-details::-webkit-scrollbar-track {
+    border-radius: 10px;
+    box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,.4);
+}
+
+.review-details::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #eeeeee;
+    box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,.4);
+}
+
+.profile-review-top{
+    display: flex;
+    justify-content: left;
+}
+
 .review-img {
-    position: absolute;
-    left:30px;
-    bottom: 70px;
-    width: 135px;
-    height: 135px;
-    border-radius: 20px;
+    position: relative;
+    width: 120px;
+    height: 120px;
+    top: 0;
+    left: -20;
+    margin-bottom: 10px;
+    border-radius: 10px;
 }
 
-.review-details .first-line{
+
+.review-restaurant-details {
     position: relative;
-    top: -30px;
+    top: -10px;
+    margin-left: 0px;
+}
+
+.review-restaurant {
+    margin-bottom: 10px;
+    margin-left: 10px;
+}
+
+
+.review-restaurant-name {
+    position: relative;
+    font-size: 1rem;
+    color: #eeeeee;
+    white-space: nowrap;
+}
+
+.review-restaurant-name.link-effect:after {
+    left: 0;
+    top: 46px;
+}
+
+.profile-review-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-review-details .review-rating{
+    display: flex;
+    position: relative;
     justify-content: space-between;
+    align-items: center;
 }
 
-.review-details .second-line{
+.profile-review-rate {
     position: relative;
-    top: -30px;
-    left: -10px;
-    justify-content: space-between;
+    left: -12;
+    top: -8;
 }
 
-.review-rating h2 {
-    color: white;
-    font-size: 1.0rem;
+.modify-review {
+    display: flex;
+    flex-direction: row;
+    color: #eeeeee;
+    font-weight: 400;
+}
+
+.modify-review .edit {
+    color: #eeeeee;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.modify-review .delete {
+    color: #eeeeee;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.review-rating h4 {
     position: relative;
-    right:315px;
+    top: -2;
+    color: #eeeeee;
+    font-size: 0.8rem;
+    font-weight: 200;
 }
 
 .own-review {
     display: flex;
-    width: 430px;
-    height: 140px;
-    margin-left: 150px;
+}
+
+.own-review .read {
+    font-weight: 500;
+    cursor: pointer;
 }
 
 .rev {
     position: relative;
     font: 1.5rem;
-    color: white;
-    margin-left:10px;
-    bottom: 25px;
+    font-weight: 200;
+    color: #eeeeee;
 }
 
+.readmore-text {
+    transition: all 1s;
+}
 
+.readmore-text.revealed {
+    display: inline-block;
+}
+
+.readmore-text.unrevealed {
+    display: none;
+}
+
+.restaurant-page {
+    display: flex;
+    flex-direction: column;
+    width: 850px;
+    height: 100%;
+    margin-top: 150px;
+    margin-bottom: 50px;
+    border-radius: 20px;
+    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
+    backdrop-filter:  url(filters.svg#filter) blur(10px) brightness(100%);
+}
+.banner-container {
+    display:flex;
+    flex-direction: column;
+    width: 850px;
+    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
+}
+
+.banner-container img {
+    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    width: 850px;
+    height: 250px;
+    object-fit: cover;
+    z-index: -1;
+}
+
+img::after {
+    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
+    content: '';
+    display: block;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.banner-content {
+    position: absolute;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    top: 125px;
+    height: 125px;
+    backdrop-filter: url(filters.svg#filter) blur(10px) brightness(75%);;
+    width: 850px;
+    padding: 10px;
+    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5);
+}
+
+.banner-first-line {
+    display:flex;
+    justify-content: space-between;
+    color: #eeeeee;
+    align-items: end;
+}
+
+.banner-first-line h1 {
+    margin-left: 10px;
+}
+
+.banner-first-line .times {
+    position: relative;
+    top: 10px;
+    right: 10px;
+}
+
+.banner-first-line .times p {
+    font-weight: 200;
+}
+
+.location-rate {
+    display:flex;
+    justify-content: space-between;
+    position: relative;
+    top: -10px;
+}
+
+.location-rate p {
+    position: relative;
+    color:#eeeeee;
+    font-weight: 200;
+    margin-left: 10px;
+}
+
+.restaurant-rate {
+    display: flex;
+    position: relative;
+    top: -20px;
+    right: 45px;
+    transform: scale(1.45);
+}
+
+.restaurant-rate p {
+    margin-top: 11px;
+    margin-right: 10px;
+    color: #eeeeee;
+    font-weight: 200;
+    font-size: 20px;
+}
+
+.restaurant-description {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    width: 100%;
+    color: #eeeeee;
+}
+
+.restaurant-description p {
+    margin: 0px 40px;
+    font-weight: 200;
+}
+
+.restaurant-options {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.rating-bars {
+    width: 400px;
+}
+
+.rating-bars li {
+    list-style-type: none;
+    display: flex;
+    align-items: center;
+    margin-left: 40px;
+}
+
+  .rating-category {
+    display: flex;
+    width: 400px;
+    float: left;
+    clear: both;
+  }
+  .rating-holder .rating-category .rating-digit-holder {
+    font-size: 18px;
+    font-weight: 200;
+    margin-right: 5px;
+    color: #eeeeee;
+  }
+  .rating-holder .rating-category .rating-digit-holder.non-half{
+    margin-left: 13px;
+  }
+
+  .rating-holder .rating-category .rating-star-holder {
+    margin-top: 5px;
+    font-size: 18px;
+    color: #eeeeee;
+
+  }
+  .bar-container {
+    width: 350px;
+    border-radius: 20px;
+    height: 10px;
+    background-color: transparent;
+    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
+    text-align: center;
+    margin: 0px 20px;
+  }
+
+  .bar-container .bar {
+    height: 10px;
+    background-color: #eeeeee;
+    border-radius: 20px;
+  }
+
+  /* Individual bars */
+  .bar-5 {width: 40%}
+  .bar-45 {width: 40%}
+  .bar-4 {width: 15%}
+  .bar-35 {width: 0%}
+  .bar-3 {width: 0%}
+  .bar-25 {width: 5%}
+  .bar-2 {width: 0%}
+  .bar-15 {width: 0%}
+  .bar-1 {width: 0%}
+  .bar-05 {width: 0%}
+
+  .rating-total-numbers {
+    color:#eeeeee;
+    font-weight: 200;
+  }
+
+.search-sort {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    margin-right: 20px;
+    bottom: 10px;
+}
+.search-sort .searcharea{
+    border-radius: 25px;
+    display: flex;
+    height: 35px;
+    margin-bottom: 20px;
+    background: linear-gradient(top, #222 0%, #45484d 100%);
+    border-radius: 25px;
+    box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,.4);
+}
+
+.search-sort .searcharea .searchbar-text {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: transparent;
+    outline: none;
+    border: none;
+    height: 35px;
+    width: 100%;
+    margin-left: 15px;
+    margin-right: 10px;
+    color: #eeeeee;
+    font-size: 0.9rem;
+    font-weight: 200;
+}
+
+.search-sort .searcharea  .searchbar-text::placeholder {
+    color:#eeeeee;
+}
+
+.search-sort .searcharea  .search-icon {
+    position: relative;
+    margin-top: 4px;
+    right: 5px;
+    font-size: 25px;
+    color: #eeeeee;
+}
+
+.search-sort .sortby-item p {
+    cursor: pointer;
+    font-size: 1em;
+    color:#eeeeee;
+    text-decoration: none;
+    font-weight: 200;
+}
+
+.search-sort .sortby-item p::after{
+    content: '';
+    position: absolute;
+    right: 0;
+    margin-top: 25px;
+    width: 100%;
+    height: 2px;
+    background: #eeeeee;
+    border-radius: 5px;
+    transform-origin: right;
+    transform: scaleX(0);
+    transition: transform 0.4s;
+}
+
+.search-sort .sortby-item p:hover::after{
+    transform-origin: left;
+    transform: scaleX(1);
+}
+
+.search-sort .btnSubmit {
+    position: relative;
+    width: 150px;
+    left: 50px;
+
+}
+
+.restaurant-review {
+    padding: 20px;
+}
+
+.helpful {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    top: -20px;
+}
+
+.useful-section {
+    display: flex;
+    align-items: center;
+}
+
+.useful-count {
+    font-size: .8rem;
+    font-weight: 200;
+    color:#eeeeee;
+    margin-bottom: 5px;
+    margin-left: 20px;
+}
+
+.useful-question p {
+    color:#eeeeee;
+    font-weight: 700;
+    margin-left: 20px;
+}
+
+.option-content .btnSubmit{
+    width: 70px;
+    height: 35px;
+    margin-left:20px;
+}
+
+.restaurant-reply {
+    margin-left: 80px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    padding: 20px;
+    border-radius: 20px;
+    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
+    display: flex;
+    flex-direction: column;
+    align-items: right;
+}
+
+.restaurant-reply h3 {
+    color:#eeeeee;
+    font-weight: 600;
+}
+
+.restaurant-reply p {
+    color:#eeeeee;
+    font-weight: 200;
+}
+
+.reply-button {
+    margin-right: 20px;
+}
+
+.media img {
+    opacity: 1;
+}
+
+.media img:hover {
+    opacity: .70;
+}
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 150px; /* Location of the box */
+    padding-bottom: 50px;
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    border-radius: 20px;
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+    z-index: 99999;
+}
+  /* Modal Content (Image) */
+  .modal-content {
+    margin: auto;
+    display: block;
+    width: 80%;
+    max-width: 700px;
+  }
+  /* Add Animation - Zoom in the Modal */
+  .modal-content, #caption {
+    animation-name: zoom;
+    animation-duration: 0.6s;
+  }
+
+  @keyframes zoom {
+    from {transform:scale(0)}
+    to {transform:scale(1)}
+  }
+
+  .reply-space {
+    padding-top: 20px;
+  }
+
+  .register-container {
+    border-radius: 20px;
+    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
+    backdrop-filter: blur(20px);
+    display: flex;
+    flex-direction: column;
+    align-items: right;
+    margin-top: 150px;
+    margin-bottom: 50px;
+    padding: 20px;
+  }
+
+
+  .register-container input[type=text] {
+    background: transparent;
+    color: #eeeeee;
+    border: none;
+    padding: 5px;
+    border-radius: 10px;
+    font-weight: 200;
+    box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,.4);
+  }
+
+
+  .register-container label {
+    font-weight: 200;
+    font-size: 17px;
+    position: relative;
+    color: #eeeeee;
+  }
+
+
+
+.description-space {
+    margin:20px;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,.4);
+}
+
+.description-details textarea {
+    position: relative;
+    height: 150px;
+    width: 95%;
+    margin: 5px 20px 20px 10px;
+    padding-right: 20px;
+
+    background-color: transparent;
+    border: none;
+    color:#eeeeee;
+    font-size: 1.1rem;
+    font-weight: 200;
+    overflow-y: scroll;
+    resize:none;
+
+}
+
+.description-details textarea::placeholder {
+    color:#eeeeee;
+    font-size: 1.1rem;
+    font-weight: 200;
+}
+
+.description-details textarea:focus {
+    outline: none;
+}
+
+.description-details textarea::-webkit-scrollbar {
+    width: 1em;
+    right: 100px;
+}
+
+.description-details textarea::-webkit-scrollbar-track {
+    border-radius: 10px;
+    box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,.4);
+}
+
+.description-details textarea::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #eeeeee;
+    box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,.4);
+}

@@ -19,7 +19,7 @@
                     </button>
                 </div>
             </form>
-            <a class="navlink" href="restaurant-results-logged.html">Restaurants</a>
+            <a class="navlink" href="restaurant-results.html">Restaurants</a>
             <button class="btnLogin-popup">Login</button>
         </nav>
     </header>
@@ -54,7 +54,7 @@
                 <img class="restaurant-result-image" src="/Images/restaurant1.png">
                 <div class="restaurant-result-details">
                     <div class="first-line">
-                        <a class="link-effect" href="#"><h1>Liholiho Yacht Club</h1></a>
+                        <a class="link-effect" href="restaurant-1.html"><h1>Liholiho Yacht Club</h1></a>
                         <div class="result-rate">
                             <p>4.6</p>
                             <fieldset class="rate blocked">
@@ -93,7 +93,7 @@
                         <div class="review-top">
                             <div class="profile-details">
                                 <img src="/Images/profile-1.jpg" alt="" class="profile-pic">
-                                <a class="name" href="#">Emily Wang</a>
+                                <a class="name" href="profile-page-emilywang.html">Emily Wang</a>
                                 <div class="review-rating">
                                     <fieldset class="rate blocked">
                                         <input type="radio" id="rating10" name="rrating1" value="10" /><label for="rating10" title="5 stars"></label>
@@ -113,10 +113,33 @@
                         </div>
 
                         <div class="review-details">
+                            <h1 class="description-title">SPECTACULAR.</h1>
                             <p class="description-text">
-                                I took my beautiful mother there and my best friend on a Wednesday night. Made reservations and the whole process was smooth. When we got there we were greeted with smiles and an awesome vibe, I knew right then that it would be great... <a class="link">Read More</a>
+                                I took my beautiful mother there and my best friend on a Wednesday night. Made reservations and the whole process was smooth. When we got there we were greeted with smiles and an awesome vibe, I knew right then that it would be great.
+                                <span class="readmore-text unrevealed">
+                                    <br>
+                                    I took my beautiful mother there and my best friend on a Wednesday night. Made reservations and the whole process was smooth. When we got there we were greeted with smiles and an awesome vibe, I knew right then that it would be great.
+                                    <br><br>
+                                    The food...oh my! If it would have been up to me I would've ordered EVERYTHING on their menu, as it all sounded delicious. But my friend is pescatarian/gluten free/lactose intolerant so we had to order accordingly. Nevertheless the choices were many. We ordered, some of their specialty cocktails and lots of food.
+                                    <br><br>
+                                    Food: 10/10<br>
+                                    Service: 10/10<br>
+                                    Ambiance: 10/10
+                                    <br>
+                                </span>
+                                <a class="read" onclick="readMore(this)">Read More.</a>
                             </p>
+
+                            <div class="media">
+                                <div class="media-square">
+                                    <img class="media-item" onclick="imageModal(this)" src="/Images/review-image1.jpg">
+                                </div>
+                                <div class="media-square">
+                                    <img class="media-item" onclick="imageModal(this)" src="/Images/review-image2.jpg">
+                                </div>
+                            </div>
                         </div>
+
                     </div>
                 </div>
             </div>
@@ -125,7 +148,7 @@
                 <img class="restaurant-result-image" src="/Images/restaurant6.jpg">
                 <div class="restaurant-result-details">
                     <div class="first-line">
-                        <a class="link-effect" href="#"><h1>Dumpling Home</h1></a>
+                        <a class="link-effect" href="restaurant-2.html"><h1>Dumpling Home</h1></a>
                         <div class="result-rate">
                             <p>4.2</p>
                             <fieldset class="rate blocked">
@@ -163,7 +186,7 @@
                         <div class="review-top">
                             <div class="profile-details">
                                 <img src="/Images/profile-3.jpg" alt="" class="profile-pic">
-                                <a class="name" href="#">Markus Reyes</a>
+                                <a class="name" href="profile-page-markusreyes.html">Markus Reyes</a>
                                 <div class="review-rating">
                                     <fieldset class="rate blocked">
                                         <input checked type="radio" id="rating10" name="rrating2" value="10" /><label for="rating10" title="5 stars"></label>
@@ -184,7 +207,7 @@
                         </div>
                         <div class="review-details">
                             <p class="description-text">
-                                We ordered the numbing xlb, pan fried juicy pork bun, Dan Dan noodles, and pig ears. Everything was great! They accidentally gave us the original pork xlb instead of the spicy but were quick to replace it once I let them know about the mix up! The xlb were sooo juicy, and the filling was really flavorful. The numbing xlb was only a tiny bit spicy. The pan fried bun was crispy, and we were tempted to order more! <a class="link">Read More</a>
+                                We ordered the numbing xlb, pan fried juicy pork bun, Dan Dan noodles, and pig ears. Everything was great! They accidentally gave us the original pork xlb instead of the spicy but were quick to replace it once I let them know about the mix up! The xlb were sooo juicy, and the filling was really flavorful. The numbing xlb was only a tiny bit spicy. The pan fried bun was crispy, and we were tempted to order more!
                             </p>
                         </div>
                     </div>
@@ -195,7 +218,7 @@
                 <img class="restaurant-result-image" src="/Images/restaurant3.jpg">
                 <div class="restaurant-result-details">
                     <div class="first-line">
-                        <a class="link-effect" href="#"><h1>Full Tilt Columbia City</h1></a>
+                        <a class="link-effect" href="restaurant-3.html"><h1>Full Tilt Columbia City</h1></a>
                         <div class="result-rate">
                             <p>3.7</p>
                             <fieldset class="rate blocked">
@@ -233,7 +256,7 @@
                         <div class="review-top">
                             <div class="profile-details">
                                 <img src="/Images/profile-2.jpg" alt="" class="profile-pic">
-                                <a class="name" href="#">Sancho Mercado</a>
+                                <a class="name" href="profile-page-sanchomercado.html">Sancho Mercado</a>
                                 <div class="review-rating">
                                     <fieldset class="rate blocked">
                                         <input type="radio" id="rating10" name="rrating3" value="10" /><label for="rating10" title="5 stars"></label>
@@ -251,13 +274,29 @@
                             </div>
                             <h4 class="date">06/22/2023</h4>
                         </div>
-                        <div class="starrating">
-
-                        </div>
                         <div class="review-details">
                             <p class="description-text">
-                                It was an absolute delight to come to here! The ice cream shop offers a wide range of flavors, including traditional favorites like vanilla and chocolate as well as more unusual options . The ice cream was incredibly creamy and flavorful, and I liked that they offered both dairy and non-dairy options... <a class="link">Read More</a>
+                                It was an absolute delight to come to here! The ice cream shop offers a wide range of flavors, including traditional favorites like vanilla and chocolate as well as more unusual options . The ice cream was incredibly creamy and flavorful, and I liked that they offered both dairy and non-dairy options.
+                                <span class="readmore-text unrevealed">
+                                    <br>
+                                    The shop had a welcoming atmosphere, with colorful decor and a welcoming staff. The staff was very knowledgeable about the flavors and assisted me in making a decision. The ice cream was served in generous portions at a reasonable price.
+                                    <br><br>
+                                    I also liked how the shop had a relaxed and casual atmosphere, making it ideal for a date.
+                                    <br>
+                                </span>
+                                <a class="read" onclick="readMore(this)">Read More.</a>
                             </p>
+                            <div class="media">
+                                <div class="media-square">
+                                    <img class="media-item" onclick="imageModal(this)" src="/Images/review-image3.jpg">
+                                </div>
+                                <div class="media-square">
+                                    <img class="media-item" onclick="imageModal(this)" src="/Images/review-image4.jpg">
+                                </div>
+                                <div class="media-square">
+                                    <img class="media-item" onclick="imageModal(this)" src="/Images/review-image5.jpg">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -267,7 +306,7 @@
                 <img class="restaurant-result-image" src="/Images/restaurant4.jpg">
                 <div class="restaurant-result-details">
                     <div class="first-line">
-                        <a class="link-effect" href="#"><h1>Chengdu Memory</h1></a>
+                        <a class="link-effect" href="restaurant-4.html"><h1>Chengdu Memory</h1></a>
                         <div class="result-rate">
                             <p>3.5</p>
                             <fieldset class="rate blocked">
@@ -306,7 +345,7 @@
                         <div class="review-top">
                             <div class="profile-details">
                                 <img src="/Images/profile-4.jpg" alt="" class="profile-pic">
-                                <a class="name" href="#">Adam Blampied</a>
+                                <a class="name" href="profile-page-adamblampied.html">Adam Blampied</a>
                                 <div class="review-rating">
                                     <fieldset class="rate blocked">
                                         <input type="radio" id="rating10" name="rrating4" value="10" /><label for="rating10" title="5 stars"></label>
@@ -340,7 +379,7 @@
                 <img class="restaurant-result-image" src="/Images/restaurant5.jpg">
                 <div class="restaurant-result-details">
                     <div class="first-line">
-                        <a class="link-effect" href="#"><h1>Rubirosa</h1></a>
+                        <a class="link-effect" href="restaurant-5.html"><h1>Rubirosa</h1></a>
                         <div class="result-rate">
                             <p>2.9</p>
                             <fieldset class="rate blocked">
@@ -377,7 +416,7 @@
                         <div class="review-top">
                             <div class="profile-details">
                                 <img src="/Images/profile-5.jpg" alt="" class="profile-pic">
-                                <a class="name" href="#">Harrier Du Bois</a>
+                                <a class="name" href="profile-page-harrierdubois.html">Harrier Du Bois</a>
                                 <div class="review-rating">
                                     <fieldset class="rate blocked">
                                         <input type="radio" id="rating10" name="rrating5" value="10" /><label for="rating10" title="5 stars"></label>
@@ -438,26 +477,19 @@
                     <input type="password" required>
                     <label>Password</label>
                 </div>
-                <div type="submit" class="btn">Login</div>
+                <div id="login" type="submit" class="btn">Login</div>
                 <div class="login-register">
-                    <p>Don't have an account? <a href="#" class="register-link">Register</a></p>
+                    <p>Are you a restaurant owner? <a href="#" class="login-restaurant-link">Login</a></p>
+                </div>
+                <div class="login-register">
+                    <p>Don't have an account? <a href="register.html" class="register-link">Register</a></p>
                 </div>
             </form>
         </div>
 
-        <div class="form-box register">
-            <h2>Registration</h2>
+        <div class="form-box login-restaurant">
+            <h2>Restaurant</h2>
             <form action="#">
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="person"></ion-icon></span>
-                    <input type="text" required pattern=".*\S+.*">
-                    <label>First Name</label>
-                </div>
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="people-circle"></ion-icon></span>
-                    <input type="text" required pattern=".*\S+.*">
-                    <label>Last Name</label>
-                </div>
                 <div class="input-box">
                     <span class="icon"><ion-icon name="mail"></ion-icon></span>
                     <input type="text" required pattern=".*\S+.*">
@@ -468,24 +500,24 @@
                     <input type="password" required>
                     <label>Password</label>
                 </div>
-                <div class="terms">
-                    <div class="squaredThree">
-                        <input type="checkbox" value="None" id="squaredThree" name="check" required/>
-                        <label for="squaredThree"></label>
-                        <p>I agree to the terms and conditions.</p>
-                    </div>
-                </div>
-                <div type="submit" class="btn">Register</div>
+                <div id="login-restaurant" type="submit" class="btn">Login</div>
                 <div class="login-register">
-                    <p>Already have an account? <a href="#" class="login-link">Login</a></p>
+                    <p>Not a restaurant owner? <a href="#" class="backtologin-link">Login</a></p>
                 </div>
             </form>
         </div>
     </div>
 
+    <div id="myModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="img01">
+    </div>
 
     <script src="login.js"></script>
     <script src="results.js"></script>
+    <script src="sortby.js"></script>
+    <script src="review.js"></script>
+    <script src="image.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
