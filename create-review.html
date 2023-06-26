@@ -21,11 +21,11 @@
                     <ul class="dropdown-group">
                         <li class="dropdown-item">
                             <span class="icon-dropdown"><ion-icon name="person-circle"></ion-icon></span>
-                            <a href="profile-page.html" class="profile">Profile</a>
+                            <a href="profile-page-emilywang.html" class="profile">Profile</a>
                         </li>
                         <li class="dropdown-item">
                             <span class="icon-dropdown"><ion-icon name="settings"></ion-icon></span>
-                            <a href="#" class="settings">Settings</a>
+                            <a href="restaurant-settings-profile.html" class="settings">Settings</a>
                         </li>
                         <li class="dropdown-item">
                             <span class="icon-dropdown"><ion-icon name="exit"></ion-icon></span>
@@ -89,6 +89,9 @@
                     </fieldset>
                 </div>
                 <div class="review-space">
+                    <div class="review-title-space">
+                        <input class="titlebar" type="text" placeholder="Write a title for your review here.">
+                    </div>
                     <textarea class="searchbar-text" type="text" placeholder="Write your review here."></textarea>
                 </div>
             </div>
@@ -106,20 +109,20 @@
                       </body>
                     </div>
                     <div class="media-square">
-                        <img src="/Images/restaurant2.jpg">
+                        <img class="media-item" onclick="imageModal(this)" src="/Images/review-image1.jpg">
                         <span class="icon-close">
                             <ion-icon name="close"></ion-icon>
                         </span>
                     </div>
                     <div class="media-square">
-                        <img src="/Images/restaurant3.jpg">
+                        <img class="media-item" onclick="imageModal(this)" src="/Images/review-image2.jpg">
                         <span class="icon-close">
                             <ion-icon name="close"></ion-icon>
                         </span>
                     </div>
                 </div>
             </div>
-            <button type="submit" class="btnSubmit">Submit</button>
+            <button type="button" onclick="history.back()"class="btnSubmit">Submit</button>
         </form>
 
         <div class="preview">
@@ -161,8 +164,14 @@
         </div>
     </div>
 
+    <div id="myModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="img01">
+    </div>
+
     <script src="logged.js"></script>
     <script src="create-review.js"></script>
+    <script src="image.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
