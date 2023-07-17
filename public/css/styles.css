@@ -165,7 +165,7 @@ header {
     height: 400px;
     background: transparent;
     border-radius: 20px;
-    backdrop-filter: url(filters.svg#filter) blur(10px) brightness(80%);
+    backdrop-filter: blur(10px) brightness(80%);
     box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
     display: flex;
     justify-content: center;
@@ -560,7 +560,7 @@ header {
     padding: 30px;
     background: transparent;
     border-radius: 20px;
-    backdrop-filter: url(filters.svg#filter) blur(10px) brightness(100%);
+    backdrop-filter: blur(10px) brightness(100%);
     box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
 }
 
@@ -785,7 +785,7 @@ header {
     display: flex;
     min-height: 100%;
     border-radius: 20px;
-    backdrop-filter:  url(filters.svg#filter) blur(10px) brightness(100%);
+    backdrop-filter:  blur(10px) brightness(100%);
     box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
     transition: all 0.5s ease;
     overflow: hidden;
@@ -1030,7 +1030,7 @@ header {
     font-weight: 900;
     border-radius: 10px 10px 10px 10px;
     box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
-    backdrop-filter:  url(filters.svg#filter) blur(10px) brightness(100%);
+    backdrop-filter:  blur(10px) brightness(100%);
     transition: 0.5s;
 }
 
@@ -1046,7 +1046,7 @@ header {
     font-weight: 900;
     border-radius: 10px 10px 10px 10px;
     box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
-    backdrop-filter:  url(filters.svg#filter) blur(10px) brightness(100%);
+    backdrop-filter:  blur(10px) brightness(100%);
     transition: 0.5s;
 }
 
@@ -1381,7 +1381,7 @@ header {
     border-top-right-radius: 18px;
     border-bottom-left-radius: 10px;
     background-color: transparent;
-    backdrop-filter: url(filters.svg#filter) blur(10px) brightness(80%) saturate(2);
+    backdrop-filter: blur(10px) brightness(80%) saturate(2);
     transition: 0.5s;
     z-index: 9999;
 }
@@ -1425,7 +1425,7 @@ header {
     color: #eeeeee;
     margin: 20px 0px;
     box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
-    backdrop-filter:  url(filters.svg#filter) blur(10px) brightness(100%);
+    backdrop-filter:  blur(10px) brightness(100%);
     transition: 0.5s;
     transition: .25s;
 }
@@ -1437,7 +1437,7 @@ header {
 
 .preview {
     width: 300px;
-    backdrop-filter:  url(filters.svg#filter) blur(10px) brightness(100%);
+    backdrop-filter:  blur(10px) brightness(100%);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1501,7 +1501,7 @@ header {
     margin-bottom: 50px;
     border-radius: 20px;
     box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
-    backdrop-filter:  url(filters.svg#filter) blur(10px) brightness(100%);
+    backdrop-filter:  blur(10px) brightness(100%);
 }
 
 .account-information-container {
@@ -2005,7 +2005,7 @@ header {
     padding: 30px;
     background: transparent;
     border-radius: 20px;
-    backdrop-filter: url(filters.svg#filter) blur(10px) brightness(100%);
+    backdrop-filter: blur(10px) brightness(100%);
     box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
 }
 
@@ -2167,7 +2167,7 @@ header {
     margin-bottom: 50px;
     border-radius: 20px;
     box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
-    backdrop-filter:  url(filters.svg#filter) blur(10px) brightness(100%);
+    backdrop-filter:  blur(10px) brightness(100%);
 }
 .banner-container {
     display:flex;
@@ -2202,7 +2202,7 @@ img::after {
     border-top-right-radius: 20px;
     top: 125px;
     height: 125px;
-    backdrop-filter: url(filters.svg#filter) blur(10px) brightness(75%);;
+    backdrop-filter: blur(10px) brightness(75%);;
     width: 850px;
     padding: 10px;
     box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5);
