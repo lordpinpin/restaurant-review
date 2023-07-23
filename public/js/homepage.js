@@ -45,17 +45,12 @@ function homepage (document, restaurants) {
         const ranges = [0, 0.75, 1.25, 1.75, 2.25, 2.75, 3.25, 3.75, 4.25, 4.75, 5]; // Range values
         const roundedValues = [0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5];
         var restaurant_rating = 0;
-
-        console.log(restaurant.rating);
-
         for(i = 1; i <= 10; i += 1){
             if(restaurant.rating < ranges[i]){
                 restaurant_rating = roundedValues[i - 1];
-                console.log(restaurant_rating);
                 break;
             }
         };
-
         if (restaurant.rating === 5) {
             restaurant_rating = 5;
         }

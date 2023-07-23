@@ -78,7 +78,7 @@ app.get('/edit-review', async (req, res) => {
     review = await getReview(new ObjectId(req.query.review));
   }
 
-  if(!ObjectId.isValid(req.query.review) || review.length === 0 || !req.session.isLoggedIn || review.user.toString() != req.session.userId){
+  if(!ObjectId.isValid(req.query.review) || review.length === 0 || !req.session.isLoggedIn || review[0].user.toString() != req.session.userId){
       var file;
         if (req.session.isLoggedIn) {
           file = 'message-logged.html';
@@ -120,15 +120,66 @@ app.get('/edit-review', async (req, res) => {
       var name = document.querySelector(".name");
       name.textContent = `${req.session.first_name} ${req.session.last_name}`;
 
-      const restaurant = await getRestofReview(review)
+      const restaurant = await getRestofReview(review[0])
 
-
-
+      editreview(document, review[0], restaurant[0]);
 
       var html = dom.serialize();
 
       res.send(html);
   }
+});
+
+
+app.post('/edit-review', async (req, res) => {
+    const reviewid = req.query.review;
+    const reviewrating = parseFloat(req.body.reviewrating);
+    const title = req.body.title;
+    const description = req.body.description;
+    const images = req.body.imageSources;
+
+    var body = "";
+    var readmore = "";
+
+    if (description.length <= 140) {
+      body = description;
+    } else {
+
+      var firstPart = description.substring(0, 300);
+      const lastSpaceIndex = firstPart.lastIndexOf('.');
+      var secondPart = '';
+      if (lastSpaceIndex !== -1) {
+        // If a space is found before the cutoff point, split at that space
+        secondPart = description.substring(lastSpaceIndex + 2).trim();
+        firstPart = description.substring(0, lastSpaceIndex).trim();
+        body = `${firstPart.replace(/\n/g, '<br>')}.`;;
+        readmore = `<br>${secondPart.replace(/\n/g, '<br>')}`;
+      } else {
+        body = description.replace(/\n/g, '<br>');
+      }
+    }
+
+    var media = JSON.parse(images);
+
+    var date = new Date();
+
+    const filter = { "_id": new ObjectId(reviewid)};
+    const updatedValues = {
+      "title": title,
+      "body": body,
+      "readmore": readmore,
+      "date": date,
+      "rating": reviewrating
+    };
+    const update = { $set: updatedValues };
+
+    const options = { returnOriginal: false };
+    const db = await connectToDatabase();
+    const updatedReview = await db.collection('reviews').findOneAndUpdate(filter, update, options);
+
+    console.log(updatedReview);
+
+    res.redirect('/');
 });
 
 app.get('/index.html', async (req, res) => {

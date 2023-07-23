@@ -214,7 +214,7 @@ function searchdisplay (document, restaurants, reviews, users) {
             const anchorElement = document.createElement("a");
             anchorElement.classList.add("read");
             anchorElement.setAttribute("onclick", "readMore(this)");
-            anchorElement.textContent = " Read More.";
+            anchorElement.textContent = " ...Read More.";
 
             reviewText.appendChild(spanElement);
             reviewText.appendChild(anchorElement);
