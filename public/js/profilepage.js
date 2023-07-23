@@ -129,6 +129,7 @@ function profilepage (document, cur_user_id, user, num, reviews, restaurants) {
 
 
         console.log(`${cur_user_id === user._id.toString()}`);
+
         if(cur_user_id != undefined && cur_user_id === user._id.toString()){
             console.log("adding modify");
             const modifyReviewDiv = document.createElement("div");
@@ -145,10 +146,9 @@ function profilepage (document, cur_user_id, user, num, reviews, restaurants) {
             separator.textContent = '|';
 
             // Create the delete link
-            const deleteLink = document.createElement('a');
+            const deleteLink = document.createElement('p');
             deleteLink.classList.add('delete');
             deleteLink.textContent = 'Delete';
-            deleteLink.href = `/delete-review?review=${review._id}`;
 
             // Append the elements to the modify-review div
             modifyReviewDiv.appendChild(editLink);
@@ -244,6 +244,8 @@ function profilepage (document, cur_user_id, user, num, reviews, restaurants) {
         count++;
     }
 }
+
+
 
 module.exports = {
     profilepage

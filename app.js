@@ -2,14 +2,16 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const session = require('express-session');
+const bodyParser = require("body-parser");
 const { JSDOM } = require('jsdom');
 const { ObjectId } = require('mongodb');
+
 
 const createDOMPurify = require('dompurify');
 const window = new JSDOM('').window;
 const DOMPurify = createDOMPurify(window);
 
-const cloudinaryUploadURL = `https://api.cloudinary.com/v1_1/dg28enybo/upload`;
+const cloudinaryUploadURL = `https://api.cloudinary.com/v1_1/dg28enybo`;
 const apiKey = process.env.CLOUD_KEY;
 const apiSecret = process.env.CLOUD_SECRET;
 
@@ -22,6 +24,7 @@ const { editreview } = require('./public/js/editreview.js');
 
 const app = express();
 const port = 3000;
+
 
 connectToDatabase();
 
@@ -37,6 +40,11 @@ app.use(session({
     maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days in milliseconds
   },
 }));
+
+app.use(bodyParser.json({ limit: "20mb" }));
+
+// Increase payload size limit for urlencoded requests (default is 100kb)
+app.use(bodyParser.urlencoded({ limit: "20mb", extended: true }));
 
 app.get('/', async (req, res) => {
   var file;
@@ -66,7 +74,7 @@ app.get('/', async (req, res) => {
   var html = dom.serialize();
 
 
-  const formData = new FormData();
+
 
 
   res.send(html);
@@ -160,6 +168,16 @@ app.post('/edit-review', async (req, res) => {
     }
 
     var media = JSON.parse(images);
+    const prevMedia = await getReview(new ObjectId(reviewid));
+
+    console.log(media);
+
+    for(let prev of prevMedia[0].media){
+      if(!media.includes(prev)){
+        console.log(prev);
+        await deleteFileFromCloudinary(prev);
+      }
+    }
 
     var date = new Date();
 
@@ -169,7 +187,8 @@ app.post('/edit-review', async (req, res) => {
       "body": body,
       "readmore": readmore,
       "date": date,
-      "rating": reviewrating
+      "rating": reviewrating,
+      "media": media
     };
     const update = { $set: updatedValues };
 
@@ -512,14 +531,11 @@ app.get('/user/:url', async (req, res) => {
           restaurants.push(await getRestofReview(review));
         }
 
-        var curUserId = undefined;
-
-        console.log(req.session.userId);
 
         if(req.session.userId != undefined){
             curUserId = new ObjectId(req.session.userId);
         }
-        profilepage(document, curUserId, user[0], num, reviews5, restaurants);
+        profilepage(document, req.session.userId, user[0], num, reviews5, restaurants);
 
         const allReview = document.querySelector('.all-review-option');
         const latestReview = document.querySelector('.latest-review-option');
@@ -573,47 +589,11 @@ app.get('/user/:url', async (req, res) => {
         }
       }
 
-      const deleteLinks = document.querySelectorAll('.delete')
-
-      if(deleteLinks.length > 0){
-        for(let deleteLink of deleteLinks)
-        deleteLink.addEventListener('click', async (event) => {
-          event.preventDefault();
-
-          // Show a pop-up warning using confirm()
-          const shouldDelete = confirm('Are you sure you want to delete this review?');
-
-          // Check if the user clicked "OK"
-          if (shouldDelete) {
-            try {
-              // Send an HTTP request to the server (Express) using fetch
-              const response = await fetch("/delete", {
-                method: "POST", // or "GET", "PUT", "DELETE", etc., depending on your needs
-                removal: event.target.href
-              });
-
-              // Check the server's response and handle accordingly
-              if (response.ok) {
-                // If the request was successful, redirect the user to a new page
-                window.location.reload();
-              } else {
-
-                console.error("Something went wrong with the request.");
-              }
-            } catch (error) {
-              console.error("Error occurred:", error);
-            }
-          } else {
-            console.log('Review deletion cancelled.');
-          }
-        });
-      }
-
       var html = dom.serialize();
 
       res.send(html);
-  }
-});
+    }
+  });
 
 app.get('/logout', async (req, res) => {
   req.session.destroy((err) => {
@@ -664,17 +644,41 @@ app.listen(port, () => {
   console.log(`Node.js server listening on port ${port}`);
 });
 
-/*
-  console.log(process.env.CLOUD_NAME);
-  formData.append('file', 'https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8MXx8fGVufDB8fHx8fA%3D%3D&w=1000&q=80'); // Replace with the path to your image file
-  formData.append('upload_preset', 'fs5jhgac');
-  formData.append('folder', 'background')
-  formData.append("api_key", `${apiKey}`);
+const deleteFileFromCloudinary = async (publicUrl) => {
+  const publicId = getPublicIdFromUrl(publicUrl);
+  const deleteUrl = `${cloudinaryBaseUrl}/image/destroy`;
 
-  const response = await fetch(cloudinaryUploadURL, {
-    method: 'POST',
-    body: formData,
-  });
+  const timestamp = Date.now();
+  const signature = generateSignature(publicId, timestamp);
 
-  const result = await response.json();
-  console.log(result); */
+  const deleteOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: `public_id=${encodeURIComponent(publicId)}&api_key=${encodeURIComponent(
+      cloudinaryApiKey
+    )}&timestamp=${encodeURIComponent(timestamp)}&signature=${encodeURIComponent(signature)}`,
+  };
+
+  try {
+    const response = await fetch(deleteUrl, deleteOptions);
+    if (response.ok) {
+      console.log("File successfully deleted from Cloudinary.");
+    } else {
+      console.error("Failed to delete the file from Cloudinary:", response.statusText);
+    }
+  } catch (error) {
+    console.error("Error deleting the file from Cloudinary:", error);
+  }
+};
+
+const getPublicIdFromUrl = (publicUrl) => {
+  const urlParts = publicUrl.split("/");
+  return urlParts[urlParts.length - 1].split(".")[0];
+};
+
+const generateSignature = (publicId, timestamp) => {
+  const signature = `public_id=${publicId}&timestamp=${timestamp}${cloudinaryApiSecret}`;
+  return signature;
+};

@@ -9,7 +9,7 @@ function isNotEmpty(value) {
     return /\S/.test(value);
 }
 
-editReviewForm.addEventListener('submit', (event) => {
+editReviewForm.addEventListener('submit', async (event) => {
     event.preventDefault();
     emptyTitle.classList.add("hide");
     emptyDesc.classList.add("hide");
@@ -28,23 +28,26 @@ editReviewForm.addEventListener('submit', (event) => {
         const mediaItems = mediaContainer.querySelectorAll('.media-item');
 
         // Loop through the media items to get their src values
-        mediaItems.forEach((item) => {
+        mediaItems.forEach(async (item) => {
           const src = item.getAttribute('src');
           imageSources.push(src);
         });
-
-        const imageSourcesInput = document.getElementById('imageSourcesInput');
+        const imageSourcesInput = document.querySelector('#imageSourcesInput')
         imageSourcesInput.value = JSON.stringify(imageSources);
-
         editReviewForm.submit();
     }
 });
 
+function waitOneSecond() {
+    return new Promise((resolve) => {
+      setTimeout(resolve, 1000);
+    });
+  }
+
 const inputFile = document.querySelector('#getFile');
 
-inputFile.addEventListener("change", function() {
+inputFile.addEventListener("change", async function(event) {
     console.log("START");
-    const file = inputFile.files[0];
     const media = document.querySelector('.media');
 
     if(media.children.length >= 5){
@@ -55,8 +58,28 @@ inputFile.addEventListener("change", function() {
 
     const img = document.createElement('img');
     img.classList.add('media-item');
-    img.setAttribute('src', URL.createObjectURL(file));
-    img.setAttribute('onclick', 'imageModal(this)');
+
+    const file = event.target.files[0];
+    if (!file) return;
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("folder", 'media');
+    formData.append("upload_preset", 'fs5jhgac');
+
+    fetch(`https://api.cloudinary.com/v1_1/dg28enybo/image/upload`, {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Image uploaded to Cloudinary:", data);
+        img.setAttribute('src', data.secure_url);
+        img.setAttribute('onclick', 'imageModal(this)');
+        // Use 'data.secure_url' to access the uploaded image URL
+      })
+      .catch((error) => {
+        console.error("Error uploading image:", error);
+      });
 
     const spanElement = document.createElement('span');
     const iconElement = document.createElement('ion-icon');
