@@ -1,0 +1,88 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rest★r</title>
+    <link rel="stylesheet" href="/css/styles.css" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+    <header>
+        <h2 class="logo"><a class="logo" href="/"><b>Rest★r</b></a></h2>
+        <nav class="navigation">
+            <form class="searchbar" method="GET" action="/restaurants">
+                <div class="searcharea">
+                    <input class="searchbar-text" type="text" placeholder="Search for anything." name="search"/>
+                    <button class="searchbar-enter" type="submit" value="Search">
+                        <span class="search"><ion-icon name="search-circle"></ion-icon></span>
+                    </button>
+                </div>
+            </form>
+            <a class="navlink" href="/restaurants">Restaurants</a>
+            <a href="/login"><button class="btnSubmit">Login</button></a>
+            <a href="/register"><button class="btnSubmit">Register</button></a>
+        </nav>
+    </header>
+
+    <div class="profile-section">
+        <div class="profile-top">
+            <div class="avatar">
+                <img src="" alt="avatar-image">
+            </div>
+            <div class="profile-info">
+                <div class="profile-title">
+                    <h2 class="profile-name">Emily W. </h2>
+                    <h4 class="profile-subtext">Emilyy, Female, She/Her</h4>
+                </div>
+                <div class="total-reviews">
+                    <span class="icon-reviews">
+                        <ion-icon name="star"></ion-icon>
+                    </span>
+                    <p>6 reviews</p>
+                </div>
+                <p class="profile-description">HELLO! Catch me on Twitch! Oh yeah, I also eat.</p>
+            </div>
+        </div>
+
+        <div class="profile-body">
+            <div class="profile-side">
+                  <div class="profile-option">
+                        <a class="latest-review-option" href="">Latest Reviews</a>
+                        <a class="all-review-option" href=""> All Reviews</a>
+                  </div>
+            </div>
+
+            <div class="profile-review latest-reviews show">
+                <div class="review-container">
+
+                </div>
+
+                <div class="pagination-container">
+                    <a id="leftpage" class="left-icon"><ion-icon name="arrow-back-circle"></ion-icon></a>
+                    <a id="firstpage" class="page-link" href="#">1</a>
+                    <a id="secondpage" class="page-link" href="#">2</a>
+                    <a id="thirdpage" class="page-link" href="#">3</a>
+                    <a id="fourthpage" class="page-link" href="#">4</a>
+                    <a id="fifthpage" class="page-link" href="#">5</a>
+                    <a id="rightpage" class="right-icon"><ion-icon name="arrow-forward-circle"></ion-icon></a>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div id="myModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="img01">
+    </div>
+
+    <script src="/js/profile.js"></script>
+    <script src="/js/review.js"></script>
+    <script src="/js/image.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>

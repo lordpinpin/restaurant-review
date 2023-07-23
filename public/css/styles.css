@@ -138,164 +138,13 @@ header {
     transform: scaleX(1);
 }
 
-.navigation .btnLogin-popup {
-    width: 130px;
-    height: 50px;
-    background: transparent;
-    border: 2px solid #eeeeee;
-    outline: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 1.1em;
-    color: #eeeeee;
-    margin-top: 5px;
-    transition: .25s;
-}
-
-.navigation .btnLogin-popup:hover {
-    background-color:#eeeeee;
-    color: #014762;
-}
-
-.wrapper {
-    position: absolute;
-    margin-top: 150px;
-    margin-bottom: 150px;
-    width: 400px;
-    height: 400px;
-    background: transparent;
-    border-radius: 20px;
-    backdrop-filter: blur(10px) brightness(80%);
-    box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    transform: scale(0);
-    transition: transform .65s ease, height .2s ease;
-    z-index: 9999;
-}
-
-.wrapper.active-popup{
-    transform: scale(1);
-}
-
-.wrapper.active-register {
-    height: 600px;
-}
-
-.wrapper.active-login-restaurant {
-    height: 400px;
-}
-
-.wrapper .icon-close {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 45px;
-    height: 45px;
-    background: #eeeeee;
-    font-size: 2em;
-    color: #014762;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-bottom-left-radius: 20px;
-    cursor: pointer;
-    z-index: 9999;
-}
-
-.wrapper .form-box {
-    width: 100%;
-    padding: 40px;
-}
-
-.wrapper .form-box.login {
-    transition: transform .20s ease;
-    transform: translateX(0);
-}
-
-.wrapper.active-register .form-box.login,
-.wrapper.active-login-restaurant .form-box.login {
-    transition: none;
-    transform: translateX(-400px);
-}
-
-.wrapper .form-box.register {
-    position: absolute;
-    transition: none;
-    transform: translateX(400px);
-}
-
-.wrapper.active-register .form-box.register {
-    transition: transform .20s ease;
-    transform: translateX(0);
-}
-
-.wrapper .form-box.login-restaurant {
-    position: absolute;
-    transition: none;
-    transform: translateX(400px);
-}
-
-.wrapper.active-login-restaurant .form-box.login-restaurant {
-    transition: transform .20s ease;
-    transform: translateX(0);
+.navigation .btnSubmit {
+    margin: 5px 10px;
 }
 
 
 
 
-.form-box h2 {
-    font-size: 2em;
-    color: #eeeeee;
-    text-align: center;
-}
-
-.input-box {
-    position: relative;
-    width: 100%;
-    height: 50px;
-    border-bottom: 2px solid #eeeeee;
-    margin: 30px 0px;
-}
-
-.input-box label {
-    position: absolute;
-    top: 50%;
-    left: 5px;
-    transform: translateY(-50%);
-    font-size: 1em;
-    color: #eeeeee;
-    font-weight: 500;
-    pointer-events: none;
-    transition: .4s;
-}
-
-.input-box input {
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    border: none;
-    outline: none;
-    font-size: 1em;
-    color:#eeeeee;
-    font-weight: 600;
-    padding: 0 35px 0 5px;
-}
-
-.input-box input:focus~label,
-.input-box input:valid~label{
-    top: -4px;
-}
-
-.input-box .icon{
-    position: absolute;
-    top: 15px;
-    right: 8px;
-    font-size: 1.2em;
-    color: #eeeeee;
-}
 
 .btn {
     width: 100%;
@@ -316,56 +165,6 @@ header {
 .btn:hover {
     background-color:#eeeeee;
     color: #014762;
-}
-
-.login-register {
-    font-size: .9em;
-    color:#eeeeee;
-    text-align:center;
-    font-weight: 500;
-    margin: 15px 0 10px;
-}
-
-.login-link,
-.register-link,
-.login-restaurant-link,
-.backtologin-link {
-    position: relative;
-    color: #eeeeee;
-    text-decoration: none;
-    font-weight: 600;
-    transition: 0.5s;
-}
-
-.login-link::after,
-.register-link::after,
-.backtologin-link::after,
-.login-restaurant-link::after{
-    content: '';
-  position: absolute;
-  width: 100%;
-  transform: scaleX(0);
-  height: 2px;
-  bottom: 0;
-  left: 0;
-  background-color: #eeeeee;
-  transform-origin: bottom right;
-  transition: transform 0.25s ease-out;
-}
-
-.login-link:hover::after,
-.register-link:hover::after,
-.backtologin-link:hover::after,
-.login-restaurant-link:hover::after  {
-    transform: scaleX(1);
-    transform-origin: bottom left;
-}
-
-.terms {
-    font-size: .9em;
-    color: #eeeeee;
-    font-weight: 500;
-    margin: -5px 0 25px;
 }
 
 .squaredThree {
@@ -534,6 +333,15 @@ header {
     position: relative;
     left: 0;
     margin: 150px 100px;
+}
+
+.results-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    width: 800px;
+    margin: 150px 0px;
 }
 
 .title {
@@ -744,7 +552,7 @@ header {
     text-align: right;
 }
 
-.sortby-item p {
+.sortby-item a {
     cursor: pointer;
     font-size: 1em;
     color:#eeeeee;
@@ -752,7 +560,7 @@ header {
     font-weight: 200;
 }
 
-.sortby-item p::after{
+.sortby-item a::after{
     content: '';
     position: absolute;
     right: 0;
@@ -766,7 +574,7 @@ header {
     transition: transform 0.4s;
 }
 
-.sortby-item p:hover::after{
+.sortby-item a:hover::after{
     transform-origin: left;
     transform: scaleX(1);
 }
@@ -874,6 +682,17 @@ header {
     padding: 10px 0px 0px 10px;
 }
 
+.review-restaurant-details .tags ul li {
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+.second-line .tags ul li{
+    margin-right: 10px;
+}
+
+
+
 .tags {
     display: flex;
 }
@@ -940,7 +759,7 @@ header {
 .dropdown-icon {
     position: relative;
     color: #eeeeee;
-    font-size: 3rem;
+    font-size: 60px;
     top: -10;
     margin-left: 10px;
     margin-right: 25px;
@@ -1514,6 +1333,8 @@ header {
 .settings-title {
     font-weight: 700;
     color: #eeeeee;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .account-information-container a {
@@ -1616,6 +1437,7 @@ header {
     background-color: #eeeeee;
 }
 
+
   .option-setting {
     color: #eeeeee;
     font-size: 20px;
@@ -1628,7 +1450,8 @@ header {
     margin-bottom: 5px;
   }
 
-  .profile-details-container input[type=text] {
+
+  .option input[type=text], .option input[type=password] {
     background: transparent;
     color: #eeeeee;
     border: none;
@@ -1636,15 +1459,37 @@ header {
     border-radius: 10px;
     font-weight: 200;
     box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,.4);
+    width: 400px;
+    padding-left: 10;
+    padding-right: 10;
   }
+
+  .option input[type=text]::placeholder, .option input[type=password]::placeholder  {
+    color: #eeeeee;
+    font-weight: 200;
+
+  }
+
+  .option input[type=text]:focus, .option input[type=password]:focus {
+    outline: none;
+  }
+
+
+
 
   .gender-choices, .pronouns-choices {
     display: flex;
     flex-direction: column;
   }
 
+  .option-title {
+    display: flex;
+    justify-content: space-between;
+  }
+
   .option{
     margin-bottom: 30px;
+    width: 400px;
   }
 
   .profile-details-container label {
@@ -2111,13 +1956,15 @@ header {
 }
 
 .modify-review .edit {
-    color: #eeeeee;
+    text-decoration: none;
+    color: #f3ff4e;
     cursor: pointer;
     margin-right: 10px;
 }
 
 .modify-review .delete {
-    color: #eeeeee;
+    text-decoration: none;
+    color: #ff3737;
     cursor: pointer;
     margin-left: 10px;
 }
@@ -2534,6 +2381,7 @@ img::after {
   }
 
   .register-container {
+    width: 550px;
     border-radius: 20px;
     box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5), 0px 2px 0px rgba(255,255,255,.4);
     backdrop-filter: blur(20px);
@@ -2543,18 +2391,13 @@ img::after {
     margin-top: 150px;
     margin-bottom: 50px;
     padding: 20px;
+    align-items: center;
   }
 
+  .register-container.login-box {
+    width: 400px;
+    }
 
-  .register-container input[type=text] {
-    background: transparent;
-    color: #eeeeee;
-    border: none;
-    padding: 5px;
-    border-radius: 10px;
-    font-weight: 200;
-    box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,.4);
-  }
 
 
   .register-container label {
@@ -2614,4 +2457,23 @@ img::after {
     border-radius: 10px;
     background-color: #eeeeee;
     box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,.4);
+}
+
+.error {
+    opacity: 0;
+    position: relative;
+    color: #ff3737;
+    font-size: 0.95em;
+    font-weight: 500;
+
+}
+
+.error.visible {
+    opacity: 1;
+}
+
+
+
+.left-icon ion-icon, .right-icon ion-icon {
+    padding: 5px;
 }

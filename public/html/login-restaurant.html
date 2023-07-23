@@ -1,0 +1,67 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rest★r</title>
+    <link rel="stylesheet" href="css/styles.css" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+    <h2 class="logo"><a class="logo" href="/"><b>Rest★r</b></a></h2>
+    <nav class="navigation">
+        <form class="searchbar" method="POST" action="/restaurants">
+            <div class="searcharea">
+              <input class="searchbar-text" type="text" placeholder="Search for anything." name="search"/>
+                <button class="searchbar-enter" type="submit" value="Search">
+                    <span class="search"><ion-icon name="search-circle"></ion-icon></span>
+                </button>
+            </div>
+        </form>
+        <a class="navlink" href="/restaurants">Restaurants</a>
+        <a href="/login"><button class="btnSubmit">Login</button></a>
+        <a href="/register"><button class="btnSubmit">Register</button></a>
+    </nav>
+  </header>
+
+<form id="login-form" action="/login-restaurant" class="profile-change login-box" method="POST" novalidate>
+  <div class="register-container">
+    <div class="settings-title">
+      <h1> Restaurant Login </h1>
+    </div>
+
+    <div class="option">
+
+      <input type="hidden" name="returnTo" value="/login">
+
+      <div class="option-title">
+        <p class="option-setting">Email</p>
+        <p id="errorEmail" class="error">Invalid email</p>
+      </div>
+
+      <input id="email-login" type="text" name="email" class="input-placeholder" id="email-input" placeholder="Email">
+
+      </div>
+
+    <div class="option">
+      <div class="option-title">
+        <p class="option-setting">Password</p>
+        <p id="errorPass" class="error">Invalid password</p>
+      </div>
+      <input id="pass-login" type="password" name="password" class="input-placeholder" id="password-input" placeholder="Password">
+
+    </div>
+
+    <div class="restaurant-login"><a href="/login-restaurant"></a></div>
+
+    <button type="submit" class="btnSubmit">Submit</button>
+  </div>
+</form>
+
+  <script src="/js/login.js"></script>
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>

@@ -10,22 +10,23 @@
 
 <body>
     <header>
-        <h2 class="logo"><a class="logo" href="index.html"><b>Rest★r</b></a></h2>
+        <h2 class="logo"><a class="logo" href="/"><b>Rest★r</b></a></h2>
         <nav class="navigation">
-            <form class="searchbar" method="POST" action="restaurant-results.html">
+            <form class="searchbar" method="GET" action="/restaurants">
                 <div class="searcharea">
-                    <input class="searchbar-text" type="text" placeholder="Search for anything" />
+                    <input class="searchbar-text" type="text" placeholder="Search for anything." name="search"/>
                     <button class="searchbar-enter" type="submit" value="Search">
                         <span class="search"><ion-icon name="search-circle"></ion-icon></span>
                     </button>
                 </div>
             </form>
-            <a class="navlink" href="restaurant-results.html">Restaurants</a>
-            <button class="btnLogin-popup">Login</button>
+            <a class="navlink" href="/restaurants">Restaurants</a>
+            <a href="/login"><button class="btnSubmit">Login</button></a>
+            <a href="/register"><button class="btnSubmit">Register</button></a>
         </nav>
     </header>
 
-    <div class="section">
+    <div class="results-container">
         <div class="resulttop">
             <h2 class="title">Restaurants</h2>
             <div class="sortby">
@@ -37,13 +38,13 @@
 
                     <ul class="sortby-group">
                         <li class="sortby-item">
-                            <p>Highest Rated</p>
+                            <a>Highest Rated</a>
                         </li>
                         <li class="sortby-item">
-                            <p>Lowest Rated</p>
+                            <a>Lowest Rated</a>
                         </li>
                         <li class="sortby-item">
-                            <p>Most Reviewed</p>
+                            <a>Alphabetical</a>
                         </li>
                     </ul>
                 </nav>
@@ -51,461 +52,17 @@
         </div>
 
         <div class="restaurant-results">
-            <div class="restaurant-item">
-                <img class="restaurant-result-image" src="./Images/restaurant1.png">
-                <div class="restaurant-result-details">
-                    <div class="first-line">
-                        <a class="link-effect" href="restaurant-1.html"><h1>Liholiho Yacht Club</h1></a>
-                        <div class="result-rate">
-                            <p>4.6</p>
-                            <fieldset class="rate blocked">
-                                <input type="radio" id="rating10" name="rating1" value="10" /><label for="rating10" title="5 stars"></label>
-                                <input checked type="radio" id="rating9" name="rating1" value="9" /><label class="half" for="rating9" title="4 1/2 stars"></label>
-                                <input type="radio" id="rating8" name="rating1" value="8" /><label for="rating8" title="4 stars"></label>
-                                <input type="radio" id="rating7" name="rating1" value="7" /><label class="half" for="rating7" title="3 1/2 stars"></label>
-                                <input type="radio" id="rating6" name="rating1" value="6" /><label for="rating6" title="3 stars"></label>
-                                <input type="radio" id="rating5" name="rating1" value="5" /><label class="half" for="rating5" title="2 1/2 stars"></label>
-                                <input type="radio" id="rating4" name="rating1" value="4" /><label for="rating4" title="2 stars"></label>
-                                <input type="radio" id="rating3" name="rating1" value="3" /><label class="half" for="rating3" title="1 1/2 stars"></label>
-                                <input type="radio" id="rating2" name="rating1" value="2" /><label for="rating2" title="1 star"></label>
-                                <input type="radio" id="rating1" name="rating1" value="1" /><label class="half" for="rating1" title="1/2 star"></label>
-                            </fieldset>
-                        </div>
-                    </div>
-
-                    <div class="second-line">
-                        <div class="tags">
-                            <ul>
-                                <li>Bars</li>
-                                <li>Asian</li>
-                                <li>Hawaiian</li>
-                                <li>Seafood</li>
-                            </ul>
-                        </div>
-                        <p class="numberofreviews">19 reviews</p>
-                    </div>
-
-                    <div class="description">
-                        <p class="description-text">Fusing Californian technique with the flavors of Chef/owner Ravi Kapur's native Hawaii, this earthy, bustling, and airy space is known for strong cocktails, shareable plates, and near-impossible reservations. Walk-ins are welcome, but make sure you arrive in time to beat the crowds.</p>
-                        <span class="dropdown-icon"><ion-icon name="chevron-down"></ion-icon></span>
-                    </div>
-
-                    <div class="sample-review">
-                        <div class="review-top">
-                            <div class="profile-details">
-                                <img src="./Images/profile-1.jpg" alt="" class="profile-pic">
-                                <a class="name" href="profile-page-emilywang.html">Emily Wang</a>
-                                <div class="review-rating">
-                                    <fieldset class="rate blocked">
-                                        <input type="radio" id="rating10" name="rrating1" value="10" /><label for="rating10" title="5 stars"></label>
-                                        <input checked type="radio" id="rating9" name="rrating1" value="9" /><label class="half" for="rating9" title="4 1/2 stars"></label>
-                                        <input type="radio" id="rating8" name="rrating1" value="8" /><label for="rating8" title="4 stars"></label>
-                                        <input type="radio" id="rating7" name="rrating1" value="7" /><label class="half" for="rating7" title="3 1/2 stars"></label>
-                                        <input type="radio" id="rating6" name="rrating1" value="6" /><label for="rating6" title="3 stars"></label>
-                                        <input type="radio" id="rating5" name="rrating1" value="5" /><label class="half" for="rating5" title="2 1/2 stars"></label>
-                                        <input type="radio" id="rating4" name="rrating1" value="4" /><label for="rating4" title="2 stars"></label>
-                                        <input type="radio" id="rating3" name="rrating1" value="3" /><label class="half" for="rating3" title="1 1/2 stars"></label>
-                                        <input type="radio" id="rating2" name="rrating1" value="2" /><label for="rating2" title="1 star"></label>
-                                        <input type="radio" id="rating1" name="rrating1" value="1" /><label class="half" for="rating1" title="1/2 star"></label>
-                                    </fieldset>
-                                </div>
-                            </div>
-                            <h4 class="date">06/24/2023</h4>
-                        </div>
-
-                        <div class="review-details">
-                            <h1 class="description-title">SPECTACULAR.</h1>
-                            <p class="description-text">
-                                I took my beautiful mother there and my best friend on a Wednesday night. Made reservations and the whole process was smooth. When we got there we were greeted with smiles and an awesome vibe, I knew right then that it would be great.
-                                <span class="readmore-text unrevealed">
-                                    <br>
-                                    I took my beautiful mother there and my best friend on a Wednesday night. Made reservations and the whole process was smooth. When we got there we were greeted with smiles and an awesome vibe, I knew right then that it would be great.
-                                    <br><br>
-                                    The food...oh my! If it would have been up to me I would've ordered EVERYTHING on their menu, as it all sounded delicious. But my friend is pescatarian/gluten free/lactose intolerant so we had to order accordingly. Nevertheless the choices were many. We ordered, some of their specialty cocktails and lots of food.
-                                    <br><br>
-                                    Food: 10/10<br>
-                                    Service: 10/10<br>
-                                    Ambiance: 10/10
-                                    <br>
-                                </span>
-                                <a class="read" onclick="readMore(this)">Read More.</a>
-                            </p>
-
-                            <div class="media">
-                                <div class="media-square">
-                                    <img class="media-item" onclick="imageModal(this)" src="./Images/review-image1.jpg">
-                                </div>
-                                <div class="media-square">
-                                    <img class="media-item" onclick="imageModal(this)" src="./Images/review-image2.jpg">
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-            <div class="restaurant-item">
-                <img class="restaurant-result-image" src="./Images/restaurant6.jpg">
-                <div class="restaurant-result-details">
-                    <div class="first-line">
-                        <a class="link-effect" href="restaurant-2.html"><h1>Dumpling Home</h1></a>
-                        <div class="result-rate">
-                            <p>4.2</p>
-                            <fieldset class="rate blocked">
-                                <input type="radio" id="rating10" name="rating2" value="10" /><label for="rating10" title="5 stars"></label>
-                                <input type="radio" id="rating9" name="rating2" value="9" /><label class="half" for="rating9" title="4 1/2 stars"></label>
-                                <input checked type="radio" id="rating8" name="rating2" value="8" /><label for="rating8" title="4 stars"></label>
-                                <input type="radio" id="rating7" name="rating2" value="7" /><label class="half" for="rating7" title="3 1/2 stars"></label>
-                                <input type="radio" id="rating6" name="rating2" value="6" /><label for="rating6" title="3 stars"></label>
-                                <input type="radio" id="rating5" name="rating2" value="5" /><label class="half" for="rating5" title="2 1/2 stars"></label>
-                                <input type="radio" id="rating4" name="rating2" value="4" /><label for="rating4" title="2 stars"></label>
-                                <input type="radio" id="rating3" name="rating2" value="3" /><label class="half" for="rating3" title="1 1/2 stars"></label>
-                                <input type="radio" id="rating2" name="rating2" value="2" /><label for="rating2" title="1 star"></label>
-                                <input type="radio" id="rating1" name="rating2" value="1" /><label class="half" for="rating1" title="1/2 star"></label>
-                            </fieldset>
-                        </div>
-                    </div>
-
-                    <div class="second-line">
-                        <div class="tags">
-                            <ul>
-                                <li>Dim Sum</li>
-                                <li>Noodles</li>
-                                <li>Asian Fusion</li>
-                            </ul>
-                        </div>
-                        <p class="numberofreviews">20 reviews</p>
-                    </div>
-
-                    <div class="description">
-                        <p class="description-text">You can try the pan-fried baos, poke at the crispy green onion pancakes and sample the hand-pulled noodles, but please, read the room—and the awning that wraps around the building. This casual eatery excels in the delicate art of soup dumplings, which arrive with supple skins and spoonfuls of delicious broth far clearer and more distilled than most. <br><br> From open till close, chefs in the back wrap and fold everything by hand, and unlike most kitchens that are content to offer just a typical pork variety, fillings here include chicken, beef, and our favorite, a Sichuan-inspired numbing pork.</p>
-                        <span class="dropdown-icon"><ion-icon name="chevron-down"></ion-icon></span>
-                    </div>
-
-                    <div class="sample-review">
-                        <div class="review-top">
-                            <div class="profile-details">
-                                <img src="./Images/profile-3.jpg" alt="" class="profile-pic">
-                                <a class="name" href="profile-page-markusreyes.html">Markus Reyes</a>
-                                <div class="review-rating">
-                                    <fieldset class="rate blocked">
-                                        <input checked type="radio" id="rating10" name="rrating2" value="10" /><label for="rating10" title="5 stars"></label>
-                                        <input type="radio" id="rating9" name="rrating2" value="9" /><label class="half" for="rating9" title="4 1/2 stars"></label>
-                                        <input type="radio" id="rating8" name="rrating2" value="8" /><label for="rating8" title="4 stars"></label>
-                                        <input type="radio" id="rating7" name="rrating2" value="7" /><label class="half" for="rating7" title="3 1/2 stars"></label>
-                                        <input type="radio" id="rating6" name="rrating2" value="6" /><label for="rating6" title="3 stars"></label>
-                                        <input type="radio" id="rating5" name="rrating2" value="5" /><label class="half" for="rating5" title="2 1/2 stars"></label>
-                                        <input type="radio" id="rating4" name="rrating2" value="4" /><label for="rating4" title="2 stars"></label>
-                                        <input type="radio" id="rating3" name="rrating2" value="3" /><label class="half" for="rating3" title="1 1/2 stars"></label>
-                                        <input type="radio" id="rating2" name="rrating2" value="2" /><label for="rating2" title="1 star"></label>
-                                        <input type="radio" id="rating1" name="rrating2" value="1" /><label class="half" for="rating1" title="1/2 star"></label>
-                                    </fieldset>
-                                </div>
-                            </div>
-
-                            <h4 class="date">06/18/2023</h4>
-                        </div>
-                        <div class="review-details">
-                            <p class="description-text">
-                                We ordered the numbing xlb, pan fried juicy pork bun, Dan Dan noodles, and pig ears. Everything was great! They accidentally gave us the original pork xlb instead of the spicy but were quick to replace it once I let them know about the mix up! The xlb were sooo juicy, and the filling was really flavorful. The numbing xlb was only a tiny bit spicy. The pan fried bun was crispy, and we were tempted to order more!
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="restaurant-item">
-                <img class="restaurant-result-image" src="./Images/restaurant3.jpg">
-                <div class="restaurant-result-details">
-                    <div class="first-line">
-                        <a class="link-effect" href="restaurant-3.html"><h1>Full Tilt Columbia City</h1></a>
-                        <div class="result-rate">
-                            <p>3.7</p>
-                            <fieldset class="rate blocked">
-                                <input type="radio" id="rating10" name="rating3" value="10" /><label for="rating10" title="5 stars"></label>
-                                <input type="radio" id="rating9" name="rating3" value="9" /><label class="half" for="rating9" title="4 1/2 stars"></label>
-                                <input type="radio" id="rating8" name="rating3" value="8" /><label for="rating8" title="4 stars"></label>
-                                <input checked type="radio" id="rating7" name="rating3" value="7" /><label class="half" for="rating7" title="3 1/2 stars"></label>
-                                <input type="radio" id="rating6" name="rating3" value="6" /><label for="rating6" title="3 stars"></label>
-                                <input type="radio" id="rating5" name="rating3" value="5" /><label class="half" for="rating5" title="2 1/2 stars"></label>
-                                <input type="radio" id="rating4" name="rating3" value="4" /><label for="rating4" title="2 stars"></label>
-                                <input type="radio" id="rating3" name="rating3" value="3" /><label class="half" for="rating3" title="1 1/2 stars"></label>
-                                <input type="radio" id="rating2" name="rating3" value="2" /><label for="rating2" title="1 star"></label>
-                                <input type="radio" id="rating1" name="rating3" value="1" /><label class="half" for="rating1" title="1/2 star"></label>
-                            </fieldset>
-                        </div>
-                    </div>
-
-                    <div class="second-line">
-                        <div class="tags">
-                            <ul>
-                                <li>Ice Cream</li>
-                                <li>Frozen Yogurt</li>
-                                <li>Arcade</li>
-                            </ul>
-                        </div>
-                        <p class="numberofreviews">20 reviews</p>
-                    </div>
-
-                    <div class="description">
-                        <p class="description-text">Colorful hangout featuring inventive ice cream flavors, plus beer & old-school arcade games.</p>
-                        <span class="dropdown-icon"><ion-icon name="chevron-down"></ion-icon></span>
-                    </div>
-
-                    <div class="sample-review">
-                        <div class="review-top">
-                            <div class="profile-details">
-                                <img src="./Images/profile-2.jpg" alt="" class="profile-pic">
-                                <a class="name" href="profile-page-sanchomercado.html">Sancho Mercado</a>
-                                <div class="review-rating">
-                                    <fieldset class="rate blocked">
-                                        <input type="radio" id="rating10" name="rrating3" value="10" /><label for="rating10" title="5 stars"></label>
-                                        <input type="radio" id="rating9" name="rrating3" value="9" /><label class="half" for="rating9" title="4 1/2 stars"></label>
-                                        <input checked type="radio" id="rating8" name="rrating3" value="8" /><label for="rating8" title="4 stars"></label>
-                                        <input type="radio" id="rating7" name="rrating3" value="7" /><label class="half" for="rating7" title="3 1/2 stars"></label>
-                                        <input type="radio" id="rating6" name="rrating3" value="6" /><label for="rating6" title="3 stars"></label>
-                                        <input type="radio" id="rating5" name="rrating3" value="5" /><label class="half" for="rating5" title="2 1/2 stars"></label>
-                                        <input type="radio" id="rating4" name="rrating3" value="4" /><label for="rating4" title="2 stars"></label>
-                                        <input type="radio" id="rating3" name="rrating3" value="3" /><label class="half" for="rating3" title="1 1/2 stars"></label>
-                                        <input type="radio" id="rating2" name="rrating3" value="2" /><label for="rating2" title="1 star"></label>
-                                        <input type="radio" id="rating1" name="rrating3" value="1" /><label class="half" for="rating1" title="1/2 star"></label>
-                                    </fieldset>
-                                </div>
-                            </div>
-                            <h4 class="date">06/22/2023</h4>
-                        </div>
-                        <div class="review-details">
-                            <p class="description-text">
-                                It was an absolute delight to come to here! The ice cream shop offers a wide range of flavors, including traditional favorites like vanilla and chocolate as well as more unusual options . The ice cream was incredibly creamy and flavorful, and I liked that they offered both dairy and non-dairy options.
-                                <span class="readmore-text unrevealed">
-                                    <br>
-                                    The shop had a welcoming atmosphere, with colorful decor and a welcoming staff. The staff was very knowledgeable about the flavors and assisted me in making a decision. The ice cream was served in generous portions at a reasonable price.
-                                    <br><br>
-                                    I also liked how the shop had a relaxed and casual atmosphere, making it ideal for a date.
-                                    <br>
-                                </span>
-                                <a class="read" onclick="readMore(this)">Read More.</a>
-                            </p>
-                            <div class="media">
-                                <div class="media-square">
-                                    <img class="media-item" onclick="imageModal(this)" src="./Images/review-image3.jpg">
-                                </div>
-                                <div class="media-square">
-                                    <img class="media-item" onclick="imageModal(this)" src="./Images/review-image4.jpg">
-                                </div>
-                                <div class="media-square">
-                                    <img class="media-item" onclick="imageModal(this)" src="./Images/review-image5.jpg">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="restaurant-item">
-                <img class="restaurant-result-image" src="./Images/restaurant4.jpg">
-                <div class="restaurant-result-details">
-                    <div class="first-line">
-                        <a class="link-effect" href="restaurant-4.html"><h1>Chengdu Memory</h1></a>
-                        <div class="result-rate">
-                            <p>3.5</p>
-                            <fieldset class="rate blocked">
-                                <input type="radio" id="rating10" name="rating4" value="10" /><label for="rating10" title="5 stars"></label>
-                                <input type="radio" id="rating9" name="rating4" value="9" /><label class="half" for="rating9" title="4 1/2 stars"></label>
-                                <input type="radio" id="rating8" name="rating4" value="8" /><label for="rating8" title="4 stars"></label>
-                                <input checked type="radio" id="rating7" name="rating4" value="7" /><label class="half" for="rating7" title="3 1/2 stars"></label>
-                                <input type="radio" id="rating6" name="rating4" value="6" /><label for="rating6" title="3 stars"></label>
-                                <input type="radio" id="rating5" name="rating4" value="5" /><label class="half" for="rating5" title="2 1/2 stars"></label>
-                                <input type="radio" id="rating4" name="rating4" value="4" /><label for="rating4" title="2 stars"></label>
-                                <input type="radio" id="rating3" name="rating4" value="3" /><label class="half" for="rating3" title="1 1/2 stars"></label>
-                                <input type="radio" id="rating2" name="rating4" value="2" /><label for="rating2" title="1 star"></label>
-                                <input type="radio" id="rating1" name="rating4" value="1" /><label class="half" for="rating1" title="1/2 star"></label>
-                            </fieldset>
-                        </div>
-                    </div>
-
-                    <div class="second-line">
-                        <div class="tags">
-                            <ul>
-                                <li>Hotpot</li>
-                                <li>Chinese</li>
-                                <li>Asian</li>
-                                <li>Asian Fusion</li>
-                            </ul>
-                        </div>
-                        <p class="numberofreviews">13 reviews</p>
-                    </div>
-
-                    <div class="description">
-                        <p class="description-text">Chengdu Memory, is the ultimate destination for an authentic Chinese hotpot experience! Our restaurant is named after the famous culinary city of Chengdu, where hotpot culture thrives, and locals take pride in their spicy and flavorful broths. At Chengdu Memory, we bring this tradition to your table with our extensive selection of premium meats, fresh vegetables, and handmade dipping sauces. Our goal is to provide a fun and interactive dining experience where you can gather with friends and family to enjoy delicious food and create lasting memories. Come visit us at our location and let us take you on a culinary journey through the heart of Sichuan!</p>
-                        <span class="dropdown-icon"><ion-icon name="chevron-down"></ion-icon></span>
-                    </div>
-
-                    <div class="sample-review">
-                        <div class="review-top">
-                            <div class="profile-details">
-                                <img src="./Images/profile-4.jpg" alt="" class="profile-pic">
-                                <a class="name" href="profile-page-adamblampied.html">Adam Blampied</a>
-                                <div class="review-rating">
-                                    <fieldset class="rate blocked">
-                                        <input type="radio" id="rating10" name="rrating4" value="10" /><label for="rating10" title="5 stars"></label>
-                                        <input type="radio" id="rating9" name="rrating4" value="9" /><label class="half" for="rating9" title="4 1/2 stars"></label>
-                                        <input checked type="radio" id="rating8" name="rrating4" value="8" /><label for="rating8" title="4 stars"></label>
-                                        <input type="radio" id="rating7" name="rrating4" value="7" /><label class="half" for="rating7" title="3 1/2 stars"></label>
-                                        <input type="radio" id="rating6" name="rrating4" value="6" /><label for="rating6" title="3 stars"></label>
-                                        <input type="radio" id="rating5" name="rrating4" value="5" /><label class="half" for="rating5" title="2 1/2 stars"></label>
-                                        <input type="radio" id="rating4" name="rrating4" value="4" /><label for="rating4" title="2 stars"></label>
-                                        <input type="radio" id="rating3" name="rrating4" value="3" /><label class="half" for="rating3" title="1 1/2 stars"></label>
-                                        <input type="radio" id="rating2" name="rrating4" value="2" /><label for="rating2" title="1 star"></label>
-                                        <input type="radio" id="rating1" name="rrating4" value="1" /><label class="half" for="rating1" title="1/2 star"></label>
-                                    </fieldset>
-                                </div>
-                            </div>
-                            <h4 class="date">06/23/2023</h4>
-                        </div>
-                        <div class="starrating">
-
-                        </div>
-                        <div class="review-details">
-                            <p class="description-text">
-                                Service, food quality, and presentation at Chengdu was amazing. One thing to keep in mind is that it may get a bit stuffy because of all the steam for everyone's pot. Didn't bother me at all though. The servers were all so kind and the meat was delicious!
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="restaurant-item">
-                <img class="restaurant-result-image" src="./Images/restaurant5.jpg">
-                <div class="restaurant-result-details">
-                    <div class="first-line">
-                        <a class="link-effect" href="restaurant-5.html"><h1>Rubirosa</h1></a>
-                        <div class="result-rate">
-                            <p>2.9</p>
-                            <fieldset class="rate blocked">
-                                <input type="radio" id="rating10" name="rating5" value="10" /><label for="rating10" title="5 stars"></label>
-                                <input type="radio" id="rating9" name="rating5" value="9" /><label class="half" for="rating9" title="4 1/2 stars"></label>
-                                <input type="radio" id="rating8" name="rating5" value="8" /><label for="rating8" title="4 stars"></label>
-                                <input type="radio" id="rating7" name="rating5" value="7" /><label class="half" for="rating7" title="3 1/2 stars"></label>
-                                <input checked type="radio" id="rating6" name="rating5" value="6" /><label for="rating6" title="3 stars"></label>
-                                <input type="radio" id="rating5" name="rating5" value="5" /><label class="half" for="rating5" title="2 1/2 stars"></label>
-                                <input type="radio" id="rating4" name="rating5" value="4" /><label for="rating4" title="2 stars"></label>
-                                <input type="radio" id="rating3" name="rating5" value="3" /><label class="half" for="rating3" title="1 1/2 stars"></label>
-                                <input type="radio" id="rating2" name="rating5" value="2" /><label for="rating2" title="1 star"></label>
-                                <input type="radio" id="rating1" name="rating5" value="1" /><label class="half" for="rating1" title="1/2 star"></label>
-                            </fieldset>
-                        </div>
-                    </div>
-
-                    <div class="second-line">
-                        <div class="tags">
-                            <ul>
-                                <li>Italian</li>
-                                <li>Pizza</li>
-                            </ul>
-                        </div>
-                        <p class="numberofreviews">25 reviews</p>
-                    </div>
-
-                    <div class="description">
-                        <p class="description-text">Rubirosa specializes in old school American-Italian Cuisine. Most noticeable is the Pappalardo family recipe for Rubirosa's thin crust pizza but also hosting an array of dishes. Starting off with traditional appetizers like Sicilian-style mini rice balls, roasted octopi or the famously acclaimed Beef Braciole; moving on to entrees that indulge the palate: Italian-American pasta dishes like Lasagna Napoletana, Chicken Parmesan or for the more adventurous the black and white Tagliatelle, all our pastas are house made. Don't forget to try our classic desserts that include the family recipe Cheesecake, our light and savory Tiramisu or the crispy Zeppole.</p>
-                        <span class="dropdown-icon"><ion-icon name="chevron-down"></ion-icon></span>
-                    </div>
-
-                    <div class="sample-review">
-                        <div class="review-top">
-                            <div class="profile-details">
-                                <img src="./Images/profile-5.jpg" alt="" class="profile-pic">
-                                <a class="name" href="profile-page-harrierdubois.html">Harrier Du Bois</a>
-                                <div class="review-rating">
-                                    <fieldset class="rate blocked">
-                                        <input type="radio" id="rating10" name="rrating5" value="10" /><label for="rating10" title="5 stars"></label>
-                                        <input type="radio" id="rating9" name="rrating5" value="9" /><label class="half" for="rating9" title="4 1/2 stars"></label>
-                                        <input type="radio" id="rating8" name="rrating5" value="8" /><label for="rating8" title="4 stars"></label>
-                                        <input type="radio" id="rating7" name="rrating5" value="7" /><label class="half" for="rating7" title="3 1/2 stars"></label>
-                                        <input type="radio" id="rating6" name="rrating5" value="6" /><label for="rating6" title="3 stars"></label>
-                                        <input type="radio" id="rating5" name="rrating5" value="5" /><label class="half" for="rating5" title="2 1/2 stars"></label>
-                                        <input checked type="radio" id="rating4" name="rrating5" value="4" /><label for="rating4" title="2 stars"></label>
-                                        <input type="radio" id="rating3" name="rrating5" value="3" /><label class="half" for="rating3" title="1 1/2 stars"></label>
-                                        <input type="radio" id="rating2" name="rrating5" value="2" /><label for="rating2" title="1 star"></label>
-                                        <input type="radio" id="rating1" name="rrating5" value="1" /><label class="half" for="rating1" title="1/2 star"></label>
-                                    </fieldset>
-                                </div>
-                            </div>
-                            <h4 class="date">08/15/2029</h4>
-                        </div>
-                        <div class="starrating">
-
-                        </div>
-                        <div class="review-details">
-                            <p class="description-text">
-                                This pizza here was pretty good, but I'm not sure it was worth the hype for me. I made a reservation a week ahead so that we wouldn't need to wait for a table on a weekend. I split a half tie dye and hot honey. They were both pretty good, but I wasn't wowed by either. The crust was a bit too crispy for my liking, I like a crispy crust but I also like a little chew as well. The hot honey slice was good, but a little salty as mentioned by others.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
         </div>
 
         <div class="pagination-container">
-            <span class="left-icon"><ion-icon name="arrow-back-circle"></ion-icon></span>
-            <a class="page-link current-page" href="#">1</a>
-            <a class="page-link" href="#">2</a>
-            <a class="page-link" href="#">3</a>
-            <a class="page-link" href="#">4</a>
-            <a class="page-link" href="#">5</a>
-            <span class="right-icon"><ion-icon name="arrow-forward-circle"></ion-icon></span>
-        </div>
-    </div>
-
-    <div class="wrapper">
-        <span class="icon-close">
-            <ion-icon name="close"></ion-icon>
-        </span>
-
-        <div class="form-box login">
-            <h2>Login</h2>
-            <form action="#">
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="mail"></ion-icon></span>
-                    <input type="text" required pattern=".*\S+.*">
-                    <label>Email</label>
-                </div>
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
-                    <input type="password" required>
-                    <label>Password</label>
-                </div>
-                <div id="login" type="submit" class="btn">Login</div>
-                <div class="login-register">
-                    <p>Are you a restaurant owner? <a href="#" class="login-restaurant-link">Login</a></p>
-                </div>
-                <div class="login-register">
-                    <p>Don't have an account? <a href="register.html" class="register-link">Register</a></p>
-                </div>
-            </form>
-        </div>
-
-        <div class="form-box login-restaurant">
-            <h2>Restaurant</h2>
-            <form action="#">
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="mail"></ion-icon></span>
-                    <input type="text" required pattern=".*\S+.*">
-                    <label>Email</label>
-                </div>
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
-                    <input type="password" required>
-                    <label>Password</label>
-                </div>
-                <div id="login-restaurant" type="submit" class="btn">Login</div>
-                <div class="login-register">
-                    <p>Not a restaurant owner? <a href="#" class="backtologin-link">Login</a></p>
-                </div>
-            </form>
+            <a id="leftpage" class="left-icon"><ion-icon name="arrow-back-circle"></ion-icon></a>
+            <a id="firstpage" class="page-link" href="#">1</a>
+            <a id="secondpage" class="page-link" href="#">2</a>
+            <a id="thirdpage" class="page-link" href="#">3</a>
+            <a id="fourthpage" class="page-link" href="#">4</a>
+            <a id="fifthpage" class="page-link" href="#">5</a>
+            <a id="rightpage" class="right-icon"><ion-icon name="arrow-forward-circle"></ion-icon></a>
         </div>
     </div>
 
@@ -514,11 +71,10 @@
         <img class="modal-content" id="img01">
     </div>
 
-    <script src="login.js"></script>
-    <script src="results.js"></script>
-    <script src="sortby.js"></script>
-    <script src="review.js"></script>
-    <script src="image.js"></script>
+    <script src="/js/results.js"></script>
+    <script src="/js/sortby.js"></script>
+    <script src="/js/review.js"></script>
+    <script src="/js/image.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>

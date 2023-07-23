@@ -21,9 +21,10 @@
             </div>
         </form>
         <a class="navlink" href="restaurant-results.html">Restaurants</a>
-        <button class="btnLogin-popup">Login</button>
+        <a href="/login"><button class="btnSubmit">Login</button></a>
+        <a href="/register"><button class="btnSubmit">Register</button></a>
     </nav>
-</header>
+  </header>
 
 <form id="registerform"action="index-logged.html" class="profile-change">
   <div class="register-container">
@@ -42,27 +43,37 @@
       </div>
     </div>
     </div>
+
+    <div class="option">
+      <p class="option-setting">Email</p>
+      <p class="subtitle">This field is required.</p>
+      <input type="text" class="input-placeholder" id="first-name-input" placeholder="First Name">
+    </div>
+    <div class="option">
+      <p class="option-setting">Password</p>
+      <p class="subtitle">This field is required.</p>
+      <input type="password" class="input-placeholder" id="first-name-input" placeholder="First Name">
+    </div>
     <div class="first-name-details option">
       <p class="option-setting">First Name</p>
       <p class="subtitle">This field is required.</p>
-      <input type="text" id="first-name-input" placeholder="First Name">
+      <input type="text" class="input-placeholder" id="first-name-input" placeholder="First Name">
     </div>
     <div class="last-name-details option">
       <p class="option-setting">Last Name</p>
-      <p class="subtitle">This field is required. Only your last initial will show on your profile.</p>
-      <input type="text" id="last-name-input" placeholder="Last Name">
+      <p class="subtitle">This field is required.<br> Only the initial will be visible.</p>
+      <input type="text" class="input-placeholder" id="last-name-input" placeholder="Last Name">
     </div>
     <div class="nickname-details option">
       <p class="option-setting">Nickname</p>
       <p class="subtitle">ex. Nicky, Ann, B, Foggy</p>
-      <input type="text" id="nickname-input" placeholder="Nickname">
+      <input type="text" class="input-placeholder" id="nickname-input" placeholder="Nickname">
     </div>
 
     <div class="description-details option">
       <p class="option-setting">Description</p>
       <p class="subtitle">Give a brief description of yourself.</p>
       <div class="description-space">
-
         <textarea id="description-input" placeholder="Enter your description here." form="registerform"></textarea>
       </div>
     </div>
@@ -118,7 +129,6 @@
 
     <div class="pronoun-details option">
       <p class="option-setting">Pronouns</p>
-      <p class="subtitle">e.g. Taylor is awesome, <u>they</u> write the best reviews</p>
       <div class="pronouns-choices">
         <div class="pronoun-choice-item">
           <label id="pronoun1">
@@ -150,93 +160,7 @@
 </form>
 
 
-    <div class="wrapper">
-        <span class="icon-close">
-            <ion-icon name="close"></ion-icon>
-        </span>
-
-        <div class="form-box login">
-            <h2>Login</h2>
-            <form action="#">
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="mail"></ion-icon></span>
-                    <input type="text" required pattern=".*\S+.*">
-                    <label>Email</label>
-                </div>
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
-                    <input type="password" required>
-                    <label>Password</label>
-                </div>
-                <div type="submit" class="btn">Login</div>
-                <div class="login-register">
-                    <p>Are you a restaurant owner? <a href="#" class="login-restaurant-link">Login</a></p>
-                </div>
-                <div class="login-register">
-                    <p>Don't have an account? <a href="#" class="register-link">Register</a></p>
-                </div>
-            </form>
-        </div>
-
-        <div class="form-box login-restaurant">
-            <h2>Restaurant</h2>
-            <form action="#">
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="mail"></ion-icon></span>
-                    <input type="text" required pattern=".*\S+.*">
-                    <label>Email</label>
-                </div>
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
-                    <input type="password" required>
-                    <label>Password</label>
-                </div>
-                <div type="submit" class="btn">Login</div>
-                <div class="login-register">
-                    <p>Not a restaurant owner? <a href="#" class="backtologin-link">Login</a></p>
-                </div>
-            </form>
-        </div>
-
-        <div class="form-box register">
-            <h2>Registration</h2>
-            <form action="#">
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="person"></ion-icon></span>
-                    <input type="text" required pattern=".*\S+.*">
-                    <label>First Name</label>
-                </div>
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="people-circle"></ion-icon></span>
-                    <input type="text" required pattern=".*\S+.*">
-                    <label>Last Name</label>
-                </div>
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="mail"></ion-icon></span>
-                    <input type="text" required pattern=".*\S+.*">
-                    <label>Email</label>
-                </div>
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
-                    <input type="password" required>
-                    <label>Password</label>
-                </div>
-                <div class="terms">
-                    <div class="squaredThree">
-                        <input type="checkbox" value="None" id="squaredThree" name="check" required/>
-                        <label for="squaredThree"></label>
-                        <p>I agree to the terms and conditions.</p>
-                    </div>
-                </div>
-                <div type="submit" class="btn">Register</div>
-                <div class="login-register">
-                    <p>Already have an account? <a href="#" class="login-link">Login</a></p>
-                </div>
-            </form>
-        </div>
-    </div>
-
-  <script src="logged.js"></script>
+  <script src="/js/logged.js"></script>
   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>

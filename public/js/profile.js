@@ -25,3 +25,8 @@ function allReview() {
         allReviews.classList.add('show')
     }
 }
+
+module.exports = {
+    createProfile
+};
+

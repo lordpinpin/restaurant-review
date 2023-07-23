@@ -1,0 +1,63 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rest★r</title>
+    <link rel="stylesheet" href="/css/styles.css" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+    <h2 class="logo"><a class="logo" href="/"><b>Rest★r</b></a></h2>
+    <nav class="navigation">
+        <form class="searchbar" method="GET" action="/restaurants">
+            <div class="searcharea">
+                <input class="searchbar-text" type="text" placeholder="Search for anything." name="search"/>
+                <button class="searchbar-enter" type="submit" value="Search">
+                    <span class="search"><ion-icon name="search-circle"></ion-icon></span>
+                </button>
+            </div>
+        </form>
+        <a class="navlink" href="/restaurants">Restaurants</a>
+        <a class="navlink" href="/create-review">Create Review</a>
+        <div class="dropdown">
+            <div class="dropdown-profile">
+                <img src="./Images/profile-1.jpg">
+                <div class="name">Sancho Mercado</div>
+                <div class="icon"><ion-icon name="menu"></ion-icon></div>
+            </div>
+            <nav class="dropdown-nav">
+                <ul class="dropdown-group">
+                    <li class="dropdown-item">
+                        <span class="icon-dropdown"><ion-icon name="person-circle"></ion-icon></span>
+                        <a href="/user" class="profile">Profile</a>
+                    </li>
+                    <li class="dropdown-item">
+                        <span class="icon-dropdown"><ion-icon name="settings"></ion-icon></span>
+                        <a href="/settings" class="settings">Settings</a>
+                    </li>
+                    <li class="dropdown-item">
+                        <span class="icon-dropdown"><ion-icon name="exit"></ion-icon></span>
+                        <a href="/logout" class="logout">Log out</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </nav>
+  </header>
+
+<form id="login-form" action="/login" class="profile-change login-box" method="POST" novalidate>
+  <div class="register-container">
+    <div class="settings-title">
+      <h1> User Login </h1>
+    </div>
+  </div>
+</form>
+
+  <script src="/js/login.js"></script>
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>
