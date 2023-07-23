@@ -18,7 +18,7 @@ const { homepage } = require('./public/js/homepage');
 const { searchdisplay } = require('./public/js/searchdisplay');
 const { profilepage } = require('./public/js/profilepage.js');
 const { editreview } = require('./public/js/editreview.js');
-
+const { profilesettings } = require('./public/js/profile-settings');
 
 const app = express();
 const port = 3000;
@@ -626,6 +626,7 @@ app.get('/logout', async (req, res) => {
     res.redirect('/');
   });
 });
+
 
 // NO URL HANDLING
 app.use((req, res, next) => {
