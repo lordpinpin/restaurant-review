@@ -2,7 +2,7 @@
 function profilepage (document, cur_user_id, user, num, reviews, restaurants) {
 
     const avatarImage = document.querySelector(".avatar img");
-    avatarImage.src = `/Images/${user.profile_picture}`;
+    avatarImage.src = `${user.profile_picture}`;
 
     const profileName = document.querySelector(".profile-name");
     profileName.textContent = `${user.first_name} ${user.last_name.charAt(0).toUpperCase()}.`;
@@ -38,7 +38,7 @@ function profilepage (document, cur_user_id, user, num, reviews, restaurants) {
         // Create img element with class "review-img"
         const reviewImg = document.createElement("img");
         reviewImg.classList.add("review-img");
-        reviewImg.src = `/Images/${restaurants[count][0].mini_pic_url}`;
+        reviewImg.src = `${restaurants[count][0].mini_pic_url}`;
 
         // Create review-restaurant-details div
         const reviewRestaurantDetailsDiv = document.createElement("div");
@@ -217,7 +217,7 @@ function profilepage (document, cur_user_id, user, num, reviews, restaurants) {
 
                 const img = document.createElement('img');
                 img.classList.add('media-item');
-                img.setAttribute('src', `../Images/${image}`);
+                img.setAttribute('src', `${image}`);
                 img.setAttribute('onclick', 'imageModal(this)');
 
                 mediaSquareDiv.appendChild(img);

@@ -9,6 +9,10 @@ const createDOMPurify = require('dompurify');
 const window = new JSDOM('').window;
 const DOMPurify = createDOMPurify(window);
 
+const cloudinaryUploadURL = `https://api.cloudinary.com/v1_1/dg28enybo/upload`;
+const apiKey = process.env.CLOUD_KEY;
+const apiSecret = process.env.CLOUD_SECRET;
+
 const { connectToDatabase, fetchRest, topRest6, topRest5, botRest5, alphaRest5, getRestReviewsLatest, getUserofReview, getUserofURL, userLatest5, getUserReviewsLatest, getRestofReview, getReview, checkIfExists } = require('./public/js/db');
 const { homepage } = require('./public/js/homepage');
 const { searchdisplay } = require('./public/js/searchdisplay');
@@ -34,37 +38,6 @@ app.use(session({
   },
 }));
 
-app.use((req, res, next) => {
-  var file;
-      if (req.session.isLoggedIn) {
-        file = 'message-logged.html';
-      } else {
-        file = 'message.html';
-      }
-      console.log(file);
-      var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
-
-      var dom = new JSDOM(html);
-      var { window } = dom;
-      var { document } = window;
-
-
-      if (req.session.isLoggedIn) {
-        var profilepic = document.querySelector(".dropdown-profile img");
-        profilepic.src = `../Images/${req.session.profile_picture}`;
-
-        var name = document.querySelector(".name");
-        name.textContent = `${req.session.first_name} ${req.session.last_name}`;
-      }
-
-      const messageTitle = document.querySelector('.settings-title h1');
-      messageTitle.textContent = "URL does not exist."
-
-    var html = dom.serialize();
-
-    res.send(html);
-});
-
 app.get('/', async (req, res) => {
   var file;
 
@@ -81,7 +54,7 @@ app.get('/', async (req, res) => {
 
   if (req.session.isLoggedIn) {
     var profilepic = document.querySelector(".dropdown-profile img");
-    profilepic.src = `./Images/${req.session.profile_picture}`;
+    profilepic.src = `${req.session.profile_picture}`;
 
     var name = document.querySelector(".name");
     name.textContent = `${req.session.first_name} ${req.session.last_name}`;
@@ -91,6 +64,10 @@ app.get('/', async (req, res) => {
   homepage(document, restaurants);
 
   var html = dom.serialize();
+
+
+  const formData = new FormData();
+
 
   res.send(html);
 });
@@ -116,7 +93,7 @@ app.get('/edit-review', async (req, res) => {
 
         if (req.session.isLoggedIn) {
           var profilepic = document.querySelector(".dropdown-profile img");
-          profilepic.src = `../Images/${req.session.profile_picture}`;
+          profilepic.src = `${req.session.profile_picture}`;
 
           var name = document.querySelector(".name");
           name.textContent = `${req.session.first_name} ${req.session.last_name}`;
@@ -138,7 +115,7 @@ app.get('/edit-review', async (req, res) => {
       var { document } = window;
 
       var profilepic = document.querySelector(".dropdown-profile img");
-      profilepic.src = `../Images/${req.session.profile_picture}`;
+      profilepic.src = `${req.session.profile_picture}`;
 
       var name = document.querySelector(".name");
       name.textContent = `${req.session.first_name} ${req.session.last_name}`;
@@ -263,7 +240,7 @@ app.get('/restaurants', async (req, res) => {
 
   if (req.session.isLoggedIn) {
     var profilepic = document.querySelector(".dropdown-profile img");
-    profilepic.src = `./Images/${req.session.profile_picture}`;
+    profilepic.src = `${req.session.profile_picture}`;
 
     var name = document.querySelector(".name");
     name.textContent = `${req.session.first_name} ${req.session.last_name}`;
@@ -404,7 +381,7 @@ app.get('/user/:url', async (req, res) => {
 
         if (req.session.isLoggedIn) {
           var profilepic = document.querySelector(".dropdown-profile img");
-          profilepic.src = `../Images/${req.session.profile_picture}`;
+          profilepic.src = `${req.session.profile_picture}`;
 
           var name = document.querySelector(".name");
           name.textContent = `${req.session.first_name} ${req.session.last_name}`;
@@ -432,7 +409,7 @@ app.get('/user/:url', async (req, res) => {
 
       if (req.session.isLoggedIn) {
         var profilepic = document.querySelector(".dropdown-profile img");
-        profilepic.src = `../Images/${req.session.profile_picture}`;
+        profilepic.src = `${req.session.profile_picture}`;
 
         var name = document.querySelector(".name");
         name.textContent = `${req.session.first_name} ${req.session.last_name}`;
@@ -599,6 +576,54 @@ app.get('/logout', async (req, res) => {
   });
 });
 
+// NO URL HANDLING
+app.use((req, res, next) => {
+  var file;
+  if (req.session.isLoggedIn) {
+    file = 'message-logged.html';
+  } else {
+    file = 'message.html';
+  }
+  console.log(file);
+  var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+  var dom = new JSDOM(html);
+  var { window } = dom;
+  var { document } = window;
+
+
+  if (req.session.isLoggedIn) {
+    var profilepic = document.querySelector(".dropdown-profile img");
+    profilepic.src = `${req.session.profile_picture}`;
+
+    var name = document.querySelector(".name");
+    name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+  }
+
+  const messageTitle = document.querySelector('.settings-title h1');
+  messageTitle.textContent = "URL does not exist."
+
+  var html = dom.serialize();
+
+  res.status(404).send(html);
+});
+
+
 app.listen(port, () => {
   console.log(`Node.js server listening on port ${port}`);
 });
+
+/*
+  console.log(process.env.CLOUD_NAME);
+  formData.append('file', 'https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8MXx8fGVufDB8fHx8fA%3D%3D&w=1000&q=80'); // Replace with the path to your image file
+  formData.append('upload_preset', 'fs5jhgac');
+  formData.append('folder', 'background')
+  formData.append("api_key", `${apiKey}`);
+
+  const response = await fetch(cloudinaryUploadURL, {
+    method: 'POST',
+    body: formData,
+  });
+
+  const result = await response.json();
+  console.log(result); */

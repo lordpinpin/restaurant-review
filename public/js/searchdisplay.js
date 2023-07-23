@@ -10,7 +10,7 @@ function searchdisplay (document, restaurants, reviews, users) {
         // Create the image element
         const img = document.createElement("img");
         img.classList.add("restaurant-result-image");
-        img.src = `./Images/${restaurant.mini_pic_url}`;
+        img.src = `${restaurant.mini_pic_url}`;
         restaurantItem.appendChild(img);
 
         // Create the restaurant details container
@@ -141,7 +141,7 @@ function searchdisplay (document, restaurants, reviews, users) {
         reviewTop.appendChild(profileDetails);
 
         const reviewerImage = document.createElement("img");
-        reviewerImage.src = `./Images/${users[count][0].profile_picture}`;
+        reviewerImage.src = `${users[count][0].profile_picture}`;
         reviewerImage.alt = "";
         reviewerImage.classList.add("profile-pic");
         profileDetails.appendChild(reviewerImage);
@@ -233,7 +233,7 @@ function searchdisplay (document, restaurants, reviews, users) {
 
                 const img = document.createElement('img');
                 img.classList.add('media-item');
-                img.setAttribute('src', `./Images/${image}`);
+                img.setAttribute('src', `${image}`);
                 img.setAttribute('onclick', 'imageModal(this)');
 
                 mediaSquareDiv.appendChild(img);

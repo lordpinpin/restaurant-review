@@ -15,7 +15,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background: url(../Images/background.jpg);
+    background: url("https://res.cloudinary.com/dg28enybo/image/upload/v1690024433/background/background_czlzx9.jpg");
     background-size: cover;
     background-position: center;
     background-attachment: fixed;

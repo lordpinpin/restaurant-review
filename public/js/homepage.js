@@ -13,7 +13,7 @@ function homepage (document, restaurants) {
 
         let imageElement = document.createElement('img');
         imageElement.classList.add('dashrestaurant-image');
-        imageElement.src = `./Images/${restaurant.mini_pic_url}`;
+        imageElement.src = `${restaurant.mini_pic_url}`;
 
         let listDiv = document.createElement('div');
         listDiv.classList.add('list');
