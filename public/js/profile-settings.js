@@ -1,23 +1,22 @@
+if (typeof window !== 'undefined'){
 
+const emailField = document.querySelector('.email-field');
+const emailError = document.querySelector('.email-error');
+const submitButton = document.querySelector('.btnSubmit confirm');
 
-document.getElementsByClassName('btnSubmit').addEventListener('click', function() {
-  var oldEmail = document.getElementsByClassName('.old-email-input').value
-  var newEmail = document.getElementsByClassName('.new-email-input').value
+function validateEmail(){
 
-  if (oldEmail === '') {
-    alert('Please enter the old email');
-    return;
-  }
+  emailField.addEventListener('input', function() {
+    if(!emailField.ariaValueMax.match(/^[A-Za-z\._\-0-9]*[@][A-Za-z]*[\.][a-z]{2,4}$/)){
+      emailError.innerHTML = "Please enter a valid email";
+      submitButton.disabled = true;
+      return false;
+    } else {
+      emailError.innerHTML = "";
+      submitButton.disabled = false;
+      return true;
+    }
 
-  if (newEmail === '') {
-    alert('Please enter the new email');
-    return;
-  }
-
-  if (oldEmail === newEmail) {
-    alert("The new email should be different from the old email.");
-  } else {
-    
-    //send to data base and confirm the email is valid. if so, print "Email verified!"
-  }
-});
+  })
+}
+}
