@@ -57,11 +57,19 @@ const topRev5 = async (page, restaurant, search) => {
 
   const reviews = await collection.find({"restaurant": restaurant._id}).sort({ rating: -1, date: -1 }).limit(5).skip((page - 1) * 5).toArray();
 
-  console.log(reviews)
   return reviews;
 };
 
 const botRev5 = async (page, restaurant, search) => {
+  const db = await connectToDatabase();
+  const collection = db.collection('reviews');
+
+  const reviews = await collection.find({ "restaurant": restaurant._id, "description": { $regex: `${search}`, $options: 'i' }}).sort({ rating: 1, date: -1 }).limit(5).skip((page - 1) * 5).toArray();
+
+  return reviews;
+};
+
+const helpRev5 = async (page, restaurant, search) => {
   const db = await connectToDatabase();
   const collection = db.collection('reviews');
 

@@ -472,6 +472,115 @@ app.get('/register', async (req, res) => {
 });
 
 
+app.get('/restaurants/:url', async (req, res) => {
+  var file;
+  if (req.session.isLoggedIn) {
+    file = 'restaurant-logged.html';
+  } else {
+    file = 'restaurant.html';
+  }
+  console.log(file);
+  var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+  var dom = new JSDOM(html);
+  var { window } = dom;
+  var { document } = window;
+
+  if (req.session.isLoggedIn) {
+    var profilepic = document.querySelector(".dropdown-profile img");
+    profilepic.src = `${req.session.profile_picture}`;
+
+    var name = document.querySelector(".name");
+    name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+  }
+
+  var types = ["highestrated", "lowestrated", "mosthelpful"];
+
+  if(!req.query.type | !types.includes(req.query.type)){
+    req.query.type = "highestrated";
+  }
+
+  if(!req.query.page || parseInt(req.query.page) < 1){
+    req.query.page = "1";
+  }
+
+  if(!req.query.search){
+    req.query.search = "";
+  }
+
+
+  if(req.query.type === "highestrated"){
+    var pageNum = parseInt(req.query.page);
+    const restaurant = await getRestofUrl(req.params.url);
+    const reviews = await topRev5(pageNum, restaurant[0], req.query.search);
+    var users = [];
+    console.log(reviews.length);
+    for(let reviewSet of reviews){
+      users.push(await getUserofReview(reviewSet));
+    }
+    console.log(users);
+    restaurantpage(document, restaurant[0], reviews, req.session.userId, users);
+  } else if(req.query.type === "lowestrated"){
+    var pageNum = parseInt(req.query.page);
+    const restaurant = await getRestofUrl(req.params.url);
+    const reviews = await topRev5(pageNum, restaurant[0], req.query.search);
+    var users = [];
+    console.log(reviews.length);
+    for(let reviewSet of reviews){
+      users.push(await getUserofReview(reviewSet));
+    }
+    console.log(users);
+    restaurantpage(document, restaurant[0], reviews, req.session.userId, users);
+  }
+
+
+  const leftPage = document. querySelector('#leftpage');
+  const rightPage = document.querySelector('#rightpage');
+  const firstNum = document.querySelector('#firstpage');
+  const secondNum = document.querySelector('#secondpage');
+  const thirdNum = document.querySelector('#thirdpage');
+  const fourthNum = document.querySelector('#fourthpage');
+  const fifthNum = document.querySelector('#fifthpage');;
+
+
+  if(pageNum === 1){
+    firstNum.classList.add("current-page");
+    leftPage.href = `/restaurants?type=${req.query.type}&page=1&search=${req.query.search}`;
+    rightPage.href = `/restaurants?type=${req.query.type}&page=2&search=${req.query.search}`;
+    firstNum.href = `/restaurants?type=${req.query.type}&page=1&search=${req.query.search}`;
+    secondNum.href = `/restaurants?type=${req.query.type}&page=2&search=${req.query.search}`;
+    thirdNum.href = `/restaurants?type=${req.query.type}&page=3&search=${req.query.search}`;
+    fourthNum.href = `/restaurants?type=${req.query.type}&page=4&search=${req.query.search}`;
+    fifthNum.href = `/restaurants?type=${req.query.type}&page=5&search=${req.query.search}`;
+  } else if (pageNum === 2){
+    secondNum.classList.add("current-page");
+    leftPage.href = `/restaurants?type=${req.query.type}&page=1&search=${req.query.search}`;
+    rightPage.href = `/restaurants?type=${req.query.type}&page=3&search=${req.query.search}`;
+    firstNum.href = `/restaurants?type=${req.query.type}&page=1&search=${req.query.search}`;
+    secondNum.href = `/restaurants?type=${req.query.type}&page=2&search=${req.query.search}`;
+    thirdNum.href = `/restaurants?type=${req.query.type}&page=3&search=${req.query.search}`;
+    fourthNum.href = `/restaurants?type=${req.query.type}&page=4&search=${req.query.search}`;
+    fifthNum.href = `/restaurants?type=${req.query.type}&page=5&search=${req.query.search}`;
+  } else if (pageNum >= 3){
+    thirdNum.classList.add("current-page");
+    leftPage.href = `/restaurants?type=${req.query.type}&page=${pageNum - 1}&search=${req.query.search}`;
+    rightPage.href = `/restaurants?type=${req.query.type}&page=${pageNum + 1}&search=${req.query.search}`;
+    firstNum.href = `/restaurants?type=${req.query.type}&page=${pageNum - 2}&search=${req.query.search}`;
+    secondNum.href = `/restaurants?type=${req.query.type}&page=${pageNum - 1}&search=${req.query.search}`;
+    thirdNum.href = `/restaurants?type=${req.query.type}&page=${pageNum}&search=${req.query.search}`;
+    fourthNum.href = `/restaurants?type=${req.query.type}&page=${pageNum + 1}&search=${req.query.search}`;
+    fifthNum.href = `/restaurants?type=${req.query.type}&page=${pageNum + 2}&search=${req.query.search}`;
+    firstNum.textContent = `${pageNum - 2}`;
+    secondNum.textContent = `${pageNum - 1}`;
+    thirdNum.textContent = `${pageNum}`;
+    fourthNum.textContent = `${pageNum + 1}`;
+    fifthNum.textContent = `${pageNum + 2}`;
+  }
+  var html = dom.serialize();
+
+  res.send(html);
+});
+
 app.get('/restaurants', async (req, res) => {
   var file;
   if (req.session.isLoggedIn) {
@@ -607,88 +716,6 @@ app.get('/restaurants', async (req, res) => {
   res.send(html);
 });
 
-app.get('/restaurants/:url', async (req, res) => {
-  var file;
-  if (req.session.isLoggedIn) {
-    file = 'restaurant-logged.html';
-  } else {
-    file = 'restaurant.html';
-  }
-  console.log(file);
-  var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
-
-  var dom = new JSDOM(html);
-  var { window } = dom;
-  var { document } = window;
-
-  if (req.session.isLoggedIn) {
-    var profilepic = document.querySelector(".dropdown-profile img");
-    profilepic.src = `${req.session.profile_picture}`;
-
-    var name = document.querySelector(".name");
-    name.textContent = `${req.session.first_name} ${req.session.last_name}`;
-  }
-
-  if(!req.query.page || parseInt(req.query.page) < 1){
-    req.query.page = "1";
-  }
-
-  var pageNum = parseInt(req.query.page);
-  console.log(pageNum);
-  const restaurant = await getRestofUrl(req.params.url);
-  const reviews = await topRev5(pageNum, restaurant[0], req.query.search);
-  var users = [];
-  for(let reviewSet of reviews){
-    users.push(await getUserofReview(reviewSet));
-  }
-  restaurantpage(document, restaurant[0], reviews, users);
-
-  const leftPage = document. querySelector('#leftpage');
-  const rightPage = document.querySelector('#rightpage');
-  const firstNum = document.querySelector('#firstpage');
-  const secondNum = document.querySelector('#secondpage');
-  const thirdNum = document.querySelector('#thirdpage');
-  const fourthNum = document.querySelector('#fourthpage');
-  const fifthNum = document.querySelector('#fifthpage');;
-
-
-  if(pageNum === 1){
-    firstNum.classList.add("current-page");
-    leftPage.href = `/restaurants?type=${req.query.type}&page=1&search=${req.query.search}`;
-    rightPage.href = `/restaurants?type=${req.query.type}&page=2&search=${req.query.search}`;
-    firstNum.href = `/restaurants?type=${req.query.type}&page=1&search=${req.query.search}`;
-    secondNum.href = `/restaurants?type=${req.query.type}&page=2&search=${req.query.search}`;
-    thirdNum.href = `/restaurants?type=${req.query.type}&page=3&search=${req.query.search}`;
-    fourthNum.href = `/restaurants?type=${req.query.type}&page=4&search=${req.query.search}`;
-    fifthNum.href = `/restaurants?type=${req.query.type}&page=5&search=${req.query.search}`;
-  } else if (pageNum === 2){
-    secondNum.classList.add("current-page");
-    leftPage.href = `/restaurants?type=${req.query.type}&page=1&search=${req.query.search}`;
-    rightPage.href = `/restaurants?type=${req.query.type}&page=3&search=${req.query.search}`;
-    firstNum.href = `/restaurants?type=${req.query.type}&page=1&search=${req.query.search}`;
-    secondNum.href = `/restaurants?type=${req.query.type}&page=2&search=${req.query.search}`;
-    thirdNum.href = `/restaurants?type=${req.query.type}&page=3&search=${req.query.search}`;
-    fourthNum.href = `/restaurants?type=${req.query.type}&page=4&search=${req.query.search}`;
-    fifthNum.href = `/restaurants?type=${req.query.type}&page=5&search=${req.query.search}`;
-  } else if (pageNum >= 3){
-    thirdNum.classList.add("current-page");
-    leftPage.href = `/restaurants?type=${req.query.type}&page=${pageNum - 1}&search=${req.query.search}`;
-    rightPage.href = `/restaurants?type=${req.query.type}&page=${pageNum + 1}&search=${req.query.search}`;
-    firstNum.href = `/restaurants?type=${req.query.type}&page=${pageNum - 2}&search=${req.query.search}`;
-    secondNum.href = `/restaurants?type=${req.query.type}&page=${pageNum - 1}&search=${req.query.search}`;
-    thirdNum.href = `/restaurants?type=${req.query.type}&page=${pageNum}&search=${req.query.search}`;
-    fourthNum.href = `/restaurants?type=${req.query.type}&page=${pageNum + 1}&search=${req.query.search}`;
-    fifthNum.href = `/restaurants?type=${req.query.type}&page=${pageNum + 2}&search=${req.query.search}`;
-    firstNum.textContent = `${pageNum - 2}`;
-    secondNum.textContent = `${pageNum - 1}`;
-    thirdNum.textContent = `${pageNum}`;
-    fourthNum.textContent = `${pageNum + 1}`;
-    fifthNum.textContent = `${pageNum + 2}`;
-  }
-  var html = dom.serialize();
-
-  res.send(html);
-});
 
 app.get('/user', async (req, res) => {
   if(req.session.isLoggedIn) {
@@ -817,10 +844,6 @@ app.get('/user/:url', async (req, res) => {
           restaurants.push(await getRestofReview(review));
         }
 
-
-        if(req.session.userId != undefined){
-            curUserId = new ObjectId(req.session.userId);
-        }
         profilepage(document, req.session.userId, user[0], num, reviews5, restaurants);
 
         const allReview = document.querySelector('.all-review-option');
@@ -893,6 +916,31 @@ app.get('/logout', async (req, res) => {
   });
 });
 
+app.get('/refresh-previous', (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>Refresh Previous Page</title>
+      </head>
+      <body>
+        <script>
+          // Function to refresh the previous page
+          function refreshPrevious() {
+            window.history.go(-1);
+            setTimeout(() => {
+              location.reload();
+            }, 100); // Adjust the timeout value if needed
+          }
+
+          // Call the function on page load
+          refreshPrevious();
+        </script>
+      </body>
+    </html>
+  `);
+});
+
 
 // NO URL HANDLING
 app.use((req, res, next) => {
@@ -925,6 +973,8 @@ app.use((req, res, next) => {
 
   res.status(404).send(html);
 });
+
+
 
 
 app.listen(port, () => {

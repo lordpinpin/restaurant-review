@@ -2318,32 +2318,32 @@ img::after {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    top: -20px;
+    top: -5px;
 }
 
 .useful-section {
     display: flex;
     align-items: center;
+    margin-right: 20px;
 }
 
 .useful-count {
     font-size: .8rem;
     font-weight: 200;
     color:#eeeeee;
+    margin-top: 10px;
     margin-bottom: 5px;
     margin-left: 20px;
 }
 
-.useful-question p {
+.useful-question {
     color:#eeeeee;
     font-weight: 700;
     margin-left: 20px;
 }
 
-.option-content .btnSubmit{
-    width: 70px;
-    height: 35px;
-    margin-left:20px;
+.option-content .btnSubmit {
+    margin-left: 20px;
 }
 
 .restaurant-reply {
@@ -2522,7 +2522,10 @@ img::after {
     opacity: 1;
 }
 
-
+a.btnSubmit {
+    margin-left: 10px;
+    padding: 8px 18px;
+}
 
 .left-icon ion-icon, .right-icon ion-icon {
     padding: 5px;

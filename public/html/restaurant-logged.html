@@ -11,7 +11,7 @@
 
 <body>
     <header>
-        <h2 class="logo"><a class="logo" href="/">Rest★r</a></h2>
+        <h2 class="logo"><a class="logo" href="/"><b>Rest★r</b></a></h2>
         <nav class="navigation">
             <form class="searchbar" method="GET" action="/restaurants">
                 <div class="searcharea">
@@ -22,8 +22,30 @@
                 </div>
             </form>
             <a class="navlink" href="/restaurants">Restaurants</a>
-            <a href="/login"><button class="btnSubmit">Login</button></a>
-            <a href="/register"><button class="btnSubmit">Register</button></a>
+            <a class="navlink" href="/create-review">Create Review</a>
+            <div class="dropdown">
+                <div class="dropdown-profile">
+                    <img src="./Images/profile-1.jpg">
+                    <div class="name">Sancho Mercado</div>
+                    <div class="icon"><ion-icon name="menu"></ion-icon></div>
+                </div>
+                <nav class="dropdown-nav">
+                    <ul class="dropdown-group">
+                        <li class="dropdown-item">
+                            <span class="icon-dropdown"><ion-icon name="person-circle"></ion-icon></span>
+                            <a href="/user" class="profile">Profile</a>
+                        </li>
+                        <li class="dropdown-item">
+                            <span class="icon-dropdown"><ion-icon name="settings"></ion-icon></span>
+                            <a href="/settings" class="settings">Settings</a>
+                        </li>
+                        <li class="dropdown-item">
+                            <span class="icon-dropdown"><ion-icon name="exit"></ion-icon></span>
+                            <a href="/logout" class="logout">Log out</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </nav>
     </header>
 
@@ -495,6 +517,7 @@
         <img class="modal-content" id="img01">
     </div>
 
+    <script src="/js/login.js"></script>
     <script src="/js/sortby.js"></script>
     <script src="/js/review.js"></script>
     <script src="/js/image.js"></script>

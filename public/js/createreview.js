@@ -18,9 +18,6 @@ function createreview (document, restaurants) {
         restaurantList.appendChild(li);
     });
 
-    const searchbar = document.querySelector(".choose .searchbar-text");
-    searchbar.addListener('onkeyup', filterFunction());
-
     const previewImage = document.querySelector(".preview-image img");
     previewImage.src = "https://res.cloudinary.com/dg28enybo/image/upload/v1690166382/background/1200px-HD_transparent_picture_q7zqkf.png";
 

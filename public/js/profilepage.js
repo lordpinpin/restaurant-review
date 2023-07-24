@@ -202,7 +202,7 @@ function profilepage (document, cur_user_id, user, num, reviews, restaurants) {
             const anchorElement = document.createElement("a");
             anchorElement.classList.add("read");
             anchorElement.setAttribute("onclick", "readMore(this)");
-            anchorElement.textContent = " Read More.";
+            anchorElement.textContent = " ...Read More.";
 
             reviewTextP.appendChild(spanElement);
             reviewTextP.appendChild(anchorElement);
