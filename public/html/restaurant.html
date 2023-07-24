@@ -1,77 +1,31 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Rest★r</title>
-        <link rel="stylesheet" href="css/styles.css" type="text/css">
+        <link rel="stylesheet" href="/css/styles.css" type="text/css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head>
 
 <body>
     <header>
-        <h2 class="logo"><a class="logo" href="index.html"><b>Rest★r</b></a></h2>
+        <h2 class="logo"><a class="logo" href="/">Rest★r</a></h2>
         <nav class="navigation">
-            <form class="searchbar" method="POST" action="restaurant-results.html">
+            <form class="searchbar" method="GET" action="/restaurants">
                 <div class="searcharea">
-                    <input class="searchbar-text" type="text" placeholder="Search for anything" />
+                    <input class="searchbar-text" type="text" placeholder="Search for anything." name="search"/>
                     <button class="searchbar-enter" type="submit" value="Search">
                         <span class="search"><ion-icon name="search-circle"></ion-icon></span>
                     </button>
                 </div>
             </form>
-            <a class="navlink" href="restaurant-results.html">Restaurants</a>
-            <button class="btnLogin-popup">Login</button>
+            <a class="navlink" href="/restaurants">Restaurants</a>
+            <a href="/login"><button class="btnSubmit">Login</button></a>
+            <a href="/register"><button class="btnSubmit">Register</button></a>
         </nav>
     </header>
-
-    <div class="wrapper">
-        <span class="icon-close">
-            <ion-icon name="close"></ion-icon>
-        </span>
-
-        <div class="form-box login">
-            <h2>Login</h2>
-            <form action="#">
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="mail"></ion-icon></span>
-                    <input type="text" required pattern=".*\S+.*">
-                    <label>Email</label>
-                </div>
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
-                    <input type="password" required>
-                    <label>Password</label>
-                </div>
-                <div id="login" type="submit" class="btn">Login</div>
-                <div class="login-register">
-                    <p>Are you a restaurant owner? <a href="#" class="login-restaurant-link">Login</a></p>
-                </div>
-                <div class="login-register">
-                    <p>Don't have an account? <a href="register.html" class="register-link">Register</a></p>
-                </div>
-            </form>
-        </div>
-
-        <div class="form-box login-restaurant">
-            <h2>Restaurant</h2>
-            <form action="#">
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="mail"></ion-icon></span>
-                    <input type="text" required pattern=".*\S+.*">
-                    <label>Email</label>
-                </div>
-                <div class="input-box">
-                    <span class="icon"><ion-icon name="lock-closed"></ion-icon></span>
-                    <input type="password" required>
-                    <label>Password</label>
-                </div>
-                <div id="login-restaurant" type="submit" class="btn">Login</div>
-                <div class="login-register">
-                    <p>Not a restaurant owner? <a href="#" class="backtologin-link">Login</a></p>
-                </div>
-            </form>
-        </div>
-    </div>
 
     <div class="restaurant-page section">
 
@@ -81,35 +35,15 @@
                     <div class="banner-content">
                         <div class="banner-first-line">
                             <h1> Liholiho Yacht Club</h1>
-                            <div class="times">
-                                <p>Open</p>
-                                <p>10:00 AM - 10:00 PM</p>
-                            </div>
                         </div>
                         <div class="tags">
-                            <ul>
-                                <li>Bars</li>
-                                <li>Asian</li>
-                                <li>Hawaiian</li>
-                                <li>Seafood</li>
-                            </ul>
+
                         </div>
                         <div class="location-rate">
-                            <p>San Franciso, California</p>
+                            <p class="location">Portland, Oregon</p>
                             <div class="restaurant-rate">
                                 <p>4.6</p>
-                                <fieldset class="rate blocked">
-                                    <input type="radio" id="rating10" name="rating1" value="10" /><label for="rating10" title="5 stars"></label>
-                                    <input checked type="radio" id="rating9" name="rating1" value="9" /><label class="half" for="rating9" title="4 1/2 stars"></label>
-                                    <input type="radio" id="rating8" name="rating1" value="8" /><label for="rating8" title="4 stars"></label>
-                                    <input type="radio" id="rating7" name="rating1" value="7" /><label class="half" for="rating7" title="3 1/2 stars"></label>
-                                    <input type="radio" id="rating6" name="rating1" value="6" /><label for="rating6" title="3 stars"></label>
-                                    <input type="radio" id="rating5" name="rating1" value="5" /><label class="half" for="rating5" title="2 1/2 stars"></label>
-                                    <input type="radio" id="rating4" name="rating1" value="4" /><label for="rating4" title="2 stars"></label>
-                                    <input type="radio" id="rating3" name="rating1" value="3" /><label class="half" for="rating3" title="1 1/2 stars"></label>
-                                    <input type="radio" id="rating2" name="rating1" value="2" /><label for="rating2" title="1 star"></label>
-                                    <input type="radio" id="rating1" name="rating1" value="1" /><label class="half" for="rating1" title="1/2 star"></label>
-                                </fieldset>
+
                             </div>
                         </div>
 
@@ -258,7 +192,7 @@
 
             </div>
 
-
+<!--
             <div class="restaurant-review">
                 <div class="review-top">
                     <div class="profile-details">
@@ -543,16 +477,16 @@
                         </div>
                     </p>
                 </div>
-            </div>
+            </div> -->
 
         <div class="pagination-container">
-            <span class="left-icon"><ion-icon name="arrow-back-circle"></ion-icon></span>
-            <a class="page-link current-page" href="#">1</a>
-            <a class="page-link" href="#">2</a>
-            <a class="page-link" href="#">3</a>
-            <a class="page-link" href="#">4</a>
-            <a class="page-link" href="#">5</a>
-            <span class="right-icon"><ion-icon name="arrow-forward-circle"></ion-icon></span>
+            <a id="leftpage" class="left-icon"><ion-icon name="arrow-back-circle"></ion-icon></a>
+            <a id="firstpage" class="page-link" href="#">1</a>
+            <a id="secondpage" class="page-link" href="#">2</a>
+            <a id="thirdpage" class="page-link" href="#">3</a>
+            <a id="fourthpage" class="page-link" href="#">4</a>
+            <a id="fifthpage" class="page-link" href="#">5</a>
+            <a id="rightpage" class="right-icon"><ion-icon name="arrow-forward-circle"></ion-icon></a>
         </div>
     </div>
 
@@ -561,10 +495,9 @@
         <img class="modal-content" id="img01">
     </div>
 
-    <script src="login.js"></script>
-    <script src="sortby.js"></script>
-    <script src="review.js"></script>
-    <script src="image.js"></script>
+    <script src="/js/sortby.js"></script>
+    <script src="/js/review.js"></script>
+    <script src="/js/image.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>

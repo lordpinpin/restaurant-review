@@ -20,7 +20,7 @@ const connectToDatabase = async() => {
 const fetchRest = async () => {
   const db = await connectToDatabase();
   const collection = db.collection('restaurants');
-  const restaurants = await collection.find().toArray();
+  const restaurants = await collection.find().sort({name: 1}).toArray();
   return restaurants;
 };
 
@@ -48,6 +48,34 @@ const botRest5 = async (page, search) => {
   const restaurants = await collection.find({ "name": { $regex: `${search}`, $options: 'i' } }).sort({ rating: 1 }).limit(5).skip((page - 1) * 5).toArray();
 
   return restaurants;
+};
+
+
+const topRev5 = async (page, restaurant, search) => {
+  const db = await connectToDatabase();
+  const collection = db.collection('reviews');
+
+  const reviews = await collection.find({"restaurant": restaurant._id}).sort({ rating: -1, date: -1 }).limit(5).skip((page - 1) * 5).toArray();
+
+  return reviews;
+};
+
+const botRev5 = async (page, restaurant, search) => {
+  const db = await connectToDatabase();
+  const collection = db.collection('reviews');
+
+  const reviews = await collection.find({ "restaurant": restaurant._id, "description": { $regex: `${search}`, $options: 'i' }}).sort({ rating: 1, date: -1 }).limit(5).skip((page - 1) * 5).toArray();
+
+  return reviews;
+};
+
+const helpRev5 = async (page, restaurant, search) => {
+  const db = await connectToDatabase();
+  const collection = db.collection('reviews');
+
+  const reviews = await collection.find({ "restaurant": restaurant._id, "description": { $regex: `${search}`, $options: 'i' }}).sort({ rating: 1, date: -1 }).limit(5).skip((page - 1) * 5).toArray();
+
+  return reviews;
 };
 
 const alphaRest5 = async (page, search) => {
@@ -112,6 +140,14 @@ const getReview = async(review_id) => {
   return review;
 }
 
+
+const getRestofUrl = async(resturl) => {
+  const db = await connectToDatabase();
+  const collection = db.collection('restaurants');
+  const restaurant = await collection.find({"url": resturl}).toArray();
+  return restaurant;
+}
+
 const checkIfExists = async(collection, key, value) => {
   try {
     // Use findOne() to find a document with the specified key-value pair.
@@ -146,6 +182,53 @@ const deleteReview = async(reviewId) => {
     }
 }
 
+const updateRating = async(restaurant) => {
+    const reviews = await getRestReviewsLatest(restaurant);
+    console.log(reviews);
+    var total = reviews.length;
+    var sum = 0;
+    for(let review of reviews){
+        sum += review.rating;
+    }
+    var rating = parseFloat((sum / total).toFixed(2));
+
+    const db = await connectToDatabase();
+
+    const filter = { "_id": restaurant._id};
+    const updatedValues = {
+      "rating": rating,
+    };
+    const update = { $set: updatedValues };
+    const options = { returnOriginal: false };
+    const updatedRating = await db.collection('restaurants').findOneAndUpdate(filter, update, options);
+    console.log(updatedRating);
+}
+
+
+const getUnreviewed = async (userId) => {
+  try {
+    const db = await connectToDatabase();
+
+    const userReviews = await db.collection('reviews').find({ "user": userId }).toArray();
+
+    console.log(userReviews);
+    // Step 2: Extract unique restaurant IDs from the reviews
+    const reviewedRestaurantIds = userReviews.map(review => review.restaurant);
+
+    console.log(reviewedRestaurantIds);
+
+    // Step 3: Find all restaurants that the user hasn't reviewed yet
+    const unreviewedRestaurants = await db.collection('restaurants').find({
+      _id: {$nin: reviewedRestaurantIds}
+    }).toArray();
+
+    return unreviewedRestaurants;
+  } catch (error) {
+    console.error('Error while fetching data:', error);
+    return null;
+  }
+}
+
 
 
 
@@ -156,6 +239,8 @@ module.exports = {
   topRest5,
   botRest5,
   alphaRest5,
+  topRev5,
+  botRev5,
   getRestReviewsLatest,
   getUserofReview,
   getUserofURL,
@@ -163,7 +248,10 @@ module.exports = {
   getUserReviewsLatest,
   getRestofReview,
   getReview,
+  getRestofUrl,
+  getUnreviewed,
   checkIfExists,
-  deleteReview
+  deleteReview,
+  updateRating
 };
 

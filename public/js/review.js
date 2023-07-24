@@ -4,10 +4,10 @@ function readMore(readmore) {
     if (moreText.classList.contains('unrevealed')) {
         moreText.classList.remove('unrevealed');
         moreText.classList.add('revealed')
-        readmore.innerHTML = "Read Less";
+        readmore.innerHTML = "Read Less.";
     } else {
         moreText.classList.remove('revealed');
         moreText.classList.add('unrevealed')
-        readmore.innerHTML = "Read More.";
+        readmore.innerHTML = "...Read More.";
     }
   }

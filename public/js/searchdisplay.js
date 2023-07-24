@@ -188,7 +188,11 @@ function searchdisplay (document, restaurants, reviews, users) {
         var review_date = reviews[count][0].date;
         dateString = `${review_date.getFullYear()}-${review_date.getMonth() + 1}-${review_date.getDate()} ${review_date.getHours()}:${review_date.getMinutes()}:${review_date.getSeconds()}`;
 
-        reviewDate.textContent = dateString;
+        if(reviews[count][0].edited){
+            reviewDate.textContent = `Edited ${dateString}`;
+        } else {
+            reviewDate.textContent = dateString;
+        }
         reviewTop.appendChild(reviewDate);
 
         // Create the review details section

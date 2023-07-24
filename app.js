@@ -2,26 +2,35 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const session = require('express-session');
+const bodyParser = require("body-parser");
 const { JSDOM } = require('jsdom');
 const { ObjectId } = require('mongodb');
+const cloudinary = require('cloudinary').v2;
+require('dotenv').config();
+
 
 const createDOMPurify = require('dompurify');
 const window = new JSDOM('').window;
 const DOMPurify = createDOMPurify(window);
 
-const cloudinaryUploadURL = `https://api.cloudinary.com/v1_1/dg28enybo/upload`;
-const apiKey = process.env.CLOUD_KEY;
-const apiSecret = process.env.CLOUD_SECRET;
+cloudinary.config({
+  cloud_name: 'dg28enybo',
+  api_key: process.env.CLOUD_KEY,
+  api_secret: process.env.CLOUD_SECRET
+});
 
-const { connectToDatabase, fetchRest, topRest6, topRest5, botRest5, alphaRest5, getRestReviewsLatest, getUserofReview, getUserofURL, userLatest5, getUserReviewsLatest, getRestofReview, getReview, checkIfExists } = require('./public/js/db');
+const { connectToDatabase, fetchRest, topRest6, topRest5, botRest5, alphaRest5, topRev5, botRev5, getRestReviewsLatest, getUserofReview, getUserofURL, userLatest5, getUserReviewsLatest, getRestofReview, getReview, getRestofUrl, getUnreviewed, updateRating, checkIfExists } = require('./public/js/db');
 const { homepage } = require('./public/js/homepage');
 const { searchdisplay } = require('./public/js/searchdisplay');
 const { profilepage } = require('./public/js/profilepage.js');
 const { editreview } = require('./public/js/editreview.js');
+const { createreview, createreviewRest } = require('./public/js/createreview.js');
+const { restaurantpage } = require('./public/js/restaurantpage.js');
 const { profilesettings } = require('./public/js/profile-settings');
 
 const app = express();
 const port = 3000;
+
 
 connectToDatabase();
 
@@ -37,6 +46,11 @@ app.use(session({
     maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days in milliseconds
   },
 }));
+
+app.use(bodyParser.json({ limit: "20mb" }));
+
+// Increase payload size limit for urlencoded requests (default is 100kb)
+app.use(bodyParser.urlencoded({ limit: "20mb", extended: true }));
 
 app.get('/', async (req, res) => {
   var file;
@@ -66,11 +80,180 @@ app.get('/', async (req, res) => {
   var html = dom.serialize();
 
 
-  const formData = new FormData();
+
 
 
   res.send(html);
 });
+
+app.get('/create-review', async (req, res) => {
+  if(!req.session.isLoggedIn){
+      var file = 'message.html';
+      var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+      var dom = new JSDOM(html);
+      var { window } = dom;
+      var { document } = window;
+
+      const messageTitle = document.querySelector('.settings-title h1');
+      messageTitle.textContent = "Action/URL invalid."
+
+      var html = dom.serialize();
+
+      res.send(html);
+  } else {
+      var file = 'create-review.html';
+      console.log(file);
+      var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+      var dom = new JSDOM(html);
+      var { window } = dom;
+      var { document } = window;
+
+      var profilepic = document.querySelector(".dropdown-profile img");
+      profilepic.src = `${req.session.profile_picture}`;
+
+      var name = document.querySelector(".name");
+      name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+
+      const restaurants = await getUnreviewed(new ObjectId(req.session.userId));
+
+      createreview(document, restaurants);
+
+      var html = dom.serialize();
+
+      res.send(html);
+  }
+});
+
+app.get('/create-review/:url', async (req, res) => {
+  const rest = await getRestofUrl(req.params.url);
+  const restaurants = await getUnreviewed(new ObjectId(req.session.userId));
+  var curRest = "";
+  if(rest.length > 0){
+    curRest = rest[0];
+  }
+  var unreviewed = false;
+  unreviewed = restaurants.some(restaurant =>
+    restaurant._id.toString() === curRest._id.toString()
+  );
+
+  if(!req.session.isLoggedIn || rest.length == 0){
+      var file = 'message.html';
+      var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+      var dom = new JSDOM(html);
+      var { window } = dom;
+      var { document } = window;
+
+      const messageTitle = document.querySelector('.settings-title h1');
+      messageTitle.textContent = "Action/URL invalid."
+
+      var html = dom.serialize();
+
+      res.send(html);
+  } else if (!unreviewed){
+      var file = 'message.html';
+      var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+      var dom = new JSDOM(html);
+      var { window } = dom;
+      var { document } = window;
+
+      const messageTitle = document.querySelector('.settings-title h1');
+      messageTitle.textContent = "Restaurant already reviewed."
+
+      var html = dom.serialize();
+
+      res.send(html);
+  } else {
+      var file = 'create-review-specific.html';
+      console.log(file);
+      var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+      var dom = new JSDOM(html);
+      var { window } = dom;
+      var { document } = window;
+
+      var profilepic = document.querySelector(".dropdown-profile img");
+      profilepic.src = `${req.session.profile_picture}`;
+
+      var name = document.querySelector(".name");
+      name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+
+
+
+      createreviewRest(document, restaurants, rest[0]);
+
+      var html = dom.serialize();
+
+      res.send(html);
+  }
+});
+
+app.post('/create-review/:url', async (req, res) => {
+    const reviewrating = parseFloat(req.body.reviewrating);
+    const title = req.body.title;
+    const description = req.body.description;
+    const images = req.body.imageSources;
+
+    var body = "";
+    var readmore = "";
+
+    if (description.length <= 140) {
+      body = description;
+    } else {
+
+      var firstPart = description.substring(0, 300);
+      const lastSpaceIndex = firstPart.lastIndexOf('.');
+      var secondPart = '';
+      if (lastSpaceIndex !== -1) {
+        // If a space is found before the cutoff point, split at that space
+        secondPart = description.substring(lastSpaceIndex + 2).trim();
+        firstPart = description.substring(0, lastSpaceIndex).trim();
+        body = DOMPurify.sanitize(`${firstPart.replace(/\n/g, '<br>')}.`);;
+        readmore = DOMPurify.sanitize(`<br>${secondPart.replace(/\n/g, '<br>')}`);
+      } else {
+        body = description.replace(/\n/g, '<br>');
+      }
+    }
+
+    console.log(req.params.url);
+
+    const restaurant = await getRestofUrl(req.params.url);
+
+
+
+    var media = JSON.parse(images);
+
+    var date = new Date();
+
+
+    const insertingValues = {
+      "restaurant": restaurant[0]._id,
+      "user": new ObjectId(req.session.userId),
+      "date": date,
+      "rating": reviewrating,
+      "title": title,
+      "media": media,
+      "body": body,
+      "readmore": readmore,
+      "helpful": []
+    };
+    const db = await connectToDatabase();
+    const insertedReview = await db.collection('reviews').insertOne(insertingValues);
+
+    console.log(restaurant[0]);
+    updateRating(restaurant[0]);
+
+    /* console.log(insertedReview); */
+
+    res.redirect('/');
+});
+
+
+
+
 
 
 app.get('/edit-review', async (req, res) => {
@@ -146,13 +329,13 @@ app.post('/edit-review', async (req, res) => {
     } else {
 
       var firstPart = description.substring(0, 300);
-      const lastSpaceIndex = firstPart.lastIndexOf('.');
+      const lastSpaceIndex = firstPart.lastIndexOf('. ');
       var secondPart = '';
       if (lastSpaceIndex !== -1) {
         // If a space is found before the cutoff point, split at that space
         secondPart = description.substring(lastSpaceIndex + 2).trim();
         firstPart = description.substring(0, lastSpaceIndex).trim();
-        body = `${firstPart.replace(/\n/g, '<br>')}.`;;
+        body = `${firstPart.replace(/\n/g, '<br>')}. `;;
         readmore = `<br>${secondPart.replace(/\n/g, '<br>')}`;
       } else {
         body = description.replace(/\n/g, '<br>');
@@ -160,6 +343,16 @@ app.post('/edit-review', async (req, res) => {
     }
 
     var media = JSON.parse(images);
+    const prevMedia = await getReview(new ObjectId(reviewid));
+
+    console.log(media);
+
+    for(let prev of prevMedia[0].media){
+      if(!media.includes(prev)){
+        console.log(prev);
+        await deleteFileFromCloudinary(prev);
+      }
+    }
 
     var date = new Date();
 
@@ -169,7 +362,9 @@ app.post('/edit-review', async (req, res) => {
       "body": body,
       "readmore": readmore,
       "date": date,
-      "rating": reviewrating
+      "rating": reviewrating,
+      "media": media,
+      "edited": true
     };
     const update = { $set: updatedValues };
 
@@ -177,7 +372,9 @@ app.post('/edit-review', async (req, res) => {
     const db = await connectToDatabase();
     const updatedReview = await db.collection('reviews').findOneAndUpdate(filter, update, options);
 
-    console.log(updatedReview);
+    const restToUpdate = await getRestofReview(updatedReview.value);
+
+    updateRating(restToUpdate[0]);
 
     res.redirect('/');
 });
@@ -275,6 +472,115 @@ app.get('/register', async (req, res) => {
 });
 
 
+app.get('/restaurants/:url', async (req, res) => {
+  var file;
+  if (req.session.isLoggedIn) {
+    file = 'restaurant-logged.html';
+  } else {
+    file = 'restaurant.html';
+  }
+  console.log(file);
+  var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+  var dom = new JSDOM(html);
+  var { window } = dom;
+  var { document } = window;
+
+  if (req.session.isLoggedIn) {
+    var profilepic = document.querySelector(".dropdown-profile img");
+    profilepic.src = `${req.session.profile_picture}`;
+
+    var name = document.querySelector(".name");
+    name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+  }
+
+  var types = ["highestrated", "lowestrated", "mosthelpful"];
+
+  if(!req.query.type | !types.includes(req.query.type)){
+    req.query.type = "highestrated";
+  }
+
+  if(!req.query.page || parseInt(req.query.page) < 1){
+    req.query.page = "1";
+  }
+
+  if(!req.query.search){
+    req.query.search = "";
+  }
+
+
+  if(req.query.type === "highestrated"){
+    var pageNum = parseInt(req.query.page);
+    const restaurant = await getRestofUrl(req.params.url);
+    const reviews = await topRev5(pageNum, restaurant[0], req.query.search);
+    var users = [];
+    console.log(reviews.length);
+    for(let reviewSet of reviews){
+      users.push(await getUserofReview(reviewSet));
+    }
+    console.log(users);
+    restaurantpage(document, restaurant[0], reviews, req.session.userId, users);
+  } else if(req.query.type === "lowestrated"){
+    var pageNum = parseInt(req.query.page);
+    const restaurant = await getRestofUrl(req.params.url);
+    const reviews = await topRev5(pageNum, restaurant[0], req.query.search);
+    var users = [];
+    console.log(reviews.length);
+    for(let reviewSet of reviews){
+      users.push(await getUserofReview(reviewSet));
+    }
+    console.log(users);
+    restaurantpage(document, restaurant[0], reviews, req.session.userId, users);
+  }
+
+
+  const leftPage = document. querySelector('#leftpage');
+  const rightPage = document.querySelector('#rightpage');
+  const firstNum = document.querySelector('#firstpage');
+  const secondNum = document.querySelector('#secondpage');
+  const thirdNum = document.querySelector('#thirdpage');
+  const fourthNum = document.querySelector('#fourthpage');
+  const fifthNum = document.querySelector('#fifthpage');;
+
+
+  if(pageNum === 1){
+    firstNum.classList.add("current-page");
+    leftPage.href = `/restaurants?type=${req.query.type}&page=1&search=${req.query.search}`;
+    rightPage.href = `/restaurants?type=${req.query.type}&page=2&search=${req.query.search}`;
+    firstNum.href = `/restaurants?type=${req.query.type}&page=1&search=${req.query.search}`;
+    secondNum.href = `/restaurants?type=${req.query.type}&page=2&search=${req.query.search}`;
+    thirdNum.href = `/restaurants?type=${req.query.type}&page=3&search=${req.query.search}`;
+    fourthNum.href = `/restaurants?type=${req.query.type}&page=4&search=${req.query.search}`;
+    fifthNum.href = `/restaurants?type=${req.query.type}&page=5&search=${req.query.search}`;
+  } else if (pageNum === 2){
+    secondNum.classList.add("current-page");
+    leftPage.href = `/restaurants?type=${req.query.type}&page=1&search=${req.query.search}`;
+    rightPage.href = `/restaurants?type=${req.query.type}&page=3&search=${req.query.search}`;
+    firstNum.href = `/restaurants?type=${req.query.type}&page=1&search=${req.query.search}`;
+    secondNum.href = `/restaurants?type=${req.query.type}&page=2&search=${req.query.search}`;
+    thirdNum.href = `/restaurants?type=${req.query.type}&page=3&search=${req.query.search}`;
+    fourthNum.href = `/restaurants?type=${req.query.type}&page=4&search=${req.query.search}`;
+    fifthNum.href = `/restaurants?type=${req.query.type}&page=5&search=${req.query.search}`;
+  } else if (pageNum >= 3){
+    thirdNum.classList.add("current-page");
+    leftPage.href = `/restaurants?type=${req.query.type}&page=${pageNum - 1}&search=${req.query.search}`;
+    rightPage.href = `/restaurants?type=${req.query.type}&page=${pageNum + 1}&search=${req.query.search}`;
+    firstNum.href = `/restaurants?type=${req.query.type}&page=${pageNum - 2}&search=${req.query.search}`;
+    secondNum.href = `/restaurants?type=${req.query.type}&page=${pageNum - 1}&search=${req.query.search}`;
+    thirdNum.href = `/restaurants?type=${req.query.type}&page=${pageNum}&search=${req.query.search}`;
+    fourthNum.href = `/restaurants?type=${req.query.type}&page=${pageNum + 1}&search=${req.query.search}`;
+    fifthNum.href = `/restaurants?type=${req.query.type}&page=${pageNum + 2}&search=${req.query.search}`;
+    firstNum.textContent = `${pageNum - 2}`;
+    secondNum.textContent = `${pageNum - 1}`;
+    thirdNum.textContent = `${pageNum}`;
+    fourthNum.textContent = `${pageNum + 1}`;
+    fifthNum.textContent = `${pageNum + 2}`;
+  }
+  var html = dom.serialize();
+
+  res.send(html);
+});
+
 app.get('/restaurants', async (req, res) => {
   var file;
   if (req.session.isLoggedIn) {
@@ -322,6 +628,7 @@ app.get('/restaurants', async (req, res) => {
     for(let restaurant of restaurants){
       reviews.push(await getRestReviewsLatest(restaurant));
     }
+    console.log(reviews);
     for(let reviewSet of reviews){
       users.push(await getUserofReview(reviewSet[0]));
     }
@@ -404,13 +711,38 @@ app.get('/restaurants', async (req, res) => {
     fourthNum.textContent = `${pageNum + 1}`;
     fifthNum.textContent = `${pageNum + 2}`;
   }
-
-
-
-
   var html = dom.serialize();
 
   res.send(html);
+});
+
+
+app.get('/user', async (req, res) => {
+  if(req.session.isLoggedIn) {
+    res.redirect(`/user/${req.session.url}`)
+  } else {
+      var file = 'message.html';
+      var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+      var dom = new JSDOM(html);
+      var { window } = dom;
+      var { document } = window;
+
+      if (req.session.isLoggedIn) {
+        var profilepic = document.querySelector(".dropdown-profile img");
+        profilepic.src = `${req.session.profile_picture}`;
+
+        var name = document.querySelector(".name");
+        name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+      }
+
+      const messageTitle = document.querySelector('.settings-title h1');
+      messageTitle.textContent = "Action/URL invalid."
+
+      var html = dom.serialize();
+
+      res.send(html);
+  }
 });
 
 app.get('/user/:url', async (req, res) => {
@@ -512,14 +844,7 @@ app.get('/user/:url', async (req, res) => {
           restaurants.push(await getRestofReview(review));
         }
 
-        var curUserId = undefined;
-
-        console.log(req.session.userId);
-
-        if(req.session.userId != undefined){
-            curUserId = new ObjectId(req.session.userId);
-        }
-        profilepage(document, curUserId, user[0], num, reviews5, restaurants);
+        profilepage(document, req.session.userId, user[0], num, reviews5, restaurants);
 
         const allReview = document.querySelector('.all-review-option');
         const latestReview = document.querySelector('.latest-review-option');
@@ -573,47 +898,11 @@ app.get('/user/:url', async (req, res) => {
         }
       }
 
-      const deleteLinks = document.querySelectorAll('.delete')
-
-      if(deleteLinks.length > 0){
-        for(let deleteLink of deleteLinks)
-        deleteLink.addEventListener('click', async (event) => {
-          event.preventDefault();
-
-          // Show a pop-up warning using confirm()
-          const shouldDelete = confirm('Are you sure you want to delete this review?');
-
-          // Check if the user clicked "OK"
-          if (shouldDelete) {
-            try {
-              // Send an HTTP request to the server (Express) using fetch
-              const response = await fetch("/delete", {
-                method: "POST", // or "GET", "PUT", "DELETE", etc., depending on your needs
-                removal: event.target.href
-              });
-
-              // Check the server's response and handle accordingly
-              if (response.ok) {
-                // If the request was successful, redirect the user to a new page
-                window.location.reload();
-              } else {
-
-                console.error("Something went wrong with the request.");
-              }
-            } catch (error) {
-              console.error("Error occurred:", error);
-            }
-          } else {
-            console.log('Review deletion cancelled.');
-          }
-        });
-      }
-
       var html = dom.serialize();
 
       res.send(html);
-  }
-});
+    }
+  });
 
 app.get('/logout', async (req, res) => {
   req.session.destroy((err) => {
@@ -625,6 +914,31 @@ app.get('/logout', async (req, res) => {
     // Redirect the user to the login page or any other appropriate page
     res.redirect('/');
   });
+});
+
+app.get('/refresh-previous', (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>Refresh Previous Page</title>
+      </head>
+      <body>
+        <script>
+          // Function to refresh the previous page
+          function refreshPrevious() {
+            window.history.go(-1);
+            setTimeout(() => {
+              location.reload();
+            }, 100); // Adjust the timeout value if needed
+          }
+
+          // Call the function on page load
+          refreshPrevious();
+        </script>
+      </body>
+    </html>
+  `);
 });
 
 
@@ -661,21 +975,42 @@ app.use((req, res, next) => {
 });
 
 
+
+
 app.listen(port, () => {
   console.log(`Node.js server listening on port ${port}`);
 });
 
-/*
-  console.log(process.env.CLOUD_NAME);
-  formData.append('file', 'https://images.unsplash.com/photo-1513002749550-c59d786b8e6c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8MXx8fGVufDB8fHx8fA%3D%3D&w=1000&q=80'); // Replace with the path to your image file
-  formData.append('upload_preset', 'fs5jhgac');
-  formData.append('folder', 'background')
-  formData.append("api_key", `${apiKey}`);
+const deleteFileFromCloudinary = async (publicUrl) => {
+  try {
+    const publicId = getPublicIdFromUrl(publicUrl);
+    const result = await cloudinary.uploader.destroy(publicId);
+    console.log(result);
+  } catch (error) {
+    console.error("Error deleting the file from Cloudinary:", error);
+  }
+};
 
-  const response = await fetch(cloudinaryUploadURL, {
-    method: 'POST',
-    body: formData,
+const getPublicIdFromUrl = (publicUrl) => {
+  const urlParts = publicUrl.split('/');
+
+  // Find the index of 'upload' in the URL
+  const uploadIndex = urlParts.indexOf('upload');
+
+  // Extract the public ID from the URL based on the upload index
+  const publicId = urlParts.slice(uploadIndex + 2).join('/');
+
+  // Remove any file extension (e.g., '.jpg') from the public ID
+  const publicIdWithoutExtension = publicId.split('.')[0];
+  console.log(publicIdWithoutExtension)
+  return `${publicIdWithoutExtension}`;
+};
+
+function waitHalfSecond() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, 500); // Wait for half a second (500 milliseconds)
   });
+}
 
-  const result = await response.json();
-  console.log(result); */

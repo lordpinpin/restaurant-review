@@ -340,7 +340,7 @@ header {
     flex-direction: column;
     justify-content: center;
     position: relative;
-    width: 800px;
+    width: 850px;
     margin: 150px 0px;
 }
 
@@ -691,6 +691,10 @@ header {
     margin-right: 10px;
 }
 
+.banner-content .tags ul li{
+    margin-right: 10px;
+}
+
 
 
 .tags {
@@ -910,7 +914,7 @@ header {
     background: transparent;
     outline: none;
     cursor: pointer;
-    font-size: 2.25em;
+    font-size: 2em;
     font-weight: 700;
     color: #eeeeee;
     transition: .25s;
@@ -939,7 +943,7 @@ header {
 }
 
 .choose-nav.revealed {
-    margin-top: 35px;
+    margin-top: 5px;
     display: block;
     height: 130px;
 }
@@ -991,6 +995,34 @@ header {
 }
 
 .choose-item p:hover::after{
+    transform-origin: left;
+    transform: scaleX(1);
+}
+
+
+.choose-item a {
+    cursor: pointer;
+    font-size: 1em;
+    color:#eeeeee;
+    text-decoration: none;
+    font-weight: 200;
+}
+
+.choose-item a::after{
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: -3;
+    width: 100%;
+    height: 2px;
+    background: #eeeeee;
+    border-radius: 5px;
+    transform-origin: right;
+    transform: scaleX(0);
+    transition: transform 0.4s;
+}
+
+.choose-item a:hover::after{
     transform-origin: left;
     transform: scaleX(1);
 }
@@ -1309,6 +1341,10 @@ header {
     color: #eeeeee;
 }
 
+.preview .tags ul li{
+    margin-right: 10px;
+}
+
 .preview-description {
     color: #eeeeee;
     padding: 20px;
@@ -1603,7 +1639,7 @@ header {
 .profile-section {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 1000px;
     margin: 150px 100px 50px;
     padding: 20px;
     min-height: 700px;
@@ -1868,6 +1904,7 @@ header {
 .profile-review .review {
     position: relative;
     margin-bottom: 20px;
+    width: 100%;
 }
 
 .review-details {
@@ -1941,9 +1978,18 @@ header {
     top: 46px;
 }
 
+.review-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
+}
+
 .profile-review-details {
     display: flex;
     flex-direction: column;
+    width: 100%;
+
 }
 
 .profile-review-details .review-rating{
@@ -2060,7 +2106,7 @@ img::after {
     border-top-right-radius: 20px;
     top: 125px;
     height: 125px;
-    backdrop-filter: blur(10px) brightness(75%);;
+    backdrop-filter: blur(10px) brightness(45%);;
     width: 850px;
     padding: 10px;
     box-shadow: inset 0px 2px 2px rgba(0,0,0,0.5);
@@ -2186,16 +2232,6 @@ img::after {
   }
 
   /* Individual bars */
-  .bar-5 {width: 40%}
-  .bar-45 {width: 40%}
-  .bar-4 {width: 15%}
-  .bar-35 {width: 0%}
-  .bar-3 {width: 0%}
-  .bar-25 {width: 5%}
-  .bar-2 {width: 0%}
-  .bar-15 {width: 0%}
-  .bar-1 {width: 0%}
-  .bar-05 {width: 0%}
 
   .rating-total-numbers {
     color:#eeeeee;
@@ -2291,32 +2327,32 @@ img::after {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    top: -20px;
+    top: -5px;
 }
 
 .useful-section {
     display: flex;
     align-items: center;
+    margin-right: 20px;
 }
 
 .useful-count {
     font-size: .8rem;
     font-weight: 200;
     color:#eeeeee;
+    margin-top: 10px;
     margin-bottom: 5px;
     margin-left: 20px;
 }
 
-.useful-question p {
+.useful-question {
     color:#eeeeee;
     font-weight: 700;
     margin-left: 20px;
 }
 
-.option-content .btnSubmit{
-    width: 70px;
-    height: 35px;
-    margin-left:20px;
+.option-content .btnSubmit {
+    margin-left: 20px;
 }
 
 .restaurant-reply {
@@ -2495,7 +2531,10 @@ img::after {
     opacity: 1;
 }
 
-
+a.btnSubmit {
+    margin-left: 10px;
+    padding: 8px 18px;
+}
 
 .left-icon ion-icon, .right-icon ion-icon {
     padding: 5px;

@@ -2,6 +2,7 @@
 
 const editReviewForm = document.querySelector('.create-review');
 const emptyTitle = document.querySelector('#emptytitle');
+const emptyRating = document.querySelector('#emptyrating');
 const emptyDesc = document.querySelector('#emptydesc');
 
 function isNotEmpty(value) {
@@ -11,16 +12,32 @@ function isNotEmpty(value) {
 
 editReviewForm.addEventListener('submit', async (event) => {
     event.preventDefault();
+    console.log("Check");
     emptyTitle.classList.add("hide");
+    emptyRating.classList.add("hide");
     emptyDesc.classList.add("hide");
 
-    if (!isNotEmpty(editReviewForm.elements.title.value) || !isNotEmpty(editReviewForm.elements.description.value)) {
-        event.preventDefault();
+    const fieldset = editReviewForm.querySelector('fieldset');
+    const inputs = fieldset.querySelectorAll('input[type="radio"]');
+
+    let selectedOption = null;
+
+    // Check if any input is checked and get the selected option
+    inputs.forEach(input => {
+      if (input.checked) {
+        selectedOption = input.value;
+      }
+    });
+
+    if (!isNotEmpty(editReviewForm.elements.title.value) || !isNotEmpty(editReviewForm.elements.description.value) || selectedOption == null) {
         if(!isNotEmpty(editReviewForm.elements.title.value)) {
             emptyTitle.classList.remove("hide");
         }
         if(!isNotEmpty(editReviewForm.elements.description.value)) {
             emptyDesc.classList.remove("hide");
+        }
+        if(selectedOption == null){
+            emptyRating.classList.remove("hide");
         }
     } else {
         const imageSources = [];
@@ -32,8 +49,11 @@ editReviewForm.addEventListener('submit', async (event) => {
           const src = item.getAttribute('src');
           imageSources.push(src);
         });
+
         const imageSourcesInput = document.querySelector('#imageSourcesInput')
         imageSourcesInput.value = JSON.stringify(imageSources);
+
+        editReviewForm.action = window.location.href
         editReviewForm.submit();
     }
 });

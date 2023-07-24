@@ -129,6 +129,7 @@ function profilepage (document, cur_user_id, user, num, reviews, restaurants) {
 
 
         console.log(`${cur_user_id === user._id.toString()}`);
+
         if(cur_user_id != undefined && cur_user_id === user._id.toString()){
             console.log("adding modify");
             const modifyReviewDiv = document.createElement("div");
@@ -145,10 +146,9 @@ function profilepage (document, cur_user_id, user, num, reviews, restaurants) {
             separator.textContent = '|';
 
             // Create the delete link
-            const deleteLink = document.createElement('a');
+            const deleteLink = document.createElement('p');
             deleteLink.classList.add('delete');
             deleteLink.textContent = 'Delete';
-            deleteLink.href = `/delete-review?review=${review._id}`;
 
             // Append the elements to the modify-review div
             modifyReviewDiv.appendChild(editLink);
@@ -166,7 +166,11 @@ function profilepage (document, cur_user_id, user, num, reviews, restaurants) {
         var review_date = review.date;
         dateString = `${review_date.getFullYear()}-${review_date.getMonth() + 1}-${review_date.getDate()} ${review_date.getHours()}:${review_date.getMinutes()}:${review_date.getSeconds()}`;
 
-        dateH4.textContent = dateString;
+        if(review.edited){
+            dateH4.textContent = `Edited ${dateString}`;
+        } else {
+            dateH4.textContent = dateString;
+        }
 
         // Append profile-review-rate div and date h4 element to review-rating div
         reviewRatingDiv.appendChild(profileReviewRateDiv);
@@ -187,7 +191,7 @@ function profilepage (document, cur_user_id, user, num, reviews, restaurants) {
         // Create p element with class "rev" for the review text
         const reviewTextP = document.createElement("p");
         reviewTextP.classList.add("rev");
-        reviewTextP.textContent = review.body;
+        reviewTextP.innerHTML = review.body;
         ownReviewDiv.appendChild(reviewTextP);
 
         if((!(review.readmore === ""))){
@@ -198,7 +202,7 @@ function profilepage (document, cur_user_id, user, num, reviews, restaurants) {
             const anchorElement = document.createElement("a");
             anchorElement.classList.add("read");
             anchorElement.setAttribute("onclick", "readMore(this)");
-            anchorElement.textContent = " Read More.";
+            anchorElement.textContent = " ...Read More.";
 
             reviewTextP.appendChild(spanElement);
             reviewTextP.appendChild(anchorElement);
@@ -244,6 +248,8 @@ function profilepage (document, cur_user_id, user, num, reviews, restaurants) {
         count++;
     }
 }
+
+
 
 module.exports = {
     profilepage
