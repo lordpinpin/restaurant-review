@@ -5,21 +5,27 @@ const session = require('express-session');
 const bodyParser = require("body-parser");
 const { JSDOM } = require('jsdom');
 const { ObjectId } = require('mongodb');
+const cloudinary = require('cloudinary').v2;
+require('dotenv').config();
 
 
 const createDOMPurify = require('dompurify');
 const window = new JSDOM('').window;
 const DOMPurify = createDOMPurify(window);
 
-const cloudinaryUploadURL = `https://api.cloudinary.com/v1_1/dg28enybo`;
-const apiKey = process.env.CLOUD_KEY;
-const apiSecret = process.env.CLOUD_SECRET;
+cloudinary.config({
+  cloud_name: 'dg28enybo',
+  api_key: process.env.CLOUD_KEY,
+  api_secret: process.env.CLOUD_SECRET
+});
 
-const { connectToDatabase, fetchRest, topRest6, topRest5, botRest5, alphaRest5, getRestReviewsLatest, getUserofReview, getUserofURL, userLatest5, getUserReviewsLatest, getRestofReview, getReview, checkIfExists } = require('./public/js/db');
+const { connectToDatabase, fetchRest, topRest6, topRest5, botRest5, alphaRest5, topRev5, botRev5, getRestReviewsLatest, getUserofReview, getUserofURL, userLatest5, getUserReviewsLatest, getRestofReview, getReview, getRestofUrl, getUnreviewed, updateRating, checkIfExists } = require('./public/js/db');
 const { homepage } = require('./public/js/homepage');
 const { searchdisplay } = require('./public/js/searchdisplay');
 const { profilepage } = require('./public/js/profilepage.js');
 const { editreview } = require('./public/js/editreview.js');
+const { createreview, createreviewRest } = require('./public/js/createreview.js');
+const { restaurantpage } = require('./public/js/restaurantpage.js');
 const { profilesettings } = require('./public/js/profile-settings');
 
 const app = express();
@@ -79,6 +85,175 @@ app.get('/', async (req, res) => {
 
   res.send(html);
 });
+
+app.get('/create-review', async (req, res) => {
+  if(!req.session.isLoggedIn){
+      var file = 'message.html';
+      var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+      var dom = new JSDOM(html);
+      var { window } = dom;
+      var { document } = window;
+
+      const messageTitle = document.querySelector('.settings-title h1');
+      messageTitle.textContent = "Action/URL invalid."
+
+      var html = dom.serialize();
+
+      res.send(html);
+  } else {
+      var file = 'create-review.html';
+      console.log(file);
+      var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+      var dom = new JSDOM(html);
+      var { window } = dom;
+      var { document } = window;
+
+      var profilepic = document.querySelector(".dropdown-profile img");
+      profilepic.src = `${req.session.profile_picture}`;
+
+      var name = document.querySelector(".name");
+      name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+
+      const restaurants = await getUnreviewed(new ObjectId(req.session.userId));
+
+      createreview(document, restaurants);
+
+      var html = dom.serialize();
+
+      res.send(html);
+  }
+});
+
+app.get('/create-review/:url', async (req, res) => {
+  const rest = await getRestofUrl(req.params.url);
+  const restaurants = await getUnreviewed(new ObjectId(req.session.userId));
+  var curRest = "";
+  if(rest.length > 0){
+    curRest = rest[0];
+  }
+  var unreviewed = false;
+  unreviewed = restaurants.some(restaurant =>
+    restaurant._id.toString() === curRest._id.toString()
+  );
+
+  if(!req.session.isLoggedIn || rest.length == 0){
+      var file = 'message.html';
+      var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+      var dom = new JSDOM(html);
+      var { window } = dom;
+      var { document } = window;
+
+      const messageTitle = document.querySelector('.settings-title h1');
+      messageTitle.textContent = "Action/URL invalid."
+
+      var html = dom.serialize();
+
+      res.send(html);
+  } else if (!unreviewed){
+      var file = 'message.html';
+      var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+      var dom = new JSDOM(html);
+      var { window } = dom;
+      var { document } = window;
+
+      const messageTitle = document.querySelector('.settings-title h1');
+      messageTitle.textContent = "Restaurant already reviewed."
+
+      var html = dom.serialize();
+
+      res.send(html);
+  } else {
+      var file = 'create-review-specific.html';
+      console.log(file);
+      var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+      var dom = new JSDOM(html);
+      var { window } = dom;
+      var { document } = window;
+
+      var profilepic = document.querySelector(".dropdown-profile img");
+      profilepic.src = `${req.session.profile_picture}`;
+
+      var name = document.querySelector(".name");
+      name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+
+
+
+      createreviewRest(document, restaurants, rest[0]);
+
+      var html = dom.serialize();
+
+      res.send(html);
+  }
+});
+
+app.post('/create-review/:url', async (req, res) => {
+    const reviewrating = parseFloat(req.body.reviewrating);
+    const title = req.body.title;
+    const description = req.body.description;
+    const images = req.body.imageSources;
+
+    var body = "";
+    var readmore = "";
+
+    if (description.length <= 140) {
+      body = description;
+    } else {
+
+      var firstPart = description.substring(0, 300);
+      const lastSpaceIndex = firstPart.lastIndexOf('.');
+      var secondPart = '';
+      if (lastSpaceIndex !== -1) {
+        // If a space is found before the cutoff point, split at that space
+        secondPart = description.substring(lastSpaceIndex + 2).trim();
+        firstPart = description.substring(0, lastSpaceIndex).trim();
+        body = DOMPurify.sanitize(`${firstPart.replace(/\n/g, '<br>')}.`);;
+        readmore = DOMPurify.sanitize(`<br>${secondPart.replace(/\n/g, '<br>')}`);
+      } else {
+        body = description.replace(/\n/g, '<br>');
+      }
+    }
+
+    console.log(req.params.url);
+
+    const restaurant = await getRestofUrl(req.params.url);
+
+
+
+    var media = JSON.parse(images);
+
+    var date = new Date();
+
+
+    const insertingValues = {
+      "restaurant": restaurant[0]._id,
+      "user": new ObjectId(req.session.userId),
+      "date": date,
+      "rating": reviewrating,
+      "title": title,
+      "media": media,
+      "body": body,
+      "readmore": readmore,
+      "helpful": []
+    };
+    const db = await connectToDatabase();
+    const insertedReview = await db.collection('reviews').insertOne(insertingValues);
+
+    console.log(restaurant[0]);
+    updateRating(restaurant[0]);
+
+    /* console.log(insertedReview); */
+
+    res.redirect('/');
+});
+
+
+
+
 
 
 app.get('/edit-review', async (req, res) => {
@@ -154,13 +329,13 @@ app.post('/edit-review', async (req, res) => {
     } else {
 
       var firstPart = description.substring(0, 300);
-      const lastSpaceIndex = firstPart.lastIndexOf('.');
+      const lastSpaceIndex = firstPart.lastIndexOf('. ');
       var secondPart = '';
       if (lastSpaceIndex !== -1) {
         // If a space is found before the cutoff point, split at that space
         secondPart = description.substring(lastSpaceIndex + 2).trim();
         firstPart = description.substring(0, lastSpaceIndex).trim();
-        body = `${firstPart.replace(/\n/g, '<br>')}.`;;
+        body = `${firstPart.replace(/\n/g, '<br>')}. `;;
         readmore = `<br>${secondPart.replace(/\n/g, '<br>')}`;
       } else {
         body = description.replace(/\n/g, '<br>');
@@ -188,7 +363,8 @@ app.post('/edit-review', async (req, res) => {
       "readmore": readmore,
       "date": date,
       "rating": reviewrating,
-      "media": media
+      "media": media,
+      "edited": true
     };
     const update = { $set: updatedValues };
 
@@ -196,7 +372,9 @@ app.post('/edit-review', async (req, res) => {
     const db = await connectToDatabase();
     const updatedReview = await db.collection('reviews').findOneAndUpdate(filter, update, options);
 
-    console.log(updatedReview);
+    const restToUpdate = await getRestofReview(updatedReview.value);
+
+    updateRating(restToUpdate[0]);
 
     res.redirect('/');
 });
@@ -341,6 +519,7 @@ app.get('/restaurants', async (req, res) => {
     for(let restaurant of restaurants){
       reviews.push(await getRestReviewsLatest(restaurant));
     }
+    console.log(reviews);
     for(let reviewSet of reviews){
       users.push(await getUserofReview(reviewSet[0]));
     }
@@ -423,13 +602,120 @@ app.get('/restaurants', async (req, res) => {
     fourthNum.textContent = `${pageNum + 1}`;
     fifthNum.textContent = `${pageNum + 2}`;
   }
-
-
-
-
   var html = dom.serialize();
 
   res.send(html);
+});
+
+app.get('/restaurants/:url', async (req, res) => {
+  var file;
+  if (req.session.isLoggedIn) {
+    file = 'restaurant-logged.html';
+  } else {
+    file = 'restaurant.html';
+  }
+  console.log(file);
+  var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+  var dom = new JSDOM(html);
+  var { window } = dom;
+  var { document } = window;
+
+  if (req.session.isLoggedIn) {
+    var profilepic = document.querySelector(".dropdown-profile img");
+    profilepic.src = `${req.session.profile_picture}`;
+
+    var name = document.querySelector(".name");
+    name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+  }
+
+  if(!req.query.page || parseInt(req.query.page) < 1){
+    req.query.page = "1";
+  }
+
+  var pageNum = parseInt(req.query.page);
+  console.log(pageNum);
+  const restaurant = await getRestofUrl(req.params.url);
+  const reviews = await topRev5(pageNum, restaurant[0], req.query.search);
+  var users = [];
+  for(let reviewSet of reviews){
+    users.push(await getUserofReview(reviewSet));
+  }
+  restaurantpage(document, restaurant[0], reviews, users);
+
+  const leftPage = document. querySelector('#leftpage');
+  const rightPage = document.querySelector('#rightpage');
+  const firstNum = document.querySelector('#firstpage');
+  const secondNum = document.querySelector('#secondpage');
+  const thirdNum = document.querySelector('#thirdpage');
+  const fourthNum = document.querySelector('#fourthpage');
+  const fifthNum = document.querySelector('#fifthpage');;
+
+
+  if(pageNum === 1){
+    firstNum.classList.add("current-page");
+    leftPage.href = `/restaurants?type=${req.query.type}&page=1&search=${req.query.search}`;
+    rightPage.href = `/restaurants?type=${req.query.type}&page=2&search=${req.query.search}`;
+    firstNum.href = `/restaurants?type=${req.query.type}&page=1&search=${req.query.search}`;
+    secondNum.href = `/restaurants?type=${req.query.type}&page=2&search=${req.query.search}`;
+    thirdNum.href = `/restaurants?type=${req.query.type}&page=3&search=${req.query.search}`;
+    fourthNum.href = `/restaurants?type=${req.query.type}&page=4&search=${req.query.search}`;
+    fifthNum.href = `/restaurants?type=${req.query.type}&page=5&search=${req.query.search}`;
+  } else if (pageNum === 2){
+    secondNum.classList.add("current-page");
+    leftPage.href = `/restaurants?type=${req.query.type}&page=1&search=${req.query.search}`;
+    rightPage.href = `/restaurants?type=${req.query.type}&page=3&search=${req.query.search}`;
+    firstNum.href = `/restaurants?type=${req.query.type}&page=1&search=${req.query.search}`;
+    secondNum.href = `/restaurants?type=${req.query.type}&page=2&search=${req.query.search}`;
+    thirdNum.href = `/restaurants?type=${req.query.type}&page=3&search=${req.query.search}`;
+    fourthNum.href = `/restaurants?type=${req.query.type}&page=4&search=${req.query.search}`;
+    fifthNum.href = `/restaurants?type=${req.query.type}&page=5&search=${req.query.search}`;
+  } else if (pageNum >= 3){
+    thirdNum.classList.add("current-page");
+    leftPage.href = `/restaurants?type=${req.query.type}&page=${pageNum - 1}&search=${req.query.search}`;
+    rightPage.href = `/restaurants?type=${req.query.type}&page=${pageNum + 1}&search=${req.query.search}`;
+    firstNum.href = `/restaurants?type=${req.query.type}&page=${pageNum - 2}&search=${req.query.search}`;
+    secondNum.href = `/restaurants?type=${req.query.type}&page=${pageNum - 1}&search=${req.query.search}`;
+    thirdNum.href = `/restaurants?type=${req.query.type}&page=${pageNum}&search=${req.query.search}`;
+    fourthNum.href = `/restaurants?type=${req.query.type}&page=${pageNum + 1}&search=${req.query.search}`;
+    fifthNum.href = `/restaurants?type=${req.query.type}&page=${pageNum + 2}&search=${req.query.search}`;
+    firstNum.textContent = `${pageNum - 2}`;
+    secondNum.textContent = `${pageNum - 1}`;
+    thirdNum.textContent = `${pageNum}`;
+    fourthNum.textContent = `${pageNum + 1}`;
+    fifthNum.textContent = `${pageNum + 2}`;
+  }
+  var html = dom.serialize();
+
+  res.send(html);
+});
+
+app.get('/user', async (req, res) => {
+  if(req.session.isLoggedIn) {
+    res.redirect(`/user/${req.session.url}`)
+  } else {
+      var file = 'message.html';
+      var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+      var dom = new JSDOM(html);
+      var { window } = dom;
+      var { document } = window;
+
+      if (req.session.isLoggedIn) {
+        var profilepic = document.querySelector(".dropdown-profile img");
+        profilepic.src = `${req.session.profile_picture}`;
+
+        var name = document.querySelector(".name");
+        name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+      }
+
+      const messageTitle = document.querySelector('.settings-title h1');
+      messageTitle.textContent = "Action/URL invalid."
+
+      var html = dom.serialize();
+
+      res.send(html);
+  }
 });
 
 app.get('/user/:url', async (req, res) => {
@@ -646,40 +932,35 @@ app.listen(port, () => {
 });
 
 const deleteFileFromCloudinary = async (publicUrl) => {
-  const publicId = getPublicIdFromUrl(publicUrl);
-  const deleteUrl = `${cloudinaryBaseUrl}/image/destroy`;
-
-  const timestamp = Date.now();
-  const signature = generateSignature(publicId, timestamp);
-
-  const deleteOptions = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: `public_id=${encodeURIComponent(publicId)}&api_key=${encodeURIComponent(
-      cloudinaryApiKey
-    )}&timestamp=${encodeURIComponent(timestamp)}&signature=${encodeURIComponent(signature)}`,
-  };
-
   try {
-    const response = await fetch(deleteUrl, deleteOptions);
-    if (response.ok) {
-      console.log("File successfully deleted from Cloudinary.");
-    } else {
-      console.error("Failed to delete the file from Cloudinary:", response.statusText);
-    }
+    const publicId = getPublicIdFromUrl(publicUrl);
+    const result = await cloudinary.uploader.destroy(publicId);
+    console.log(result);
   } catch (error) {
     console.error("Error deleting the file from Cloudinary:", error);
   }
 };
 
 const getPublicIdFromUrl = (publicUrl) => {
-  const urlParts = publicUrl.split("/");
-  return urlParts[urlParts.length - 1].split(".")[0];
+  const urlParts = publicUrl.split('/');
+
+  // Find the index of 'upload' in the URL
+  const uploadIndex = urlParts.indexOf('upload');
+
+  // Extract the public ID from the URL based on the upload index
+  const publicId = urlParts.slice(uploadIndex + 2).join('/');
+
+  // Remove any file extension (e.g., '.jpg') from the public ID
+  const publicIdWithoutExtension = publicId.split('.')[0];
+  console.log(publicIdWithoutExtension)
+  return `${publicIdWithoutExtension}`;
 };
 
-const generateSignature = (publicId, timestamp) => {
-  const signature = `public_id=${publicId}&timestamp=${timestamp}${cloudinaryApiSecret}`;
-  return signature;
-};
+function waitHalfSecond() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, 500); // Wait for half a second (500 milliseconds)
+  });
+}
+

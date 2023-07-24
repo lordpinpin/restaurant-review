@@ -166,7 +166,11 @@ function profilepage (document, cur_user_id, user, num, reviews, restaurants) {
         var review_date = review.date;
         dateString = `${review_date.getFullYear()}-${review_date.getMonth() + 1}-${review_date.getDate()} ${review_date.getHours()}:${review_date.getMinutes()}:${review_date.getSeconds()}`;
 
-        dateH4.textContent = dateString;
+        if(review.edited){
+            dateH4.textContent = `Edited ${dateString}`;
+        } else {
+            dateH4.textContent = dateString;
+        }
 
         // Append profile-review-rate div and date h4 element to review-rating div
         reviewRatingDiv.appendChild(profileReviewRateDiv);
@@ -187,7 +191,7 @@ function profilepage (document, cur_user_id, user, num, reviews, restaurants) {
         // Create p element with class "rev" for the review text
         const reviewTextP = document.createElement("p");
         reviewTextP.classList.add("rev");
-        reviewTextP.textContent = review.body;
+        reviewTextP.innerHTML = review.body;
         ownReviewDiv.appendChild(reviewTextP);
 
         if((!(review.readmore === ""))){
