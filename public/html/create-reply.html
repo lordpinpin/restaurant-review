@@ -4,7 +4,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reply</title>
-    <link rel="stylesheet" href="css/styles.css" type="text/css">
+    <link rel="stylesheet" href="/css/styles.css" type="text/css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
@@ -20,23 +20,17 @@
                     </button>
                 </div>
             </form>
-            <a class="navlink" href="/restaurants">Restaurants</a>
-            <a class="navlink" href="/create-review">Create Review</a>
             <div class="dropdown">
                 <div class="dropdown-profile">
                     <img src="./Images/profile-1.jpg">
-                    <div class="name"></div>
+                    <div class="name">Sancho Mercado</div>
                     <div class="icon"><ion-icon name="menu"></ion-icon></div>
                 </div>
                 <nav class="dropdown-nav">
                     <ul class="dropdown-group">
                         <li class="dropdown-item">
                             <span class="icon-dropdown"><ion-icon name="person-circle"></ion-icon></span>
-                            <a href="/user" class="profile">Profile</a>
-                        </li>
-                        <li class="dropdown-item">
-                            <span class="icon-dropdown"><ion-icon name="settings"></ion-icon></span>
-                            <a href="/settings" class="settings">Settings</a>
+                            <a href="/dashboard" class="profile">Dashboard</a>
                         </li>
                         <li class="dropdown-item">
                             <span class="icon-dropdown"><ion-icon name="exit"></ion-icon></span>
@@ -49,20 +43,24 @@
     </header>
 
     <div class="division">
-        <form class="create-review" method="POST" action="">
+        <form id="create-reply" class="create-review" method="POST" action="">
             <div class="choose">
                 <div class="choose-title">
                     <div class="choose-name">Reply to Emily W.</div>
                 </div>
             </div>
 
+            <div class="errordiv">
+                <div id="emptydesc" class="error visible hide">Reply is empty</div>
+            </div>
+
             <div class="review-enter">
                 <div class="review-space reply-space">
-                    <textarea class="searchbar-text reply" type="text" placeholder="Write your reply here."></textarea>
+                    <textarea name="reply" class="searchbar-text reply" type="text" placeholder="Write your reply here."></textarea>
                 </div>
             </div>
 
-            <button type="button" onclick="history.back()"class="btnSubmit">Submit</button>
+            <button type="submit" class="btnSubmit">Submit</button>
         </form>
 
         <div class="preview">
@@ -77,19 +75,6 @@
             </div>
             <p class="review-date">06/24/23</p>
             <div class="preview-rating">
-
-                <fieldset class="rate blocked">
-                    <input type="radio" id="rating10" name="rating5" value="10" /><label for="rating10" title="5 stars"></label>
-                    <input checked type="radio" id="rating9" name="rating5" value="9" /><label class="half" for="rating9" title="4 1/2 stars"></label>
-                    <input type="radio" id="rating8" name="rating5" value="8" /><label for="rating8" title="4 stars"></label>
-                    <input type="radio" id="rating7" name="rating5" value="7" /><label class="half" for="rating7" title="3 1/2 stars"></label>
-                    <input type="radio" id="rating6" name="rating5" value="6" /><label for="rating6" title="3 stars"></label>
-                    <input type="radio" id="rating5" name="rating5" value="5" /><label class="half" for="rating5" title="2 1/2 stars"></label>
-                    <input type="radio" id="rating4" name="rating5" value="4" /><label for="rating4" title="2 stars"></label>
-                    <input type="radio" id="rating3" name="rating5" value="3" /><label class="half" for="rating3" title="1 1/2 stars"></label>
-                    <input type="radio" id="rating2" name="rating5" value="2" /><label for="rating2" title="1 star"></label>
-                    <input type="radio" id="rating1" name="rating5" value="1" /><label class="half" for="rating1" title="1/2 star"></label>
-                </fieldset>
             </div>
             <div class="preview-description">
                 I took my beautiful mother there and my best friend on a Wednesday night. Made reservations and the whole process was smooth. When we got there we were greeted with smiles and an awesome vibe, I knew right then that it would be great.
@@ -106,8 +91,8 @@
         </div>
     </div>
 
-    <script src="logged.js"></script>
-    <script src="create-review.js"></script>
+    <script src="/js/logged.js"></script>
+    <script src="/js/submit-reply.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>

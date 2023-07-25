@@ -9,44 +9,44 @@
   </head>
 
 <body>
-    <header>
-        <h2 class="logo"><a class="logo" href="index-logged.html"><b>Rest★r</b></a></h2>
-        <nav class="navigation">
-            <form class="searchbar" method="POST" action="restaurant-results-logged.html">
-                <div class="searcharea">
-                    <input class="searchbar-text" type="text" placeholder="Search for anything" />
-                    <button class="searchbar-enter" type="submit" value="Search">
-                        <span class="search"><ion-icon name="search-circle"></ion-icon></span>
-                    </button>
-                </div>
-            </form>
-            <a class="navlink" href="restaurant-results.html">Restaurants</a>
-            <a class="navlink" href="create-review.html">Create Review</a>
-            <div class="dropdown">
-                <div class="dropdown-profile">
-                    <img src="./Images/profile-1.jpg">
-                    <div class="name">Emily Wang</div>
-                    <div class="icon"><ion-icon name="menu"></ion-icon></div>
-                </div>
-                <nav class="dropdown-nav">
-                    <ul class="dropdown-group">
-                      <li class="dropdown-item">
+  <header>
+    <h2 class="logo"><a class="logo" href="/"><b>Rest★r</b></a></h2>
+    <nav class="navigation">
+        <form class="searchbar" method="GET" action="/restaurants">
+            <div class="searcharea">
+                <input class="searchbar-text" type="text" placeholder="Search for anything." name="search"/>
+                <button class="searchbar-enter" type="submit" value="Search">
+                    <span class="search"><ion-icon name="search-circle"></ion-icon></span>
+                </button>
+            </div>
+        </form>
+        <a class="navlink" href="/restaurants">Restaurants</a>
+        <a class="navlink" href="/create-review">Create Review</a>
+        <div class="dropdown">
+            <div class="dropdown-profile">
+                <img src="./Images/profile-1.jpg">
+                <div class="name">Sancho Mercado</div>
+                <div class="icon"><ion-icon name="menu"></ion-icon></div>
+            </div>
+            <nav class="dropdown-nav">
+                <ul class="dropdown-group">
+                    <li class="dropdown-item">
                         <span class="icon-dropdown"><ion-icon name="person-circle"></ion-icon></span>
-                        <a href="profile-page-emilywang-logged.html" class="profile">Profile</a>
+                        <a href="/user" class="profile">Profile</a>
                     </li>
                     <li class="dropdown-item">
                         <span class="icon-dropdown"><ion-icon name="settings"></ion-icon></span>
-                        <a href="restaurant-settings-profile.html" class="settings">Settings</a>
+                        <a href="/settings" class="settings">Settings</a>
                     </li>
                     <li class="dropdown-item">
                         <span class="icon-dropdown"><ion-icon name="exit"></ion-icon></span>
-                        <a href="index.html" class="logout">Log out</a>
+                        <a href="/logout" class="logout">Log out</a>
                     </li>
-                    </ul>
-                </nav>
-            </div>
-        </nav>
-    </header>
+                </ul>
+            </nav>
+        </div>
+    </nav>
+</header>
 
 
   <div class="settings-container">
@@ -57,92 +57,105 @@
       <a class="profile-button current">
         Profile
       </a>
-      <a href="restaurant-settings-password.html" class="password-button">
+      <a href="/settings-password" class="password-button">
         Password
       </a>
-      <a href="restaurant-settings-email.html" class="email-notif-button">
+      <a href="/settings-email" class="email-notif-button">
         E-mail
       </a>
     </div>
 
     <div class="vl"></div>
-  <form action="/index-logged.html" class="profile-change">
-
-      <div class="profile-details-container">
+    <form id="profile-settings" method="POST" action="/settings-profile" class="profile-change">
+      <div class="password-settings-container">
         <div class="settings-title">
-          <h1> Profile </h1>
+          <h1>Profile Settings </h1>
         </div>
         <div class="profile-photo-details option">
+          <p id="errorProfile" class="error hide visible">Error when changing profile.</p>
+
           <p class="option-setting"> Your Profile Photo </p>
           <div class="profile-photos">
-            <div class="current-profile-pic">
-              <img src="./Images/profile-1.jpg" alt="profile-pic">
-            </div>
             <div class="attach-media-circle">
               <button type="button" class="attach-media-button" onclick="document.getElementById('getFile').click()">
                   <span class="icon-attach"><ion-icon name="image"></ion-icon></span>
               </button>
               <input type='file' id="getFile" style="display:none">
-            </body>
+            </div>
+            <div class="media-circle">
+                <img src="">
+            </div>
+            <input type="hidden" id="imagesrc" name="imagesrc">
           </div>
-        </div>
         </div>
         <div class="first-name-details option">
           <p class="option-setting">First Name</p>
           <p class="subtitle">This field is required.</p>
-          <input type="text" id="first-name-input" value="Emily">
+          <p id="wrongfirst" class="error visible hide">Missing first name</p>
+          <input type="text" name="firstname" class="input-placeholder first_name" id="first-name-input" placeholder="First Name">
         </div>
         <div class="last-name-details option">
           <p class="option-setting">Last Name</p>
-          <p class="subtitle">This field is required. Only your last initial will show on your profile.</p>
-          <input type="text" id="last-name-input" value="Wang">
+          <p class="subtitle">This field is required.<br> Only the initial will be visible.</p>
+          <p id="wronglast" class="error visible hide">Missing last name</p>
+          <input type="text" name="lastname" class="input-placeholder last_name" id="last-name-input" placeholder="Last Name">
         </div>
         <div class="nickname-details option">
           <p class="option-setting">Nickname</p>
           <p class="subtitle">ex. Nicky, Ann, B, Foggy</p>
-          <input type="text" id="nickname-input" value="Emilyy">
+          <input type="text" name="nickname" class="input-placeholder nick_name" id="nickname-input" placeholder="Nickname">
         </div>
+
+        <div class="description-details option">
+          <p class="option-setting">Description</p>
+          <p class="subtitle">Give a brief description of yourself.</p>
+          <div class="description-space">
+            <textarea id="description-input" name="description" placeholder="Enter your description here."></textarea>
+          </div>
+        </div>
+
+
         <div class="gender-details option">
           <p class="option-setting">Gender</p>
           <div class="gender-choices">
             <div class="gender-choice-item">
               <label id="pronoun1">
-                <input type="radio" name="gchoice" value="pronoun1" checked>
+                <input type="radio" name="gchoice" value="Female">
                 <ion-icon name="checkmark-outline"></ion-icon>
               </label>
               <p>Female</p>
             </div>
             <div class="gender-choice-item">
               <label id="pronoun2">
-                <input type="radio" name="gchoice" value="pronoun2">
+                <input type="radio" name="gchoice" value="Male">
                 <ion-icon name="checkmark-outline"></ion-icon>
               </label>
-              <p>Female</p>
+              <p>Male</p>
             </div>
             <div class="gender-choice-item">
               <label id="pronoun3">
-                <input type="radio" name="gchoice" value="pronoun3">
+                <input type="radio" name="gchoice" value="Trans Man">
                 <ion-icon name="checkmark-outline"></ion-icon>
               </label>
               <p>Trans Man</p>
             </div>
             <div class="gender-choice-item">
               <label id="pronoun4">
-                <input type="radio" name="gchoice" value="pronoun4">
+                <input type="radio" name="gchoice" value="Trans Woman">
                 <ion-icon name="checkmark-outline"></ion-icon>
               </label>
               <p>Trans Woman</p>
             </div>
             <div class="gender-choice-item">
               <label id="pronoun5">
-                <input type="radio" name="gchoice" value="pronoun5">
+                <input type="radio" name="gchoice" value="Non Binary / Non-Conforming">
                 <ion-icon name="checkmark-outline"></ion-icon>
               </label>
               <p>Non-Binary / Non-Conforming</p>
             </div>
             <div class="gender-choice-item">
               <label id="pronoun6">
-                <input type="radio" name="gchoice" value="pronoun6">
+                <input type="radio" name="gchoice" value="">
                 <ion-icon name="checkmark-outline"></ion-icon>
               </label>
               <p>Prefer Not to Answer</p>
@@ -152,18 +165,17 @@
 
         <div class="pronoun-details option">
           <p class="option-setting">Pronouns</p>
-          <p class="subtitle">e.g. Taylor is awesome, <u>they</u> write the best reviews</p>
           <div class="pronouns-choices">
             <div class="pronoun-choice-item">
               <label id="pronoun1">
-                <input type="radio" name="pchoice" value="pronoun1" checked>
+                <input type="radio" name="pchoice" value="She/Her">
                 <ion-icon name="checkmark-outline"></ion-icon>
               </label>
               <p>She/her</p>
             </div>
             <div class="pronoun-choice-item">
               <label id="pronoun2">
-                <input type="radio" name="pchoice" value="pronoun2">
+                <input type="radio" name="pchoice" value="He/Him">
                 <ion-icon name="checkmark-outline"></ion-icon>
 
               </label>
@@ -171,7 +183,7 @@
             </div>
             <div class="pronoun-choice-item">
               <label id="pronoun3">
-                <input type="radio" name="pchoice" value="pronoun3">
+                <input type="radio" name="pchoice" value="They/Them">
                 <ion-icon name="checkmark-outline"></ion-icon>
               </label>
               <p>They/them</p>
@@ -181,7 +193,7 @@
 
         <button type="submit" class="btnSubmit">Submit</button>
       </div>
-  </form>
+    </form>
 
   </div>
 

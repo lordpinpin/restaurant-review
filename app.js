@@ -26,6 +26,8 @@ const { profilepage } = require('./public/js/profilepage.js');
 const { editreview } = require('./public/js/editreview.js');
 const { createreview, createreviewRest } = require('./public/js/createreview.js');
 const { restaurantpage } = require('./public/js/restaurantpage.js');
+const { dashboard } = require('./public/js/dashboard.js');
+const { createreply } = require('./public/js/createreply.js');
 
 const app = express();
 const port = 3000;
@@ -63,6 +65,8 @@ app.get('/', async (req, res) => {
 
   if (req.session.isLoggedIn) {
     file = 'index-logged.html';
+  } else if (req.session.isRestaurantLogged){
+    res.redirect('/dashboard');
   } else {
     file = 'index.html';
   }
@@ -77,7 +81,7 @@ app.get('/', async (req, res) => {
     profilepic.src = `${req.session.profile_picture}`;
 
     var name = document.querySelector(".name");
-    name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+    name.textContent = `${req.session.name}`;
   }
 
   var restaurants = await topRest6();
@@ -85,11 +89,151 @@ app.get('/', async (req, res) => {
 
   var html = dom.serialize();
 
-
-
-
-
   res.send(html);
+});
+
+app.get('/dashboard', async (req, res) => {
+  if(!req.session.isRestaurantLogged){
+      var file = 'message.html';
+      var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+      var dom = new JSDOM(html);
+      var { window } = dom;
+      var { document } = window;
+
+      const messageTitle = document.querySelector('.settings-title h1');
+      messageTitle.textContent = "Action/URL invalid."
+
+      html = dom.serialize();
+
+      res.send(html);
+  } else {
+      var file = 'dashboard.html';
+      console.log(file);
+      var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+      var dom = new JSDOM(html);
+      var { window } = dom;
+      var { document } = window;
+
+      const db = await connectToDatabase();
+      const restaurant = await db.collection('restaurants').find({'_id': new ObjectId(req.session.userId)}).toArray();
+
+      var profilepic = document.querySelector(".dropdown-profile img");
+      profilepic.src = restaurant[0].mini_pic_url;
+
+      var name = document.querySelector(".name");
+      name.textContent = restaurant[0].name;
+
+
+    var types = ["latest", "highestrated", "lowestrated"];
+
+    if(!req.query.type | !types.includes(req.query.type)){
+      req.query.type = "latest";
+    }
+
+    if(!req.query.page || parseInt(req.query.page) < 1){
+      req.query.page = 1;
+    }
+
+    if(!req.query.search){
+      req.query.search = "";
+    }
+
+    const sortbyName = document.querySelector(".sortby-name");
+
+    console.log(req.query.type);
+
+
+    if (req.query.type === "latest"){
+      sortbyName.textContent = "Sort by: Latest";
+      var pageNum = parseInt(req.query.page);
+      console.log("DATEREV5");
+      console.log(restaurant);
+      const reviews = await dateRev5(pageNum, restaurant[0], req.query.search);
+      var users = [];
+      for(let reviewSet of reviews){
+        console.log(reviewSet.user);
+        users.push(await getUserofReview(reviewSet));
+      }
+      dashboard(document, restaurant[0], reviews, users);
+      console.log("RESTAURANT PAGE SET");
+    } else if(req.query.type === "highestrated"){
+      sortbyName.textContent = "Sort by: Highest Rated";
+      var pageNum = parseInt(req.query.page);
+      const reviews = await topRev5(pageNum, restaurant[0], req.query.search);
+      var users = [];
+      for(let reviewSet of reviews){
+        users.push(await getUserofReview(reviewSet));
+      }
+      dashboard(document, restaurant[0], reviews, users);
+    } else if(req.query.type === "lowestrated"){
+      sortbyName.textContent = "Sort by: Lowest Rated";
+      var pageNum = parseInt(req.query.page);
+      const reviews = await botRev5(pageNum, restaurant[0], req.query.search);
+      var users = [];
+      for(let reviewSet of reviews){
+        users.push(await getUserofReview(reviewSet));
+      }
+      dashboard(document, restaurant[0], reviews, users);
+    }
+
+    sortbyItem = document.querySelectorAll(".sortby-item");
+    for (let i = 0; i < sortbyItem.length; i++) {
+      sortbyItem[i].firstElementChild.href =`?type=${sortbyItem[i].textContent.toLowerCase().replace(/\s/g, '')}&page=1&search=${req.query.search}`;
+    }
+
+    currentType = document.querySelector('.cur-type');
+    currentType.value = req.query.type;
+
+
+    const leftPage = document. querySelector('#leftpage');
+    const rightPage = document.querySelector('#rightpage');
+    const firstNum = document.querySelector('#firstpage');
+    const secondNum = document.querySelector('#secondpage');
+    const thirdNum = document.querySelector('#thirdpage');
+    const fourthNum = document.querySelector('#fourthpage');
+    const fifthNum = document.querySelector('#fifthpage');;
+
+
+    if(pageNum === 1){
+      firstNum.classList.add("current-page");
+      leftPage.href = `?type=${req.query.type}&page=1&search=${req.query.search}`;
+      rightPage.href = `?type=${req.query.type}&page=2&search=${req.query.search}`;
+      firstNum.href = `?type=${req.query.type}&page=1&search=${req.query.search}`;
+      secondNum.href = `?type=${req.query.type}&page=2&search=${req.query.search}`;
+      thirdNum.href = `?type=${req.query.type}&page=3&search=${req.query.search}`;
+      fourthNum.href = `?type=${req.query.type}&page=4&search=${req.query.search}`;
+      fifthNum.href = `?type=${req.query.type}&page=5&search=${req.query.search}`;
+    } else if (pageNum === 2){
+      secondNum.classList.add("current-page");
+      leftPage.href = `?type=${req.query.type}&page=1&search=${req.query.search}`;
+      rightPage.href = `?type=${req.query.type}&page=3&search=${req.query.search}`;
+      firstNum.href = `?type=${req.query.type}&page=1&search=${req.query.search}`;
+      secondNum.href = `?type=${req.query.type}&page=2&search=${req.query.search}`;
+      thirdNum.href = `?type=${req.query.type}&page=3&search=${req.query.search}`;
+      fourthNum.href = `?type=${req.query.type}&page=4&search=${req.query.search}`;
+      fifthNum.href = `?type=${req.query.type}&page=5&search=${req.query.search}`;
+    } else if (pageNum >= 3){
+      thirdNum.classList.add("current-page");
+      leftPage.href = `?type=${req.query.type}&page=${pageNum - 1}&search=${req.query.search}`;
+      rightPage.href = `?type=${req.query.type}&page=${pageNum + 1}&search=${req.query.search}`;
+      firstNum.href = `?type=${req.query.type}&page=${pageNum - 2}&search=${req.query.search}`;
+      secondNum.href = `?type=${req.query.type}&page=${pageNum - 1}&search=${req.query.search}`;
+      thirdNum.href = `?type=${req.query.type}&page=${pageNum}&search=${req.query.search}`;
+      fourthNum.href = `?type=${req.query.type}&page=${pageNum + 1}&search=${req.query.search}`;
+      fifthNum.href = `?type=${req.query.type}&page=${pageNum + 2}&search=${req.query.search}`;
+      firstNum.textContent = `${pageNum - 2}`;
+      secondNum.textContent = `${pageNum - 1}`;
+      thirdNum.textContent = `${pageNum}`;
+      fourthNum.textContent = `${pageNum + 1}`;
+      fifthNum.textContent = `${pageNum + 2}`;
+    }
+
+      html = dom.serialize();
+
+      res.send(html);
+  }
 });
 
 app.get('/create-review', async (req, res) => {
@@ -107,6 +251,8 @@ app.get('/create-review', async (req, res) => {
       html = dom.serialize();
 
       res.send(html);
+  } else if (req.session.isRestaurantLogged){
+    res.redirect('/dashboard');
   } else {
       var file = 'create-review.html';
       console.log(file);
@@ -133,6 +279,7 @@ app.get('/create-review', async (req, res) => {
 });
 
 app.get('/create-review/:url', async (req, res) => {
+
   const rest = await getRestofUrl(req.params.url);
   const restaurants = await getUnreviewed(new ObjectId(req.session.userId));
   var curRest = "";
@@ -245,7 +392,8 @@ app.post('/create-review/:url', async (req, res) => {
       "body": body,
       "readmore": readmore,
       "helpful": [],
-      "non_helpful": []
+      "non_helpful": [],
+      "reply": ""
     };
     const db = await connectToDatabase();
     const insertedReview = await db.collection('reviews').insertOne(insertingValues);
@@ -258,7 +406,74 @@ app.post('/create-review/:url', async (req, res) => {
     res.redirect(`/restaurants/${restaurant[0].url}`);
 });
 
+
+app.get('/create-reply', async (req, res) => {
+
+  const review = await getReview(new ObjectId(req.query.review));
+
+
+  if(!req.session.isRestaurantLogged || review.length == 0){
+      var file = 'message.html';
+      var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+      var dom = new JSDOM(html);
+      var { window } = dom;
+      var { document } = window;
+
+      const messageTitle = document.querySelector('.settings-title h1');
+      messageTitle.textContent = "Action/URL invalid."
+
+      var html = dom.serialize();
+
+      res.send(html);
+  } else {
+      var file = 'create-reply.html';
+      console.log(file);
+      var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+      var dom = new JSDOM(html);
+      var { window } = dom;
+      var { document } = window;
+
+
+      const db = await connectToDatabase();
+      const restaurant = await db.collection('restaurants').find({'_id': new ObjectId(req.session.userId)}).toArray();
+      const user = await getUserofReview(review[0]);
+
+      console.log(review);
+      var profilepic = document.querySelector(".dropdown-profile img");
+      profilepic.src = restaurant[0].mini_pic_url;
+
+      var name = document.querySelector(".name");
+      name.textContent = restaurant[0].name;
+
+      createreply (document, review[0], user[0]);
+
+      var html = dom.serialize();
+
+      res.send(html);
+  }
+});
+
+app.post('/create-reply', async (req, res) => {
+
+    const filter = { "_id": new ObjectId(req.query.review)};
+    const updatedValues = {
+      "reply": req.body.reply
+    };
+    const update = { $set: updatedValues };
+    const options = { returnOriginal: false};
+    const db = await connectToDatabase();
+    const updatedReview = await db.collection('reviews').findOneAndUpdate(filter, update, options);
+
+    console.log(updatedReview);
+
+    res.redirect(`/dashboard`);
+});
+
+
 app.get('/confirm-delete', async (req, res) => {
+
   const review = await getReview(new ObjectId(req.query.review));
   var file;
   if (req.session.isLoggedIn) {
@@ -324,6 +539,8 @@ app.get('/confirm-delete', async (req, res) => {
 
 
 app.post('/confirm-delete', async (req, res) => {
+
+
     const review_id = new ObjectId(req.body.review);
     const review = await getReview(review_id);
     const restaurant = await getRestofReview(review_id);
@@ -343,6 +560,7 @@ app.post('/confirm-delete', async (req, res) => {
 
 
 app.get('/edit-review', async (req, res) => {
+
   if(ObjectId.isValid(req.query.review)){
     review = await getReview(new ObjectId(req.query.review));
   }
@@ -401,6 +619,8 @@ app.get('/edit-review', async (req, res) => {
 
 
 app.post('/edit-review', async (req, res) => {
+
+
     const reviewid = req.query.review;
     const reviewrating = parseFloat(req.body.reviewrating);
     const title = req.body.title;
@@ -467,12 +687,8 @@ app.post('/edit-review', async (req, res) => {
     res.redirect('/back-2');
 });
 
-app.get('/index.html', async (req, res) => {
-  res.redirect("/");
-});
-
-
 app.get('/login', async (req, res) => {
+
     if (req.session.isLoggedIn) {
       res.redirect("/");
     } else{
@@ -528,18 +744,19 @@ app.post('/login', async (req, res) => {
 app.get('/register', async (req, res) => {
   if (req.session.isLoggedIn) {
     res.redirect("/");
-  } else {
-  var html = fs.readFileSync(path.join(__dirname,'public',  'html', 'register.html'));
+  } else{
+  var html = fs.readFileSync(path.join(__dirname,'public',  'html', 'login-restaurant.html'));
 
   var dom = new JSDOM(html);
   var { window } = dom;
   var { document } = window;
 
-  var html = dom.serialize();
-
-  if (req.query.error === "1"){
-    document.querySelector("#errorReg").classList.remove("hide");
+  if(req.query.error === "1"){
+    document.querySelector("#errorLogin").classList.remove("hide");
+    document.querySelector("#errorLogin").classList.add("visible");
   }
+
+  var html = dom.serialize();
 
   res.send(html);
   }
@@ -605,7 +822,11 @@ app.post('/register', async (req, res) => {
 
 
 app.get('/login-restaurant', async (req, res) => {
-  res.sendFile(path.join(__dirname,'public', 'html', 'login-restaurant.html'));
+  if(res.isLoggedIn){
+    res.redirect('/');
+  } else {
+    res.sendFile(path.join(__dirname,'public', 'html', 'login-restaurant.html'));
+  }
 });
 
 app.post('/login-restaurant', async (req, res) => {
@@ -613,19 +834,19 @@ app.post('/login-restaurant', async (req, res) => {
  console.log(email);
  const password = req.body.password
  console.log(password);
- const [db, client] = await connectToDatabase();
+ const db= await connectToDatabase();
  console.log("findone to start");
- db.collection('restaurant').findOne({ email: email, password: password })
+ db.collection('restaurants').findOne({ email: email, password: password })
    .then(restaurant => {
      if (restaurant) {
-       req.session.isRestaurant = true;
+       req.session.isRestaurantLogged = true;
        req.session.userId = restaurant._id;
        req.session.profile_picture = restaurant.mini_pic_url;
        req.session.name = restaurant.name;
        console.log(restaurant._id);
 
        req.session.cookie.maxAge = 3 * 24 * 60 * 60 * 1000;
-       res.redirect('/');
+       res.redirect('/dashboard');
      } else {
        res.redirect('/login-restaurant?error=1');
      }
@@ -1228,6 +1449,281 @@ app.get('/user/:url', async (req, res) => {
     }
   });
 
+
+app.get('/settings', (req, res) => {
+  res.redirect('/settings-profile');
+});
+
+app.get('/settings-email', (req, res) => {
+  if(req.session.isLoggedIn){
+    var file = 'settings-email.html';
+
+    console.log(file);
+    var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+    var dom = new JSDOM(html);
+    var { window } = dom;
+    var { document } = window;
+    var profilepic = document.querySelector(".dropdown-profile img");
+    profilepic.src = `${req.session.profile_picture}`;
+
+    var name = document.querySelector(".name");
+    name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+
+      if(req.query.error === "1"){
+        document.querySelector("#errorEmail").classList.remove("hide");
+      }
+      var html = dom.serialize();
+
+      res.send(html);
+  } else {
+    var file = 'message.html';
+      var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+      var dom = new JSDOM(html);
+      var { window } = dom;
+      var { document } = window;
+
+      if (req.session.isLoggedIn) {
+        var profilepic = document.querySelector(".dropdown-profile img");
+        profilepic.src = `${req.session.profile_picture}`;
+
+        var name = document.querySelector(".name");
+        name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+      }
+
+      const messageTitle = document.querySelector('.settings-title h1');
+      messageTitle.textContent = "Action/URL invalid."
+
+      var html = dom.serialize();
+
+      res.send(html);
+  }
+});
+
+app.post('/settings-email', async(req, res) => {
+  const past_email = req.body.past_email;
+  const new_email = req.body.new_email;
+  const db = await connectToDatabase();
+  const user = await db.collection('users').find({'email': past_email}).toArray();
+  console.log(user);
+  console.log("user found");
+  const userCheck = await db.collection('users').find({ "email": new_email}).toArray();
+  console.log(userCheck);
+  console.log("newEmail");
+  if (userCheck.length > 0 || user.length == 0){
+    res.redirect('/settings-email?error=1')
+  } else {
+    const filter = { "_id": new ObjectId(req.session.userId)};
+    const updatedValues = {
+      "email": new_email
+    };
+    const update = { $set: updatedValues };
+    const options = { returnOriginal: false };
+
+    const updatedUser = await db.collection('users').findOneAndUpdate(filter, update, options);
+
+    console.log(updatedUser);
+    res.redirect('/');
+  }
+});
+
+
+app.get('/settings-profile', async (req, res) => {
+  if(req.session.isLoggedIn){
+    var file = 'settings-profile.html';
+
+    console.log(file);
+    var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+    var dom = new JSDOM(html);
+    var { window } = dom;
+    var { document } = window;
+    var profilepic = document.querySelector(".dropdown-profile img");
+    profilepic.src = `${req.session.profile_picture}`;
+
+    var name = document.querySelector(".name");
+    name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+
+      if(req.query.error === "1"){
+        document.querySelector("#errorProfile").classList.remove("hide");
+      }
+
+      const profile_picture = document.querySelector('.media-circle img');
+      profile_picture.src = req.session.profile_picture;
+      console.log(document.querySelector('#last-name-input').value);
+
+      document.querySelector('.first_name').defaultValue = req.session.first_name;
+      document.querySelector('.last_name').defaultValue = req.session.last_name;
+
+
+
+      const db = await connectToDatabase();
+      const user = await db.collection('users').find({'_id' : new ObjectId(req.session.userId)}).toArray();
+
+      console.log(user);
+
+      const nickname = document.querySelector('.nick_name');
+      console.log(user[0].nickname);
+      nickname.defaultValue = user[0].nickname;
+
+      const desc = document.querySelector('#description-input');
+      desc.innerHTML = user[0].description;
+
+      const gender = document.querySelectorAll('input[name="gchoice"]');
+      for(let genderchoice of gender){
+        console.log(genderchoice.value);
+        if(genderchoice.value === user[0].gender){
+          genderchoice.setAttribute('checked', 'true');
+        }
+      }
+
+      const pronouns = document.querySelectorAll('input[name="pchoice"]');
+      for(let pronounchoice of pronouns){
+        if(pronounchoice.value === user[0].pronouns){
+          pronounchoice.setAttribute('checked', 'true');
+        }
+      }
+      var html = dom.serialize();
+
+      res.send(html);
+  } else {
+    var file = 'message.html';
+      var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+      var dom = new JSDOM(html);
+      var { window } = dom;
+      var { document } = window;
+
+      if (req.session.isLoggedIn) {
+        var profilepic = document.querySelector(".dropdown-profile img");
+        profilepic.src = `${req.session.profile_picture}`;
+
+        var name = document.querySelector(".name");
+        name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+      }
+
+      const messageTitle = document.querySelector('.settings-title h1');
+      messageTitle.textContent = "Action/URL invalid.";
+
+      var html = dom.serialize();
+
+      res.send(html);
+  }
+});
+
+app.post('/settings-profile', async(req, res) => {
+  console.log("HERE");
+
+  const first_name = req.body.firstname;
+  const last_name = req.body.lastname;
+  const nickname = req.body.nickname;
+  const profiledesc = req.body.description;
+  const gender = req.body.gchoice;
+  const pronouns = req.body.pchoice;
+  const profile_pic = req.body.imagesrc;
+
+    const filter = { "_id": new ObjectId(req.session.userId)};
+    const updatedValues = {
+      "profile_picture": profile_pic,
+      "first_name": capitalizeWords(first_name),
+      "last_name": capitalizeWords(last_name),
+      "description": profiledesc,
+      "nickname": nickname,
+      "pronouns": pronouns,
+      "gender": gender
+    };
+    const update = { $set: updatedValues };
+    const options = { returnOriginal: false };
+    const db = await connectToDatabase();
+    const updatedUser = await db.collection('users').findOneAndUpdate(filter, update, options);
+
+    console.log(updatedUser);
+
+    req.session.profile_picture = profile_pic;
+    req.session.first_name = first_name;
+    req.session.last_name = last_name;
+
+    res.redirect('/');
+});
+
+app.get('/settings-password', (req, res) => {
+  if(req.session.isLoggedIn){
+    var file = 'settings-password.html';
+
+    console.log(file);
+    var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+    var dom = new JSDOM(html);
+    var { window } = dom;
+    var { document } = window;
+    var profilepic = document.querySelector(".dropdown-profile img");
+    profilepic.src = `${req.session.profile_picture}`;
+
+    var name = document.querySelector(".name");
+    name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+
+      if(req.query.error === "1"){
+        document.querySelector("#errorPass").classList.remove("hide");
+      }
+      var html = dom.serialize();
+
+      res.send(html);
+  } else {
+    var file = 'message.html';
+      var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+      var dom = new JSDOM(html);
+      var { window } = dom;
+      var { document } = window;
+
+      if (req.session.isLoggedIn) {
+        var profilepic = document.querySelector(".dropdown-profile img");
+        profilepic.src = `${req.session.profile_picture}`;
+
+        var name = document.querySelector(".name");
+        name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+      }
+
+      const messageTitle = document.querySelector('.settings-title h1');
+      messageTitle.textContent = "Action/URL invalid."
+
+      var html = dom.serialize();
+
+      res.send(html);
+  }
+});
+
+app.post('/settings-password', async(req, res) => {
+  const past_password = req.body.old_password;
+  const new_password = req.body.new_password;
+  console.log(past_password);
+  console.log(new_password);
+  const db = await connectToDatabase();
+  const user = await db.collection('users').find({'password': past_password}).toArray();
+  console.log(user);
+  console.log("user found");
+  if (user.length == 0 || user[0]._id.toString() != req.session.userId){
+    res.redirect('/settings-password?error=1')
+  } else {
+    const filter = { "_id": new ObjectId(req.session.userId)};
+    const updatedValues = {
+      "password": new_password
+    };
+    const update = { $set: updatedValues };
+    const options = { returnOriginal: false };
+
+    const updatedUser = await db.collection('users').findOneAndUpdate(filter, update, options);
+
+    console.log(updatedUser);
+    res.redirect('/');
+  }
+});
+
+app.get('/restaurant-settings-password.html', (req, res) => {
+  res.sendFile(path.join(__dirname,'public', 'html', 'restaurant-settings-password.html'));
+});
+
 app.get('/logout', async (req, res) => {
   req.session.destroy((err) => {
     if (err) {redirec
@@ -1285,42 +1781,6 @@ app.get('/back-2', (req, res) => {
 });
 
 
-app.get('/settings', (req, res) => {
-  res.sendFile(path.join(__dirname,'public', 'html', 'restaurant-settings-profile.html'));
-});
-
-app.get('/settings-email', (req, res) => {
-
-  var file = 'restaurant-settings-email.html';
-
-  console.log(file);
-  var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
-
-  var dom = new JSDOM(html);
-  var { window } = dom;
-  var { document } = window;
-
-    if(req.query.error === "1"){
-      document.querySelector("#errorLogin").classList.remove("hide");
-      document.querySelector("#errorLogin").classList.add("visible");
-    }
-
-    var html = dom.serialize();
-
-    res.send(html);
-});
-
-app.post('/restaurant-settings-email.html', async(req, res) => {
-  const email = req.body.email;
-  console.log(email);
-  const db = await connectToDatabase();
-  console.log("findone to start");
-  db.collection('users').findOne({ email: email, password: password })
-});
-
-app.get('/restaurant-settings-password.html', (req, res) => {
-  res.sendFile(path.join(__dirname,'public', 'html', 'restaurant-settings-password.html'));
-});
 
 // NO URL HANDLING
 app.use((req, res, next) => {

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Rest★r</title>
+        <link rel="stylesheet" href="/css/styles.css" type="text/css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    </head>
+
+<body>
+    <header>
+        <h2 class="logo"><a class="logo" href="/"><b>Rest★r</b></a></h2>
+        <nav class="navigation">
+            <form class="searchbar" method="GET" action="/restaurants">
+                <div class="searcharea">
+                    <input class="searchbar-text" type="text" placeholder="Search for anything." name="search"/>
+                    <button class="searchbar-enter" type="submit" value="Search">
+                        <span class="search"><ion-icon name="search-circle"></ion-icon></span>
+                    </button>
+                </div>
+            </form>
+            <div class="dropdown">
+                <div class="dropdown-profile">
+                    <img src="./Images/profile-1.jpg">
+                    <div class="name">Sancho Mercado</div>
+                    <div class="icon"><ion-icon name="menu"></ion-icon></div>
+                </div>
+                <nav class="dropdown-nav">
+                    <ul class="dropdown-group">
+                        <li class="dropdown-item">
+                            <span class="icon-dropdown"><ion-icon name="person-circle"></ion-icon></span>
+                            <a href="/dashboard" class="profile">Dashboard</a>
+                        </li>
+                        <li class="dropdown-item">
+                            <span class="icon-dropdown"><ion-icon name="exit"></ion-icon></span>
+                            <a href="/logout" class="logout">Log out</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </nav>
+    </header>
+
+    <div class="restaurant-page section">
+
+            <div class="restaurant-banner">
+                <div class="banner-container">
+                    <img src="./Images/restaurantbanner1.jpg">
+                    <div class="banner-content">
+                        <div class="banner-first-line">
+                            <h1> Liholiho Yacht Club</h1>
+                        </div>
+                        <div class="tags">
+
+                        </div>
+                        <div class="location-rate">
+                            <p class="location">Portland, Oregon</p>
+                            <div class="restaurant-rate">
+                                <p>4.6</p>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="restaurant-description">
+                <h2>Description</h2>
+                <p>Fusing Californian technique with the flavors of Chef/owner Ravi Kapur's native Hawaii, this earthy, bustling, and airy space is known for strong cocktails, shareable plates, and near-impossible reservations. Walk-ins are welcome, but make sure you arrive in time to beat the crowds.</p>
+            </div>
+
+            <div class="restaurant-options">
+                <div class="rating-bars">
+                    <div class="rating-holder">
+                        <ul>
+                            <li class="rating-category">
+                                    <p class="rating-digit-holder non-half">5</p>
+                                    <span class="rating-star-holder"><ion-icon name="star"></ion-icon>
+                                    </span>
+                                    <div class="bar-container">
+                                        <div class="bar bar-5"></div>
+                                    </div>
+                                    <div class="rating-total-numbers">8</div>
+                            </li>
+
+                            <li class="rating-category">
+                                    <p class="rating-digit-holder">4.5</p>
+                                    <span class="rating-star-holder"><ion-icon name="star"></ion-icon>
+                                    </span>
+                                    <div class="bar-container">
+                                        <div class="bar bar-45"></div>
+                                    </div>
+                                    <div class="rating-total-numbers">8</div>
+                            </li>
+
+                            <li class="rating-category">
+                                <p class="rating-digit-holder non-half">4</p>
+                                <span class="rating-star-holder"><ion-icon name="star"></ion-icon>
+                                </span>
+                                <div class="bar-container">
+                                    <div class="bar bar-4"></div>
+                                </div>
+                                <div class="rating-total-numbers">3</div>
+                            </li>
+
+                            <li class="rating-category">
+                                    <p class="rating-digit-holder">3.5</p>
+                                    <span class="rating-star-holder"><ion-icon name="star"></ion-icon>
+                                    </span>
+                                    <div class="bar-container">
+                                        <div class="bar bar-35"></div>
+                                    </div>
+                                    <div class="rating-total-numbers">0</div>
+                            </li>
+
+                            <li class="rating-category">
+                                <p class="rating-digit-holder non-half">3</p>
+                                <span class="rating-star-holder"><ion-icon name="star"></ion-icon>
+                                </span>
+                                <div class="bar-container">
+                                    <div class="bar bar-3"></div>
+                                </div>
+                                <div class="rating-total-numbers">0</div>
+                            </li>
+
+                            <li class="rating-category">
+                                    <p class="rating-digit-holder">2.5</p>
+                                    <span class="rating-star-holder"><ion-icon name="star"></ion-icon>
+                                    </span>
+                                    <div class="bar-container">
+                                        <div class="bar bar-25"></div>
+                                    </div>
+                                    <div class="rating-total-numbers">1</div>
+                            </li>
+
+                            <li class="rating-category">
+                                <p class="rating-digit-holder non-half">2</p>
+                                <span class="rating-star-holder"><ion-icon name="star"></ion-icon>
+                                </span>
+                                <div class="bar-container">
+                                    <div class="bar bar-2"></div>
+                                </div>
+                                <div class="rating-total-numbers">0</div>
+                            </li>
+
+                            <li class="rating-category">
+                                    <p class="rating-digit-holder">1.5</p>
+                                    <span class="rating-star-holder"><ion-icon name="star"></ion-icon>
+                                    </span>
+                                    <div class="bar-container">
+                                        <div class="bar bar-15"></div>
+                                    </div>
+                                    <div class="rating-total-numbers">0</div>
+                            </li>
+
+                            <li class="rating-category">
+                                <p class="rating-digit-holder non-half">1</p>
+                                <span class="rating-star-holder"><ion-icon name="star"></ion-icon>
+                                </span>
+                                <div class="bar-container">
+                                    <div class="bar bar-1"></div>
+                                </div>
+                                <div class="rating-total-numbers">0</div>
+                            </li>
+
+                            <li class="rating-category">
+                                    <p class="rating-digit-holder">0.5</p>
+                                    <span class="rating-star-holder"><ion-icon name="star"></ion-icon>
+                                    </span>
+                                    <div class="bar-container">
+                                        <div class="bar bar-05"></div>
+                                    </div>
+                                    <div class="rating-total-numbers">0</div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                    <div class="search-sort">
+                        <form class="restaurant-form" method="GET" action="">
+                            <div class="searcharea">
+                                <input class="cur-type" name="type" type="hidden"/>
+                                <input class="searchbar-text" name="search" type="text" placeholder="Search reviews" />
+                                <span class="search-icon"><ion-icon name="search-circle"></ion-icon></span>
+                            </div>
+                        </form>
+                        <div class="sortby">
+                            <div class="sortby-title">
+                                <div class="sortby-name">Sort by: Latest</div>
+                                <span class="sortby-icon"><ion-icon name="chevron-down"></ion-icon></span>
+                            </div>
+                            <nav id="restrev-sort" class="sortby-nav">
+                                <ul class="sortby-group">
+                                    <li class="sortby-item">
+                                        <a>Latest</a>
+                                    </li>
+                                    <li class="sortby-item">
+                                        <a>Highest Rated</a>
+                                    </li>
+                                    <li class="sortby-item">
+                                        <a>Lowest Rated</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+            </div>
+
+
+        <div class="pagination-container">
+            <a id="leftpage" class="left-icon"><ion-icon name="arrow-back-circle"></ion-icon></a>
+            <a id="firstpage" class="page-link" href="#">1</a>
+            <a id="secondpage" class="page-link" href="#">2</a>
+            <a id="thirdpage" class="page-link" href="#">3</a>
+            <a id="fourthpage" class="page-link" href="#">4</a>
+            <a id="fifthpage" class="page-link" href="#">5</a>
+            <a id="rightpage" class="right-icon"><ion-icon name="arrow-forward-circle"></ion-icon></a>
+        </div>
+    </div>
+
+
+    <div id="myModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="img01">
+    </div>
+
+    <script src="/js/logged.js"></script>
+    <script src="/js/sortby.js"></script>
+    <script src="/js/review.js"></script>
+    <script src="/js/image.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+</html>
