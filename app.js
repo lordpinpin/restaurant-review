@@ -918,12 +918,12 @@ app.get('/helpful', async (req, res) => {
   const questionAnswered = false;
 
   for (let helped of helpful){
-    if (cur_user_id == helped){
+    if (req.session.userId == helped){
         questionAnswered = true;
     }
   }
   for (let unhelped of non_helpful){
-      if (cur_user_id == unhelped){
+      if (req.session.userId == unhelped){
           questionAnswered = true;
       }
   }
@@ -984,12 +984,12 @@ app.get('/non_helpful', async (req, res) => {
   const questionAnswered = false;
 
   for (let helped of helpful){
-    if (cur_user_id == helped){
+    if (req.session.userId  == helped){
         questionAnswered = true;
     }
   }
   for (let unhelped of non_helpful){
-      if (cur_user_id == unhelped){
+      if (req.session.userId  == unhelped){
           questionAnswered = true;
       }
   }
