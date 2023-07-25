@@ -10,28 +10,30 @@
 
 <body>
   <header>
-    <h2 class="logo"><a class="logo" href="index.html"><b>Rest★r</b></a></h2>
+    <h2 class="logo"><a class="logo" href="/"><b>Rest★r</b></a></h2>
     <nav class="navigation">
-        <form class="searchbar" method="POST" action="restaurant-results.html">
+        <form class="searchbar" method="POST" action="/restaurants">
             <div class="searcharea">
-                <input class="searchbar-text" type="text" placeholder="Search for anything" />
+              <input class="searchbar-text" type="text" placeholder="Search for anything." name="search"/>
                 <button class="searchbar-enter" type="submit" value="Search">
                     <span class="search"><ion-icon name="search-circle"></ion-icon></span>
                 </button>
             </div>
         </form>
-        <a class="navlink" href="restaurant-results.html">Restaurants</a>
+        <a class="navlink" href="/restaurants">Restaurants</a>
         <a href="/login"><button class="btnSubmit">Login</button></a>
         <a href="/register"><button class="btnSubmit">Register</button></a>
     </nav>
   </header>
 
-<form id="registerform"action="index-logged.html" class="profile-change">
+  <form id="registerform" method="POST" action="/register" class="profile-change">
   <div class="register-container">
     <div class="settings-title">
       <h1> Register </h1>
     </div>
     <div class="profile-photo-details option">
+      <p id="errorReg" class="error hide visible">E-mail already used / Register failed</p>
+
       <p class="option-setting"> Your Profile Photo </p>
       <div class="profile-photos">
         <div class="attach-media-circle">
@@ -39,42 +41,51 @@
               <span class="icon-attach"><ion-icon name="image"></ion-icon></span>
           </button>
           <input type='file' id="getFile" style="display:none">
-        </body>
+        </div>
+        <div class="media-circle">
+            <img src="https://res.cloudinary.com/dg28enybo/image/upload/v1690166382/background/1200px-HD_transparent_picture_q7zqkf.png">
+        </div>
+        <input type="hidden" id="imagesrc" name="imagesrc">
+
       </div>
-    </div>
+      <p class="error visible hide" id="wrongpic">Missing profile picture.</p>
     </div>
 
     <div class="option">
       <p class="option-setting">Email</p>
       <p class="subtitle">This field is required.</p>
-      <input type="text" class="input-placeholder" id="first-name-input" placeholder="First Name">
+      <p id="wrongemail" class="error visible hide">Missing/Invalid e-mail</p>
+      <input type="text" name="email" class="input-placeholder" id="email-input" placeholder="First Name">
     </div>
     <div class="option">
       <p class="option-setting">Password</p>
       <p class="subtitle">This field is required.</p>
-      <input type="password" class="input-placeholder" id="first-name-input" placeholder="First Name">
+      <p id="wrongpass" class="error visible hide">Missing password</p>
+      <input type="password" name="password" class="input-placeholder" id="password-input" placeholder="First Name">
     </div>
     <div class="first-name-details option">
       <p class="option-setting">First Name</p>
       <p class="subtitle">This field is required.</p>
-      <input type="text" class="input-placeholder" id="first-name-input" placeholder="First Name">
+      <p id="wrongfirst" class="error visible hide">Missing first name</p>
+      <input type="text" name="firstname" class="input-placeholder" id="first-name-input" placeholder="First Name">
     </div>
     <div class="last-name-details option">
       <p class="option-setting">Last Name</p>
       <p class="subtitle">This field is required.<br> Only the initial will be visible.</p>
-      <input type="text" class="input-placeholder" id="last-name-input" placeholder="Last Name">
+      <p id="wronglast" class="error visible hide">Missing last name</p>
+      <input type="text" name="lastname" class="input-placeholder" id="last-name-input" placeholder="Last Name">
     </div>
     <div class="nickname-details option">
       <p class="option-setting">Nickname</p>
       <p class="subtitle">ex. Nicky, Ann, B, Foggy</p>
-      <input type="text" class="input-placeholder" id="nickname-input" placeholder="Nickname">
+      <input type="text" name="nickname" class="input-placeholder" id="nickname-input" placeholder="Nickname">
     </div>
 
     <div class="description-details option">
       <p class="option-setting">Description</p>
       <p class="subtitle">Give a brief description of yourself.</p>
       <div class="description-space">
-        <textarea id="description-input" placeholder="Enter your description here." form="registerform"></textarea>
+        <textarea id="description-input" name="description" placeholder="Enter your description here." form="registerform"></textarea>
       </div>
     </div>
 
@@ -160,7 +171,7 @@
 </form>
 
 
-  <script src="/js/logged.js"></script>
+  <script src="/js/submit-register.js"></script>
   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>

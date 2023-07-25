@@ -146,9 +146,10 @@ function profilepage (document, cur_user_id, user, num, reviews, restaurants) {
             separator.textContent = '|';
 
             // Create the delete link
-            const deleteLink = document.createElement('p');
+            const deleteLink = document.createElement('a');
             deleteLink.classList.add('delete');
             deleteLink.textContent = 'Delete';
+            deleteLink.href = `/confirm-delete?review=${review._id}`
 
             // Append the elements to the modify-review div
             modifyReviewDiv.appendChild(editLink);
@@ -231,6 +232,61 @@ function profilepage (document, cur_user_id, user, num, reviews, restaurants) {
 
         }
 
+        const usefulCountElement = document.createElement('div');
+        usefulCountElement.classList.add('useful-count');
+        usefulCountElement.textContent = `${review.helpful.length} of ${review.helpful.length + review.non_helpful.length} people found this review helpful.`;
+
+        const helpfulElement = document.createElement('div');
+        helpfulElement.classList.add('helpful');
+        helpfulElement.appendChild(usefulCountElement);
+
+        var helpful = review.helpful;
+        var unhelpful = review.non_helpful;
+        var questionAnswered = false;
+
+        for (let helped of helpful){
+            if (cur_user_id == helped){
+                questionAnswered = true;
+            }
+        }
+
+        for (let unhelped of unhelpful){
+            if (cur_user_id == unhelped){
+                questionAnswered = true;
+            }
+        }
+
+        if(cur_user_id && !questionAnswered && !(review.user.toString() == cur_user_id)){
+            const usefulSectionElement = document.createElement('div');
+            usefulSectionElement.classList.add('useful-section');
+            const usefulQuestionElement = document.createElement('div');
+            usefulQuestionElement.classList.add('useful-question');
+            usefulQuestionElement.textContent = 'Was this review helpful?';
+
+            const usefulOptionElement = document.createElement('div');
+            usefulOptionElement.classList.add('useful-option');
+
+            const optionContentElement = document.createElement('div');
+            optionContentElement.classList.add('option-content');
+
+            const yesButtonElement = document.createElement('a');
+            yesButtonElement.classList.add('btnSubmit');
+            yesButtonElement.textContent = 'Yes';
+            yesButtonElement.href = `/helpful?review=${review._id.toString()}`;
+
+            const noButtonElement = document.createElement('a');
+            noButtonElement.classList.add('btnSubmit');
+            noButtonElement.textContent = 'No';
+            noButtonElement.href = `/non_helpful?review=${review._id.toString()}`;
+
+            optionContentElement.appendChild(yesButtonElement);
+            optionContentElement.appendChild(noButtonElement);
+            usefulOptionElement.appendChild(optionContentElement);
+            usefulSectionElement.appendChild(usefulQuestionElement);
+            usefulSectionElement.appendChild(usefulOptionElement);
+            helpfulElement.appendChild(usefulSectionElement);
+        }
+
         // Append profile-review-top div, review-rating div, and own-review div to profile-review-details div
         profileReviewDetailsDiv.appendChild(profileReviewTopDiv);
         profileReviewDetailsDiv.appendChild(reviewRatingDiv);
@@ -239,6 +295,7 @@ function profilepage (document, cur_user_id, user, num, reviews, restaurants) {
         for(let mediaDiv of mediaDivs){
             profileReviewDetailsDiv.appendChild(mediaDiv);
         }
+        profileReviewDetailsDiv.appendChild(helpfulElement);
 
         // Append profile-review-details div to the review div
         reviewDiv.appendChild(profileReviewDetailsDiv);

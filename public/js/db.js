@@ -51,11 +51,29 @@ const botRest5 = async (page, search) => {
 };
 
 
+const dateRev5 = async (page, restaurant, search) => {
+  const db = await connectToDatabase();
+  const collection = db.collection('reviews');
+
+  console.log(restaurant._id);
+
+  const reviews = await collection.find({"restaurant": restaurant._id, $or: [
+    { "body": { $regex: `${search}`, $options: 'i' } },
+    { "readmore": { $regex: `${search}`, $options: 'i' } }
+  ]}).sort({date: -1, rating: -1, title: -1}).limit(5).skip((page - 1) * 5).toArray();
+
+  console.log(reviews);
+  return reviews;
+};
+
 const topRev5 = async (page, restaurant, search) => {
   const db = await connectToDatabase();
   const collection = db.collection('reviews');
 
-  const reviews = await collection.find({"restaurant": restaurant._id}).sort({ rating: -1, date: -1 }).limit(5).skip((page - 1) * 5).toArray();
+  const reviews = await collection.find({"restaurant": restaurant._id,  $or: [
+    { "body": { $regex: `${search}`, $options: 'i' } },
+    { "readmore": { $regex: `${search}`, $options: 'i' } }
+  ]}).sort({ rating: -1, date: -1, title: 1 }).limit(5).skip((page - 1) * 5).toArray();
 
   return reviews;
 };
@@ -64,19 +82,14 @@ const botRev5 = async (page, restaurant, search) => {
   const db = await connectToDatabase();
   const collection = db.collection('reviews');
 
-  const reviews = await collection.find({ "restaurant": restaurant._id, "description": { $regex: `${search}`, $options: 'i' }}).sort({ rating: 1, date: -1 }).limit(5).skip((page - 1) * 5).toArray();
+  const reviews = await collection.find({ "restaurant": restaurant._id,  $or: [
+    { "body": { $regex: `${search}`, $options: 'i' } },
+    { "readmore": { $regex: `${search}`, $options: 'i' } }
+  ]}).sort({ rating: 1, date: -1, title: 1 }).limit(5).skip((page - 1) * 5).toArray();
 
   return reviews;
 };
 
-const helpRev5 = async (page, restaurant, search) => {
-  const db = await connectToDatabase();
-  const collection = db.collection('reviews');
-
-  const reviews = await collection.find({ "restaurant": restaurant._id, "description": { $regex: `${search}`, $options: 'i' }}).sort({ rating: 1, date: -1 }).limit(5).skip((page - 1) * 5).toArray();
-
-  return reviews;
-};
 
 const alphaRest5 = async (page, search) => {
   const db = await connectToDatabase();
@@ -166,11 +179,8 @@ const deleteReview = async(reviewId) => {
       const db = await connectToDatabase();
       const collection = db.collection('reviews');
 
-      // Convert the reviewId from a string to an ObjectId
-      const objectIdReviewId = new ObjectId(reviewId);
-
       // Use the deleteOne() method to delete the review
-      const result = await collection.deleteOne({ _id: objectIdReviewId });
+      const result = await collection.deleteOne({ _id: reviewId });
 
       if (result.deletedCount === 1) {
         console.log('Review deleted successfully');
@@ -239,6 +249,7 @@ module.exports = {
   topRest5,
   botRest5,
   alphaRest5,
+  dateRev5,
   topRev5,
   botRev5,
   getRestReviewsLatest,
