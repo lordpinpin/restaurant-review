@@ -20,6 +20,7 @@ For sample restaurants to test out restaurant features:
     "password": "aloha"}
 
 Members involved:
+
 Pinpin, Lord John Benedict
 
 Maristela, Joseph Miguel
