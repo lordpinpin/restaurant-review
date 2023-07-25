@@ -510,8 +510,10 @@ app.post('/login', async (req, res) => {
         req.session.profile_picture = user.profile_picture;
         req.session.first_name = user.first_name;
         req.session.last_name = user.last_name;
-
-        req.session.cookie.maxAge = 3 * 24 * 60 * 60 * 1000;
+        if(req.body.remember){
+          console.log("REMEMBER");
+          req.session.cookie.maxAge = 3 * 24 * 60 * 60 * 1000;
+        }
         res.redirect('/');
       } else {
 
