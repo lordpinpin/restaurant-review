@@ -19,7 +19,7 @@ cloudinary.config({
   api_secret: process.env.CLOUD_SECRET
 });
 
-const { connectToDatabase, fetchRest, topRest6, topRest5, botRest5, alphaRest5, topRev5, botRev5, getRestReviewsLatest, getUserofReview, getUserofURL, userLatest5, getUserReviewsLatest, getRestofReview, getReview, getRestofUrl, getUnreviewed, updateRating, checkIfExists } = require('./public/js/db');
+const { connectToDatabase, fetchRest, topRest6, topRest5, botRest5, alphaRest5, dateRev5, topRev5, botRev5, getRestReviewsLatest, getUserofReview, getUserofURL, userLatest5, getUserReviewsLatest, getRestofReview, getReview, getRestofUrl, getUnreviewed, deleteReview, updateRating, checkIfExists } = require('./public/js/db');
 const { homepage } = require('./public/js/homepage');
 const { searchdisplay } = require('./public/js/searchdisplay');
 const { profilepage } = require('./public/js/profilepage.js');
@@ -38,6 +38,13 @@ connectToDatabase();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
+
+app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('Expires', '0');
+  res.setHeader('Pragma', 'no-cache');
+  next();
+});
 
 app.use(session({
   secret: 'restar-aunt',
@@ -99,7 +106,7 @@ app.get('/create-review', async (req, res) => {
       const messageTitle = document.querySelector('.settings-title h1');
       messageTitle.textContent = "Action/URL invalid."
 
-      var html = dom.serialize();
+      html = dom.serialize();
 
       res.send(html);
   } else {
@@ -121,7 +128,7 @@ app.get('/create-review', async (req, res) => {
 
       createreview(document, restaurants);
 
-      var html = dom.serialize();
+      html = dom.serialize();
 
       res.send(html);
   }
@@ -239,20 +246,100 @@ app.post('/create-review/:url', async (req, res) => {
       "media": media,
       "body": body,
       "readmore": readmore,
-      "helpful": []
+      "helpful": [],
+      "non_helpful": []
     };
     const db = await connectToDatabase();
     const insertedReview = await db.collection('reviews').insertOne(insertingValues);
 
     console.log(restaurant[0]);
-    updateRating(restaurant[0]);
+    await updateRating(restaurant[0]);
 
     /* console.log(insertedReview); */
 
-    res.redirect('/');
+    res.redirect(`/restaurants/${restaurant[0].url}`);
+});
+
+app.get('/confirm-delete', async (req, res) => {
+  const review = await getReview(new ObjectId(req.query.review));
+  var file;
+  if (req.session.isLoggedIn) {
+    file = 'message-logged.html';
+  } else {
+    file = 'message.html';
+  }
+  var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+  var dom = new JSDOM(html);
+  var { window } = dom;
+  var { document } = window;
+
+    if(!req.session.isLoggedIn || !(req.session.userId == review[0].user.toString())){
+
+      if (req.session.isLoggedIn) {
+        var profilepic = document.querySelector(".dropdown-profile img");
+        profilepic.src = `${req.session.profile_picture}`;
+
+        var name = document.querySelector(".name");
+        name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+      }
+
+      const messageTitle = document.querySelector('.settings-title h1');
+      messageTitle.textContent = "Unauthorized delete."
+
+      var html = dom.serialize();
+
+      res.send(html);
+    } else {
+      var profilepic = document.querySelector(".dropdown-profile img");
+      profilepic.src = `${req.session.profile_picture}`;
+
+      var name = document.querySelector(".name");
+      name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+
+      const messageTitle = document.querySelector('.settings-title h1');
+      messageTitle.textContent = "Are you sure?";
+      const settings = document.querySelector('.settings-title');
+      settings.classList.add('inline');
+
+      const deleteForm = document.createElement('form');
+      deleteForm.setAttribute('method', 'POST');
+      deleteForm.setAttribute('action', '/confirm-delete')
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'review';
+      input.value = req.query.review;
+      deleteLink = document.createElement('button');
+      deleteLink.type = "submit";
+      deleteLink.textContent = 'DELETE';
+      deleteLink.classList.add('btnSubmit');
+      deleteLink.classList.add('confirm');
+      deleteForm.append(input);
+      deleteForm.append(deleteLink);
+      settings.append(deleteForm);
+
+      var html = dom.serialize();
+
+      res.send(html);
+    }
 });
 
 
+app.post('/confirm-delete', async (req, res) => {
+    const review_id = new ObjectId(req.body.review);
+    const review = await getReview(review_id);
+    const restaurant = await getRestofReview(review_id);
+    console.log(review);
+    console.log(review[0]);
+    const media = review[0].media
+    for(let image of media){
+      console.log(image);
+      await deleteFileFromCloudinary(image);
+    }
+    await deleteReview(review_id);
+    await updateRating(restaurant);
+    res.redirect('/back-2');
+});
 
 
 
@@ -365,6 +452,8 @@ app.post('/edit-review', async (req, res) => {
       "date": date,
       "rating": reviewrating,
       "media": media,
+      "helpful": [],
+      "non_helpful": [],
       "edited": true
     };
     const update = { $set: updatedValues };
@@ -377,7 +466,7 @@ app.post('/edit-review', async (req, res) => {
 
     updateRating(restToUpdate[0]);
 
-    res.redirect('/');
+    res.redirect('/back-2');
 });
 
 app.get('/index.html', async (req, res) => {
@@ -422,8 +511,10 @@ app.post('/login', async (req, res) => {
         req.session.profile_picture = user.profile_picture;
         req.session.first_name = user.first_name;
         req.session.last_name = user.last_name;
-
-        req.session.cookie.maxAge = 3 * 24 * 60 * 60 * 1000;
+        if(req.body.remember){
+          console.log("REMEMBER");
+          req.session.cookie.maxAge = 3 * 24 * 60 * 60 * 1000;
+        }
         res.redirect('/');
       } else {
 
@@ -433,6 +524,85 @@ app.post('/login', async (req, res) => {
     .catch(err => {
       res.redirect('/login?error=1');
     });
+});
+
+
+app.get('/register', async (req, res) => {
+  if (req.session.isLoggedIn) {
+    res.redirect("/");
+  } else {
+  var html = fs.readFileSync(path.join(__dirname,'public',  'html', 'register.html'));
+
+  var dom = new JSDOM(html);
+  var { window } = dom;
+  var { document } = window;
+
+  var html = dom.serialize();
+
+  if (req.query.error === "1"){
+    document.querySelector("#errorReg").classList.remove("hide");
+  }
+
+  res.send(html);
+  }
+});
+
+app.post('/register', async (req, res) => {
+  const email = req.body.email;
+  const db = await connectToDatabase();
+  const usercheck = await db.collection('users').findOne({"email": req.body.email});
+
+  if(usercheck){
+    res.redirect('/register?error=1');
+  } else {
+
+    const password = req.body.password
+    const first_name = req.body.firstname;
+    const last_name = req.body.lastname;
+    const nickname = req.body.nickname;
+    const profiledesc = req.body.description;
+    const gender = req.body.gchoice;
+    const pronouns = req.body.pchoice;
+    const profile_pic = req.body.imagesrc;
+
+    var url = `${first_name.toLowerCase().replace(/\s/g, '')}${last_name.toLowerCase().replace(/\s/g, '')}`;
+    var check = false;
+    var count = 0;
+    while (!check){
+        let urlcheck = await db.collection('users').findOne({"url": url});
+        if(urlcheck){
+          count++;
+          url = `${first_name.toLowerCase().replace(/\s/g, '')}${last_name.toLowerCase().replace(/\s/g, '')}${count}`;
+        } else {
+          check = true;
+        }
+    }
+
+      const insertingValues = {
+        "email": email,
+        "password": password,
+        "url": url,
+        "profile_picture": profile_pic,
+        "first_name": capitalizeWords(first_name),
+        "last_name": capitalizeWords(last_name),
+        "description": profiledesc,
+        "nickname": nickname,
+        "pronouns": pronouns,
+        "gender": gender
+      };
+      const insertedUser = await db.collection('users').insertOne(insertingValues);
+
+      console.log(insertedUser);
+      req.session.isLoggedIn = true;
+      req.session.userId = insertedUser._id;
+      req.session.url = url;
+      req.session.profile_picture = profile_pic;
+      req.session.first_name = first_name;
+      req.session.last_name = last_name;
+
+      req.session.cookie.maxAge = 3 * 24 * 60 * 60 * 1000;
+      res.redirect('/');
+  }
 });
 
 
@@ -468,118 +638,143 @@ app.post('/login-restaurant', async (req, res) => {
    });
 });
 
-app.get('/register', async (req, res) => {
-  res.sendFile(path.join(__dirname,'public', 'html', 'register.html'));
-});
-
 
 app.get('/restaurants/:url', async (req, res) => {
-  var file;
-  if (req.session.isLoggedIn) {
-    file = 'restaurant-logged.html';
+  const restaurant = await getRestofUrl(req.params.url);
+  console.log(restaurant);
+  if(restaurant.length > 0){
+    var file;
+    if (req.session.isLoggedIn) {
+      file = 'restaurant-logged.html';
+    } else {
+      file = 'restaurant.html';
+    }
+    console.log(file);
+    var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+    var dom = new JSDOM(html);
+    var { window } = dom;
+    var { document } = window;
+
+    if (req.session.isLoggedIn) {
+      var profilepic = document.querySelector(".dropdown-profile img");
+      profilepic.src = `${req.session.profile_picture}`;
+
+      var name = document.querySelector(".name");
+      name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+    }
+
+    var types = ["latest", "highestrated", "lowestrated"];
+
+    if(!req.query.type | !types.includes(req.query.type)){
+      req.query.type = "latest";
+    }
+
+    if(!req.query.page || parseInt(req.query.page) < 1){
+      req.query.page = 1;
+    }
+
+    if(!req.query.search){
+      req.query.search = "";
+    }
+
+    const sortbyName = document.querySelector(".sortby-name");
+
+    console.log(req.query.type);
+
+
+    if (req.query.type === "latest"){
+      sortbyName.textContent = "Sort by: Latest";
+      var pageNum = parseInt(req.query.page);
+      const restaurant = await getRestofUrl(req.params.url);
+      console.log("DATEREV5");
+      const reviews = await dateRev5(pageNum, restaurant[0], req.query.search);
+      var users = [];
+      for(let reviewSet of reviews){
+        users.push(await getUserofReview(reviewSet));
+        console.log(users);
+      }
+      restaurantpage(document, restaurant[0], reviews, req.session.userId, users);
+      console.log("RESTAURANT PAGE SET");
+    } else if(req.query.type === "highestrated"){
+      sortbyName.textContent = "Sort by: Highest Rated";
+      var pageNum = parseInt(req.query.page);
+      const restaurant = await getRestofUrl(req.params.url);
+      const reviews = await topRev5(pageNum, restaurant[0], req.query.search);
+      var users = [];
+      for(let reviewSet of reviews){
+        users.push(await getUserofReview(reviewSet));
+      }
+      restaurantpage(document, restaurant[0], reviews, req.session.userId, users);
+    } else if(req.query.type === "lowestrated"){
+      sortbyName.textContent = "Sort by: Lowest Rated";
+      var pageNum = parseInt(req.query.page);
+      const restaurant = await getRestofUrl(req.params.url);
+      const reviews = await botRev5(pageNum, restaurant[0], req.query.search);
+      var users = [];
+      for(let reviewSet of reviews){
+        users.push(await getUserofReview(reviewSet));
+      }
+      restaurantpage(document, restaurant[0], reviews, req.session.userId, users);
+    }
+
+    sortbyItem = document.querySelectorAll(".sortby-item");
+    for (let i = 0; i < sortbyItem.length; i++) {
+      sortbyItem[i].firstElementChild.href =`?type=${sortbyItem[i].textContent.toLowerCase().replace(/\s/g, '')}&page=1&search=${req.query.search}`;
+    }
+
+    currentType = document.querySelector('.cur-type');
+    currentType.value = req.query.type;
+
+
+    const leftPage = document. querySelector('#leftpage');
+    const rightPage = document.querySelector('#rightpage');
+    const firstNum = document.querySelector('#firstpage');
+    const secondNum = document.querySelector('#secondpage');
+    const thirdNum = document.querySelector('#thirdpage');
+    const fourthNum = document.querySelector('#fourthpage');
+    const fifthNum = document.querySelector('#fifthpage');;
+
+
+    if(pageNum === 1){
+      firstNum.classList.add("current-page");
+      leftPage.href = `?type=${req.query.type}&page=1&search=${req.query.search}`;
+      rightPage.href = `?type=${req.query.type}&page=2&search=${req.query.search}`;
+      firstNum.href = `?type=${req.query.type}&page=1&search=${req.query.search}`;
+      secondNum.href = `?type=${req.query.type}&page=2&search=${req.query.search}`;
+      thirdNum.href = `?type=${req.query.type}&page=3&search=${req.query.search}`;
+      fourthNum.href = `?type=${req.query.type}&page=4&search=${req.query.search}`;
+      fifthNum.href = `?type=${req.query.type}&page=5&search=${req.query.search}`;
+    } else if (pageNum === 2){
+      secondNum.classList.add("current-page");
+      leftPage.href = `?type=${req.query.type}&page=1&search=${req.query.search}`;
+      rightPage.href = `?type=${req.query.type}&page=3&search=${req.query.search}`;
+      firstNum.href = `?type=${req.query.type}&page=1&search=${req.query.search}`;
+      secondNum.href = `?type=${req.query.type}&page=2&search=${req.query.search}`;
+      thirdNum.href = `?type=${req.query.type}&page=3&search=${req.query.search}`;
+      fourthNum.href = `?type=${req.query.type}&page=4&search=${req.query.search}`;
+      fifthNum.href = `?type=${req.query.type}&page=5&search=${req.query.search}`;
+    } else if (pageNum >= 3){
+      thirdNum.classList.add("current-page");
+      leftPage.href = `?type=${req.query.type}&page=${pageNum - 1}&search=${req.query.search}`;
+      rightPage.href = `?type=${req.query.type}&page=${pageNum + 1}&search=${req.query.search}`;
+      firstNum.href = `?type=${req.query.type}&page=${pageNum - 2}&search=${req.query.search}`;
+      secondNum.href = `?type=${req.query.type}&page=${pageNum - 1}&search=${req.query.search}`;
+      thirdNum.href = `?type=${req.query.type}&page=${pageNum}&search=${req.query.search}`;
+      fourthNum.href = `?type=${req.query.type}&page=${pageNum + 1}&search=${req.query.search}`;
+      fifthNum.href = `?type=${req.query.type}&page=${pageNum + 2}&search=${req.query.search}`;
+      firstNum.textContent = `${pageNum - 2}`;
+      secondNum.textContent = `${pageNum - 1}`;
+      thirdNum.textContent = `${pageNum}`;
+      fourthNum.textContent = `${pageNum + 1}`;
+      fifthNum.textContent = `${pageNum + 2}`;
+    }
+    var html = dom.serialize();
+
+    res.send(html);
   } else {
-    file = 'restaurant.html';
+    res.redirect('/');
   }
-  console.log(file);
-  var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
-
-  var dom = new JSDOM(html);
-  var { window } = dom;
-  var { document } = window;
-
-  if (req.session.isLoggedIn) {
-    var profilepic = document.querySelector(".dropdown-profile img");
-    profilepic.src = `${req.session.profile_picture}`;
-
-    var name = document.querySelector(".name");
-    name.textContent = `${req.session.first_name} ${req.session.last_name}`;
-  }
-
-  var types = ["highestrated", "lowestrated", "mosthelpful"];
-
-  if(!req.query.type | !types.includes(req.query.type)){
-    req.query.type = "highestrated";
-  }
-
-  if(!req.query.page || parseInt(req.query.page) < 1){
-    req.query.page = "1";
-  }
-
-  if(!req.query.search){
-    req.query.search = "";
-  }
-
-
-  if(req.query.type === "highestrated"){
-    var pageNum = parseInt(req.query.page);
-    const restaurant = await getRestofUrl(req.params.url);
-    const reviews = await topRev5(pageNum, restaurant[0], req.query.search);
-    var users = [];
-    console.log(reviews.length);
-    for(let reviewSet of reviews){
-      users.push(await getUserofReview(reviewSet));
-    }
-    console.log(users);
-    restaurantpage(document, restaurant[0], reviews, req.session.userId, users);
-  } else if(req.query.type === "lowestrated"){
-    var pageNum = parseInt(req.query.page);
-    const restaurant = await getRestofUrl(req.params.url);
-    const reviews = await topRev5(pageNum, restaurant[0], req.query.search);
-    var users = [];
-    console.log(reviews.length);
-    for(let reviewSet of reviews){
-      users.push(await getUserofReview(reviewSet));
-    }
-    console.log(users);
-    restaurantpage(document, restaurant[0], reviews, req.session.userId, users);
-  }
-
-
-  const leftPage = document. querySelector('#leftpage');
-  const rightPage = document.querySelector('#rightpage');
-  const firstNum = document.querySelector('#firstpage');
-  const secondNum = document.querySelector('#secondpage');
-  const thirdNum = document.querySelector('#thirdpage');
-  const fourthNum = document.querySelector('#fourthpage');
-  const fifthNum = document.querySelector('#fifthpage');;
-
-
-  if(pageNum === 1){
-    firstNum.classList.add("current-page");
-    leftPage.href = `/restaurants?type=${req.query.type}&page=1&search=${req.query.search}`;
-    rightPage.href = `/restaurants?type=${req.query.type}&page=2&search=${req.query.search}`;
-    firstNum.href = `/restaurants?type=${req.query.type}&page=1&search=${req.query.search}`;
-    secondNum.href = `/restaurants?type=${req.query.type}&page=2&search=${req.query.search}`;
-    thirdNum.href = `/restaurants?type=${req.query.type}&page=3&search=${req.query.search}`;
-    fourthNum.href = `/restaurants?type=${req.query.type}&page=4&search=${req.query.search}`;
-    fifthNum.href = `/restaurants?type=${req.query.type}&page=5&search=${req.query.search}`;
-  } else if (pageNum === 2){
-    secondNum.classList.add("current-page");
-    leftPage.href = `/restaurants?type=${req.query.type}&page=1&search=${req.query.search}`;
-    rightPage.href = `/restaurants?type=${req.query.type}&page=3&search=${req.query.search}`;
-    firstNum.href = `/restaurants?type=${req.query.type}&page=1&search=${req.query.search}`;
-    secondNum.href = `/restaurants?type=${req.query.type}&page=2&search=${req.query.search}`;
-    thirdNum.href = `/restaurants?type=${req.query.type}&page=3&search=${req.query.search}`;
-    fourthNum.href = `/restaurants?type=${req.query.type}&page=4&search=${req.query.search}`;
-    fifthNum.href = `/restaurants?type=${req.query.type}&page=5&search=${req.query.search}`;
-  } else if (pageNum >= 3){
-    thirdNum.classList.add("current-page");
-    leftPage.href = `/restaurants?type=${req.query.type}&page=${pageNum - 1}&search=${req.query.search}`;
-    rightPage.href = `/restaurants?type=${req.query.type}&page=${pageNum + 1}&search=${req.query.search}`;
-    firstNum.href = `/restaurants?type=${req.query.type}&page=${pageNum - 2}&search=${req.query.search}`;
-    secondNum.href = `/restaurants?type=${req.query.type}&page=${pageNum - 1}&search=${req.query.search}`;
-    thirdNum.href = `/restaurants?type=${req.query.type}&page=${pageNum}&search=${req.query.search}`;
-    fourthNum.href = `/restaurants?type=${req.query.type}&page=${pageNum + 1}&search=${req.query.search}`;
-    fifthNum.href = `/restaurants?type=${req.query.type}&page=${pageNum + 2}&search=${req.query.search}`;
-    firstNum.textContent = `${pageNum - 2}`;
-    secondNum.textContent = `${pageNum - 1}`;
-    thirdNum.textContent = `${pageNum}`;
-    fourthNum.textContent = `${pageNum + 1}`;
-    fifthNum.textContent = `${pageNum + 2}`;
-  }
-  var html = dom.serialize();
-
-  res.send(html);
 });
 
 app.get('/restaurants', async (req, res) => {
@@ -715,6 +910,136 @@ app.get('/restaurants', async (req, res) => {
   var html = dom.serialize();
 
   res.send(html);
+});
+
+app.get('/helpful', async (req, res) => {
+  const review = await getReview(new ObjectId(req.query.review));
+
+  const helpful = review[0].helpful;
+  const non_helpful = review[0].non_helpful;
+  const questionAnswered = false;
+
+  for (let helped of helpful){
+    if (cur_user_id == helped){
+        questionAnswered = true;
+    }
+  }
+  for (let unhelped of non_helpful){
+      if (cur_user_id == unhelped){
+          questionAnswered = true;
+      }
+  }
+
+  if(!req.session.isLoggedIn || review.length == 0 || questionAnswered){
+    var file;
+    if (req.session.isLoggedIn) {
+      file = 'message-logged.html';
+    } else {
+      file = 'message.html';
+    }
+    var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+    var dom = new JSDOM(html);
+    var { window } = dom;
+    var { document } = window;
+
+    if (req.session.isLoggedIn) {
+      var profilepic = document.querySelector(".dropdown-profile img");
+      profilepic.src = `${req.session.profile_picture}`;
+
+      var name = document.querySelector(".name");
+      name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+    }
+
+    const messageTitle = document.querySelector('.settings-title h1');
+    messageTitle.textContent = "Action/URL Invalid"
+
+    var html = dom.serialize();
+
+    res.send(html);
+  } else {
+
+    helpful.push(req.session.userId);
+    console.log(helpful);
+    const filter = { "_id": new ObjectId(req.query.review)};
+    const updatedValues = {
+      "helpful": helpful
+    };
+    const update = { $set: updatedValues };
+
+    const options = { returnOriginal: false };
+    const db = await connectToDatabase();
+    const updatedReview = await db.collection('reviews').findOneAndUpdate(filter, update, options);
+
+    console.log(updatedReview);
+
+    res.redirect('/back');
+  }
+});
+
+
+app.get('/non_helpful', async (req, res) => {
+  const review = await getReview(new ObjectId(req.query.review));
+
+  const helpful = review[0].helpful;
+  const non_helpful = review[0].non_helpful;
+  const questionAnswered = false;
+
+  for (let helped of helpful){
+    if (cur_user_id == helped){
+        questionAnswered = true;
+    }
+  }
+  for (let unhelped of non_helpful){
+      if (cur_user_id == unhelped){
+          questionAnswered = true;
+      }
+  }
+
+  if(!req.session.isLoggedIn || review.length == 0 || questionAnswered){
+    var file;
+    if (req.session.isLoggedIn) {
+      file = 'message-logged.html';
+    } else {
+      file = 'message.html';
+    }
+    var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+    var dom = new JSDOM(html);
+    var { window } = dom;
+    var { document } = window;
+
+    if (req.session.isLoggedIn) {
+      var profilepic = document.querySelector(".dropdown-profile img");
+      profilepic.src = `${req.session.profile_picture}`;
+
+      var name = document.querySelector(".name");
+      name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+    }
+
+    const messageTitle = document.querySelector('.settings-title h1');
+    messageTitle.textContent = "Action/URL Invalid"
+
+    var html = dom.serialize();
+
+    res.send(html);
+  } else {
+
+    non_helpful.push(req.session.userId);
+    const filter = { "_id": new ObjectId(req.query.review)};
+    const updatedValues = {
+      "non_helpful": non_helpful
+    };
+    const update = { $set: updatedValues };
+
+    const options = { returnOriginal: false };
+    const db = await connectToDatabase();
+    const updatedReview = await db.collection('reviews').findOneAndUpdate(filter, update, options);
+
+    console.log(updatedReview);
+
+    res.redirect('/back');
+  }
 });
 
 
@@ -907,7 +1232,7 @@ app.get('/user/:url', async (req, res) => {
 
 app.get('/logout', async (req, res) => {
   req.session.destroy((err) => {
-    if (err) {
+    if (err) {redirec
       console.error('Error destroying session:', err);
       res.status(500).send('Internal Server Error');
       return;
@@ -917,7 +1242,7 @@ app.get('/logout', async (req, res) => {
   });
 });
 
-app.get('/refresh-previous', (req, res) => {
+app.get('/back', (req, res) => {
   res.send(`
     <!DOCTYPE html>
     <html>
@@ -929,9 +1254,28 @@ app.get('/refresh-previous', (req, res) => {
           // Function to refresh the previous page
           function refreshPrevious() {
             window.history.go(-1);
-            setTimeout(() => {
-              location.reload();
-            }, 100); // Adjust the timeout value if needed
+          }
+
+          // Call the function on page load
+          refreshPrevious();
+        </script>
+      </body>
+    </html>
+  `);
+});
+
+app.get('/back-2', (req, res) => {
+  res.send(`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>Refresh Previous Page</title>
+      </head>
+      <body>
+        <script>
+          // Function to refresh the previous page
+          function refreshPrevious() {
+            window.history.go(-2);
           }
 
           // Call the function on page load
@@ -1044,11 +1388,11 @@ const getPublicIdFromUrl = (publicUrl) => {
   return `${publicIdWithoutExtension}`;
 };
 
-function waitHalfSecond() {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, 500); // Wait for half a second (500 milliseconds)
-  });
+function capitalizeWords(inputString) {
+  const words = inputString.split(' ');
+  for (let i = 0; i < words.length; i++) {
+    words[i] = words[i].charAt(0).toUpperCase() + words[i].slice(1);
+  }
+  return words.join(' ');
 }
 

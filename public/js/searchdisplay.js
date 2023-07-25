@@ -1,5 +1,5 @@
 
-function searchdisplay (document, restaurants, reviews, users) {
+function searchdisplay (document, restaurants, reviews, users, cur_user_id) {
     const container = document.querySelector(".restaurant-results");
     var count = 0;
 
@@ -195,6 +195,17 @@ function searchdisplay (document, restaurants, reviews, users) {
         }
         reviewTop.appendChild(reviewDate);
 
+
+        const usefulCountElement = document.createElement('div');
+        usefulCountElement.classList.add('useful-count');
+        usefulCountElement.textContent = `${reviews[count][0].helpful.length} of ${reviews[count][0].helpful.length + reviews[count][0].non_helpful.length} people found this review helpful.`;
+
+        const helpfulElement = document.createElement('div');
+        helpfulElement.classList.add('helpful');
+        helpfulElement.appendChild(usefulCountElement);
+
+        sampleReview.appendChild(helpfulElement);
+
         // Create the review details section
         const reviewDetails = document.createElement("div");
         reviewDetails.classList.add("review-details");
@@ -245,6 +256,7 @@ function searchdisplay (document, restaurants, reviews, users) {
             }
             reviewDetails.appendChild(mediaDiv);
         }
+
 
         container.appendChild(restaurantItem);
         count++;

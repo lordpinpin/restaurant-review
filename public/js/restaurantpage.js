@@ -1,5 +1,6 @@
 function restaurantpage(document, restaurant, reviews, cur_user_id, users) {
     const pic = document.querySelector('.banner-container img');
+    console.log(restaurant.banner);
     pic.src = restaurant.banner_url;
     const name = document.querySelector('.banner-first-line h1');
     name.textContent = restaurant.name;
@@ -190,9 +191,10 @@ function restaurantpage(document, restaurant, reviews, cur_user_id, users) {
             separator.textContent = '|';
 
             // Create the delete link
-            const deleteLink = document.createElement('p');
+            const deleteLink = document.createElement('a');
             deleteLink.classList.add('delete');
             deleteLink.textContent = 'Delete';
+            deleteLink.href = `/confirm-delete?review=${reviews[i]._id}`
 
             // Append the elements to the modify-review div
             modifyReviewDiv.appendChild(editLink);
@@ -290,13 +292,13 @@ function restaurantpage(document, restaurant, reviews, cur_user_id, users) {
         var questionAnswered = false;
 
         for (let helped of helpful){
-            if (cur_user_id == helped.toString()){
+            if (cur_user_id == helped){
                 questionAnswered = true;
             }
         }
 
         for (let unhelped of unhelpful){
-            if (cur_user_id == unhelped.toString()){
+            if (cur_user_id == unhelped){
                 questionAnswered = true;
             }
         }
