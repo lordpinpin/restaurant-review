@@ -4,48 +4,48 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rest★r</title>
-  <link rel="stylesheet" href="css/styles.css" type="text/css">
+  <link rel="stylesheet" href="/css/styles.css" type="text/css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
   <header>
-    <h2 class="logo"><a class="logo" href="index-logged.html"><b>Rest★r</b></a></h2>
+    <h2 class="logo"><a class="logo" href="/"><b>Rest★r</b></a></h2>
     <nav class="navigation">
-        <form class="searchbar" method="POST" action="restaurant-results-logged.html">
+        <form class="searchbar" method="GET" action="/restaurants">
             <div class="searcharea">
-                <input class="searchbar-text" type="text" placeholder="Search for anything" />
+                <input class="searchbar-text" type="text" placeholder="Search for anything." name="search"/>
                 <button class="searchbar-enter" type="submit" value="Search">
                     <span class="search"><ion-icon name="search-circle"></ion-icon></span>
                 </button>
             </div>
         </form>
-        <a class="navlink" href="restaurant-results.html">Restaurants</a>
-        <a class="navlink" href="create-review.html">Create Review</a>
+        <a class="navlink" href="/restaurants">Restaurants</a>
+        <a class="navlink" href="/create-review">Create Review</a>
         <div class="dropdown">
             <div class="dropdown-profile">
                 <img src="./Images/profile-1.jpg">
-                <div class="name">Emily Wang</div>
+                <div class="name">Sancho Mercado</div>
                 <div class="icon"><ion-icon name="menu"></ion-icon></div>
             </div>
             <nav class="dropdown-nav">
                 <ul class="dropdown-group">
-                  <li class="dropdown-item">
-                    <span class="icon-dropdown"><ion-icon name="person-circle"></ion-icon></span>
-                    <a href="profile-page-emilywang-logged.html" class="profile">Profile</a>
-                </li>
-                <li class="dropdown-item">
-                    <span class="icon-dropdown"><ion-icon name="settings"></ion-icon></span>
-                    <a href="restaurant-settings-profile.html" class="settings">Settings</a>
-                </li>
-                <li class="dropdown-item">
-                    <span class="icon-dropdown"><ion-icon name="exit"></ion-icon></span>
-                    <a href="index.html" class="logout">Log out</a>
-                </li>
+                    <li class="dropdown-item">
+                        <span class="icon-dropdown"><ion-icon name="person-circle"></ion-icon></span>
+                        <a href="/user" class="profile">Profile</a>
+                    </li>
+                    <li class="dropdown-item">
+                        <span class="icon-dropdown"><ion-icon name="settings"></ion-icon></span>
+                        <a href="/settings" class="settings">Settings</a>
+                    </li>
+                    <li class="dropdown-item">
+                        <span class="icon-dropdown"><ion-icon name="exit"></ion-icon></span>
+                        <a href="/logout" class="logout">Log out</a>
+                    </li>
                 </ul>
             </nav>
         </div>
     </nav>
-  </header>
+</header>
 
 
   <div class="settings-container">
@@ -53,10 +53,10 @@
       <h1 class="settings-title">
         Settings
       </h1>
-      <a href="restaurant-settings-profile.html" class="profile-button">
+      <a href="/settings-profile" class="profile-button">
         Profile
       </a>
-      <a href="restaurant-settings-password.html" class="password-button">
+      <a href="/settings-password" class="password-button">
         Password
       </a>
       <a class="email-notif-button current">
@@ -66,7 +66,7 @@
 
     <div class="vl"></div>
 
-    <form action="index-logged.html" class="password-change">
+    <form action="/settings-email" class="password-change">
 
       <div class="email-settings-container">
 
@@ -77,34 +77,29 @@
         <div class="old-email-details option">
           <p class="option-setting">Past E-mail</p>
           <p class="subtitle">Enter your past e-mail.</p>
-          <input type="email" spellcheck="false" name="old-email-input" id="email-field">
-          <div class="error visible">Please enter a valid email.</span>
+          <input type="email" spellcheck="false" name="old-email" id="email-field">
+          <div id="wrongpast" class="error hide visible">Please enter a valid email.</span>
         </div>
 
         <div class="new-email-details option">
           <p class="option-setting">New E-mail</p>
           <p class="subtitle">Enter the new e-mail you would like to use.</p>
-          <input type="email" spellcheck="false" name="new-email-input" id="email-field">
-          <div class="error visible">Please enter a valid email.</div>
+          <input type="email" spellcheck="false" name="new-email" id="email-field">
+          <div id="wrongnew" class="error hide visible">Please enter a valid email.</div>
         </div>
 
         <div class="verify-email-details option">
           <p class="option-setting">Verify E-mail</p>
           <p class="subtitle">Reenter the e-mail to verify.</p>
-          <input type="email" spellcheck="false" name="new-email-input" id="email-field">
-          <div class="error visible">Please enter a valid email.</div>
+          <input type="email" spellcheck="false" id="email-field">
+          <div id="noreenter" class="error hide visible">Please enter a valid email.</div>
+          <div id="wrongreenter" class="error hide visible">Please enter a valid email.</div>
         </div>
 
         <button type="submit" class="btnSubmit confirm" disabled>
           Confirm
         </button>
-
-        <button type="submit" class="btnSubmit cancel">
-          Cancel
-        </button>
-
       </div>
-
     </form>
   </div>
 

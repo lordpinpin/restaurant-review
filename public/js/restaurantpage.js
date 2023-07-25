@@ -1,6 +1,5 @@
 function restaurantpage(document, restaurant, reviews, cur_user_id, users) {
     const pic = document.querySelector('.banner-container img');
-    console.log(restaurant.banner);
     pic.src = restaurant.banner_url;
     const name = document.querySelector('.banner-first-line h1');
     name.textContent = restaurant.name;
@@ -278,6 +277,7 @@ function restaurantpage(document, restaurant, reviews, cur_user_id, users) {
         for(let images of mediaDivs){
             mediaElement.appendChild(images);
         }
+        console.log("media checked");
 
         const usefulCountElement = document.createElement('div');
         usefulCountElement.classList.add('useful-count');
@@ -303,8 +303,6 @@ function restaurantpage(document, restaurant, reviews, cur_user_id, users) {
             }
         }
 
-        console.log(reviews[i].user.toString());
-        console.log(cur_user_id);
 
         if(cur_user_id && !questionAnswered && !(reviews[i].user.toString() == cur_user_id)){
             const usefulSectionElement = document.createElement('div');
@@ -338,6 +336,7 @@ function restaurantpage(document, restaurant, reviews, cur_user_id, users) {
         }
 
 
+
         // Add elements to review-details
         reviewDetailsElement.appendChild(descriptionTitleElement);
         reviewDetailsElement.appendChild(descriptionTextElement);
@@ -349,8 +348,21 @@ function restaurantpage(document, restaurant, reviews, cur_user_id, users) {
         reviewElement.appendChild(reviewTopElement);
         reviewElement.appendChild(reviewDetailsElement);
         reviewElement.appendChild(helpfulElement);
+        if(reviews[i].reply != undefined && reviews[i].reply.length > 0){
+            const restaurantReply = document.createElement('div');
+            restaurantReply.classList.add('restaurant-reply');
+            const replyOwner = document.createElement('h3');
+            replyOwner.textContent = `Reply from ${restaurant.name}`;
+            const replyContent = document.createElement('p');
+            replyContent.textContent = reviews[i].reply;
+            restaurantReply.appendChild(replyOwner);
+            restaurantReply.appendChild(replyContent);
+            reviewElement.appendChild(restaurantReply);
+        }
+
 
         restaurantPage.appendChild(reviewElement);
+        console.log("finished restaurant page");
   }
 
 

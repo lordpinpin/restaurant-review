@@ -2,6 +2,7 @@
 function searchdisplay (document, restaurants, reviews, users, cur_user_id) {
     const container = document.querySelector(".restaurant-results");
     var count = 0;
+    console.log(users);
 
     for(let restaurant of restaurants){
         const restaurantItem = document.createElement("div");
@@ -52,7 +53,6 @@ function searchdisplay (document, restaurants, reviews, users, cur_user_id) {
         for(i = 1; i <= 10; i += 1){
             if(restaurant.rating < ranges[i]){
                 restaurant_rating = roundedValues[i - 1];
-                console.log(restaurant_rating);
                 break;
             }
         };
@@ -141,6 +141,7 @@ function searchdisplay (document, restaurants, reviews, users, cur_user_id) {
         reviewTop.appendChild(profileDetails);
 
         const reviewerImage = document.createElement("img");
+
         reviewerImage.src = `${users[count][0].profile_picture}`;
         reviewerImage.alt = "";
         reviewerImage.classList.add("profile-pic");
