@@ -1286,6 +1286,24 @@ app.get('/back-2', (req, res) => {
 });
 
 
+app.get('/settings', (req, res) => {
+  res.sendFile(path.join(__dirname,'public', 'html', 'restaurant-settings-profile.html'));
+});
+
+app.get('/restaurant-settings-email.html', (req, res) => {
+  
+  var html = res.sendFile(path.join(__dirname,'public', 'html', 'restaurant-settings-email.html'));
+
+  var dom = new JSDOM(html);
+  var { window } = dom;
+  var { document } = window;
+  
+});
+
+app.get('/restaurant-settings-password.html', (req, res) => {
+  res.sendFile(path.join(__dirname,'public', 'html', 'restaurant-settings-password.html'));
+});
+
 // NO URL HANDLING
 app.use((req, res, next) => {
   var file;

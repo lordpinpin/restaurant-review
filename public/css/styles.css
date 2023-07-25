@@ -1615,6 +1615,15 @@ header {
     box-shadow: inset 0px 1px 1px rgba(0,0,0,0.5), 0px 1px 0px rgba(255,255,255,.4);
 }
 
+#email-error{
+    position: absolute;
+    top: 100%;
+    left: 2px;
+    font-size: 16px;
+    font-weight: 400;
+    color:#eeeeee;
+}
+
 .password-settings-container button, .email-settings-container button {
     margin-right: 20px;
 }

@@ -1,23 +1,50 @@
 
 /*
-document.getElementsByClassName('btnSubmit').addEventListener('click', function() {
-  var oldEmail = document.getElementsByClassName('.old-email-input').value
-  var newEmail = document.getElementsByClassName('.new-email-input').value
+function validateEmail(){
 
-  if (oldEmail === '') {
-    alert('Please enter the old email');
-    return;
-  }
+  const emailField = document.getElementById('.email-field');
+  const emailError = document.getElementById('.email-error');
+  const submitButton = document.getElementsByClassName('#btnSubmit confirm');
 
-  if (newEmail === '') {
-    alert('Please enter the new email');
-    return;
-  }
+  emailField.addEventListener('input', function() {
+    if(!emailField.value.match(/^[A-Za-z\._\-0-9]*[@][A-Za-z]*[\.][a-z]{2,4}$/)){
+      emailError.innerHTML = "Please enter a valid email";
+      submitButton.disabled = true;
+      return false;
+    } else {
+      emailError.innerHTML = "";
+      submitButton.disabled = false;
+      return true;
+    }
 
-  if (oldEmail === newEmail) {
-    alert("The new email should be different from the old email.");
-  } else {
+  })
+}
+*/
 
-    //send to data base and confirm the email is valid. if so, print "Email verified!"
-  }
-}); */
+function validateEmail(email) {
+
+  const emailField = document.getElementById('.email-field');
+  const emailError = document.getElementById('.email-error');
+  const emailNew = document.querySelector(".new-email-details input[type=email]");
+  const emailVerify = document.querySelector(".verify-email-details input[type=email]");
+  const submitButton = document.getElementsByClassName('#btnSubmit confirm');
+
+  loginForm.addEventListener('submit', (event) => {
+    wrongEmail.classList.remove("visible");
+    submitButton.disabled = false;
+    
+      if(!emailField.value.match(/^[A-Za-z\._\-0-9]*[@][A-Za-z]*[\.][a-z]{2,4}$/)){
+        emailError.textContent = "Please enter a valid email";
+        emailError.classList.add("visible");
+        submitButton.disabled = true;
+        return false;
+      }
+
+      if(emailNew !== emailVerify){
+        emailError.textContent = "Email does not match with the New Email."
+        emailError.classList.add("visible");
+        submitButton.disabled = true;
+        return false;
+      }
+  })
+}
