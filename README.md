@@ -21,6 +21,10 @@ For sample restaurants to test out restaurant features:
 
 Members involved:
 Pinpin, Lord John Benedict
+
 Maristela, Joseph Miguel
+
 Bacosa, Gabriel Luis
+
 Digno, Kenneth Clark
+
