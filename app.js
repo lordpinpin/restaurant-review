@@ -26,8 +26,6 @@ const { profilepage } = require('./public/js/profilepage.js');
 const { editreview } = require('./public/js/editreview.js');
 const { createreview, createreviewRest } = require('./public/js/createreview.js');
 const { restaurantpage } = require('./public/js/restaurantpage.js');
-const { profilesettings } = require('./public/js/profile-settings.js');
-const { emailsettings } = require('./public/js/email-settings.js');
 
 const app = express();
 const port = 3000;
@@ -1291,8 +1289,8 @@ app.get('/settings', (req, res) => {
   res.sendFile(path.join(__dirname,'public', 'html', 'restaurant-settings-profile.html'));
 });
 
-app.get('/restaurant-settings-email.html', (req, res) => {
-  
+app.get('/settings-email', (req, res) => {
+
   var file = 'restaurant-settings-email.html';
 
   console.log(file);
@@ -1312,7 +1310,7 @@ app.get('/restaurant-settings-email.html', (req, res) => {
     res.send(html);
 });
 
-app.post('/restaurant-settings-email.html', async(req, res) => { 
+app.post('/restaurant-settings-email.html', async(req, res) => {
   const email = req.body.email;
   console.log(email);
   const db = await connectToDatabase();
