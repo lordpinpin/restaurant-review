@@ -66,7 +66,7 @@
 
     <div class="vl"></div>
 
-    <form action="/settings-email" class="password-change">
+    <form id="email-form" method="POST" action="/settings-email" class="password-change">
 
       <div class="email-settings-container">
 
@@ -77,21 +77,21 @@
         <div class="old-email-details option">
           <p class="option-setting">Past E-mail</p>
           <p class="subtitle">Enter your past e-mail.</p>
-          <input type="email" spellcheck="false" name="old-email" id="email-field">
+          <input id="pastemail" type="email" spellcheck="false" name="old-email" id="email-field">
           <div id="wrongpast" class="error hide visible">Please enter a valid email.</span>
         </div>
 
         <div class="new-email-details option">
           <p class="option-setting">New E-mail</p>
           <p class="subtitle">Enter the new e-mail you would like to use.</p>
-          <input type="email" spellcheck="false" name="new-email" id="email-field">
+          <input id="newemail" type="email" spellcheck="false" name="new-email" id="email-field">
           <div id="wrongnew" class="error hide visible">Please enter a valid email.</div>
         </div>
 
         <div class="verify-email-details option">
           <p class="option-setting">Verify E-mail</p>
           <p class="subtitle">Reenter the e-mail to verify.</p>
-          <input type="email" spellcheck="false" id="email-field">
+          <input id="email-again"  type="email" spellcheck="false" id="email-field">
           <div id="noreenter" class="error hide visible">Please enter a valid email.</div>
           <div id="wrongreenter" class="error hide visible">Please enter a valid email.</div>
         </div>

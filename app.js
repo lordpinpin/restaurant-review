@@ -588,9 +588,9 @@ app.post('/register', async (req, res) => {
         "pronouns": pronouns,
         "gender": gender
       };
-      const insertedUser = await db.collection('users').insertOne(insertingValues);
+      await db.collection('users').insertOne(insertingValues);
+      const insertedUser = await db.collection('users').findOne({'url': url});
 
-      console.log(insertedUser);
       req.session.isLoggedIn = true;
       req.session.userId = insertedUser._id;
       req.session.url = url;
@@ -689,8 +689,8 @@ app.get('/restaurants/:url', async (req, res) => {
       const reviews = await dateRev5(pageNum, restaurant[0], req.query.search);
       var users = [];
       for(let reviewSet of reviews){
+        console.log(reviewSet.user);
         users.push(await getUserofReview(reviewSet));
-        console.log(users);
       }
       restaurantpage(document, restaurant[0], reviews, req.session.userId, users);
       console.log("RESTAURANT PAGE SET");

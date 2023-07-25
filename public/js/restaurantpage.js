@@ -123,6 +123,7 @@ function restaurantpage(document, restaurant, reviews, cur_user_id, users) {
         const profileDetailsElement = document.createElement('div');
         profileDetailsElement.classList.add('profile-details');
 
+        console.log(users);
         // Add profile pic and name
         const profilePicElement = document.createElement('img');
         profilePicElement.src = users[i][0].profile_picture;
@@ -362,7 +363,6 @@ function restaurantpage(document, restaurant, reviews, cur_user_id, users) {
 
 
         restaurantPage.appendChild(reviewElement);
-        console.log("finished restaurant page");
   }
 
 
