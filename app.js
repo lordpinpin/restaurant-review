@@ -26,7 +26,8 @@ const { profilepage } = require('./public/js/profilepage.js');
 const { editreview } = require('./public/js/editreview.js');
 const { createreview, createreviewRest } = require('./public/js/createreview.js');
 const { restaurantpage } = require('./public/js/restaurantpage.js');
-const { profilesettings } = require('./public/js/profile-settings');
+const { profilesettings } = require('./public/js/profile-settings.js');
+const { emailsettings } = require('./public/js/email-settings.js');
 
 const app = express();
 const port = 3000;
@@ -948,12 +949,31 @@ app.get('/settings', (req, res) => {
 
 app.get('/restaurant-settings-email.html', (req, res) => {
   
-  var html = res.sendFile(path.join(__dirname,'public', 'html', 'restaurant-settings-email.html'));
+  var file = 'restaurant-settings-email.html';
+
+  console.log(file);
+  var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
 
   var dom = new JSDOM(html);
   var { window } = dom;
   var { document } = window;
-  
+
+    if(req.query.error === "1"){
+      document.querySelector("#errorLogin").classList.remove("hide");
+      document.querySelector("#errorLogin").classList.add("visible");
+    }
+
+    var html = dom.serialize();
+
+    res.send(html);
+});
+
+app.post('/restaurant-settings-email.html', async(req, res) => { 
+  const email = req.body.email;
+  console.log(email);
+  const db = await connectToDatabase();
+  console.log("findone to start");
+  db.collection('users').findOne({ email: email, password: password })
 });
 
 app.get('/restaurant-settings-password.html', (req, res) => {
