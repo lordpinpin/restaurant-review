@@ -10,8 +10,12 @@ function restaurantpage(document, restaurant, all_reviews, reviews, cur_user_id,
 
     var reviewed = false;
     if(cur_user_id){
+        console.log('ALL REVIEWs');
+        console.log(all_reviews);
         for(review of all_reviews){
-            if(cur_user_id === review.user.toString()){
+            console.log(cur_user_id);
+            console.log(review.user.toString());
+            if(cur_user_id.toString() === review.user.toString()){
                 reviewed = true;
                 break;
             }
@@ -142,7 +146,6 @@ function restaurantpage(document, restaurant, all_reviews, reviews, cur_user_id,
         const profileDetailsElement = document.createElement('div');
         profileDetailsElement.classList.add('profile-details');
 
-        console.log(users);
         // Add profile pic and name
         const profilePicElement = document.createElement('img');
         profilePicElement.src = users[i][0].profile_picture;
@@ -194,8 +197,7 @@ function restaurantpage(document, restaurant, all_reviews, reviews, cur_user_id,
         profileDetailsElement.appendChild(reviewRatingElement);
 
         var modifyReview = []
-        if(cur_user_id != undefined && cur_user_id === users[i][0]._id.toString()){
-            console.log("adding modify");
+        if(cur_user_id != undefined && cur_user_id.toString() === users[i][0]._id.toString()){
             const modifyReviewDiv = document.createElement("div");
             modifyReviewDiv.classList.add('modify-review');
 
@@ -297,7 +299,7 @@ function restaurantpage(document, restaurant, all_reviews, reviews, cur_user_id,
         for(let images of mediaDivs){
             mediaElement.appendChild(images);
         }
-        console.log("media checked");
+
 
         const usefulCountElement = document.createElement('div');
         usefulCountElement.classList.add('useful-count');
@@ -312,19 +314,19 @@ function restaurantpage(document, restaurant, all_reviews, reviews, cur_user_id,
         var questionAnswered = false;
 
         for (let helped of helpful){
-            if (cur_user_id == helped.toString()){
+            if (cur_user_id.toString() == helped.toString()){
                 questionAnswered = true;
             }
         }
 
         for (let unhelped of unhelpful){
-            if (cur_user_id == unhelped.toString()){
+            if (cur_user_id.toString() == unhelped.toString()){
                 questionAnswered = true;
             }
         }
 
 
-        if(cur_user_id && !questionAnswered && !(reviews[i].user.toString() == cur_user_id)){
+        if(cur_user_id && !questionAnswered && !(reviews[i].user.toString() == cur_user_id.toString())){
             const usefulSectionElement = document.createElement('div');
             usefulSectionElement.classList.add('useful-section');
             const usefulQuestionElement = document.createElement('div');

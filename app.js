@@ -70,7 +70,7 @@ app.get('/', async (req, res) => {
   if (req.session.isLoggedIn) {
     file = 'index-logged.html';
   } else if (req.session.isRestaurantLogged){
-    res.redirect('/dashboard');
+    return res.redirect('/dashboard');
   } else {
     file = 'index.html';
   }
@@ -150,7 +150,7 @@ app.get('/dashboard', async (req, res) => {
       var { document } = window;
 
       const db = await connectToDatabase();
-      const restaurant = await db.collection('restaurants').find({'_id': new ObjectId(req.session.userId)}).toArray();
+      const restaurant = await db.collection('restaurants').find({'_id': req.session.userId}).toArray();
 
       var profilepic = document.querySelector(".dropdown-profile img");
       profilepic.src = restaurant[0].mini_pic_url;
@@ -302,7 +302,7 @@ app.get('/create-review', async (req, res) => {
       var name = document.querySelector(".name");
       name.textContent = `${req.session.name}`;
 
-      const restaurants = await getUnreviewed(new ObjectId(req.session.userId));
+      const restaurants = await getUnreviewed(req.session.userId);
 
       createreview(document, restaurants);
 
@@ -315,7 +315,7 @@ app.get('/create-review', async (req, res) => {
 app.get('/create-review/:url', async (req, res) => {
 
   const rest = await getRestofUrl(req.params.url);
-  const restaurants = await getUnreviewed(new ObjectId(req.session.userId));
+  const restaurants = await getUnreviewed(req.session.userId);
   var curRest = "";
   if(rest.length > 0){
     curRest = rest[0];
@@ -418,7 +418,7 @@ app.post('/create-review/:url', async (req, res) => {
 
     const insertingValues = {
       "restaurant": restaurant[0]._id,
-      "user": new ObjectId(req.session.userId),
+      "user": req.session.userId,
       "date": date,
       "rating": reviewrating,
       "title": title,
@@ -468,11 +468,10 @@ app.get('/create-reply', async (req, res) => {
       var { window } = dom;
       var { document } = window;
 
-
-      const restaurant = await getRestofUrl(new ObjectId(req.session.userId));
       const user = await getUserofReview(review[0]);
+      const restaurant = await getRestofReview(review[0]);
 
-      console.log(review);
+      console.log(restaurant);
       var profilepic = document.querySelector(".dropdown-profile img");
       profilepic.src = restaurant[0].mini_pic_url;
 
@@ -519,7 +518,7 @@ app.get('/confirm-delete', async (req, res) => {
   var { window } = dom;
   var { document } = window;
 
-    if(!req.session.isLoggedIn || !(req.session.userId == review[0].user.toString())){
+    if(!req.session.isLoggedIn || !(req.session.userId.toString() == review[0].user.toString())){
 
       if (req.session.isLoggedIn) {
         var profilepic = document.querySelector(".dropdown-profile img");
@@ -603,7 +602,7 @@ app.get('/confirm-reply-delete', async (req, res) => {
   var { window } = dom;
   var { document } = window;
 
-    if(!req.session.isRestaurantLogged || !(req.session.userId == review[0].restaurant.toString())){
+    if(!req.session.isRestaurantLogged || !(req.session.userId.toString() == review[0].restaurant.toString())){
 
       if (req.session.isLoggedIn) {
         var profilepic = document.querySelector(".dropdown-profile img");
@@ -633,7 +632,7 @@ app.get('/confirm-reply-delete', async (req, res) => {
 
       const deleteForm = document.createElement('form');
       deleteForm.setAttribute('method', 'POST');
-      deleteForm.setAttribute('action', '/confirm-delete')
+      deleteForm.setAttribute('action', '/confirm-reply-delete')
       const input = document.createElement('input');
       input.type = 'hidden';
       input.name = 'review';
@@ -669,7 +668,7 @@ app.get('/edit-review', async (req, res) => {
     review = await getReview(new ObjectId(req.query.review));
   }
 
-  if(!ObjectId.isValid(req.query.review) || review.length === 0 || !req.session.isLoggedIn || review[0].user.toString() != req.session.userId){
+  if(!ObjectId.isValid(req.query.review) || review.length === 0 || !req.session.isLoggedIn || review[0].user.toString() != req.session.userId.toString()){
       var file;
         if (req.session.isLoggedIn) {
           file = 'message-logged.html';
@@ -801,7 +800,7 @@ app.get('/edit-reply', async (req, res) => {
     review = await getReview(new ObjectId(req.query.review));
   }
 
-  if(!ObjectId.isValid(req.query.review) || review.length === 0 || !req.session.isRestaurantLogged || review[0].restaurant.toString() != req.session.userId){
+  if(!ObjectId.isValid(req.query.review) || review.length === 0 || !req.session.isRestaurantLogged || review[0].restaurant.toString() != req.session.userId.toString()){
       var file;
         if (req.session.isLoggedIn) {
           file = 'message-logged.html';
@@ -1052,7 +1051,7 @@ app.post('/login-restaurant', async (req, res) => {
  db.collection('restaurants').findOne({ email: email})
    .then(async restaurant => {
      if (restaurant) {
-        var check = await bcrypt.compare(password, user.password);
+        var check = await bcrypt.compare(password, restaurant.password);
         console.log(check);
           if (check) {
               req.session.isRestaurantLogged = true;
@@ -1426,12 +1425,12 @@ app.get('/non_helpful', async (req, res) => {
   const questionAnswered = false;
 
   for (let helped of helpful){
-    if (req.session.userId  == helped){
+    if (req.session.userId  ==  helped){
         questionAnswered = true;
     }
   }
   for (let unhelped of non_helpful){
-      if (req.session.userId  == unhelped){
+      if (req.session.userId  ==  unhelped){
           questionAnswered = true;
       }
   }
@@ -1735,7 +1734,7 @@ app.post('/settings-email', async(req, res) => {
   if (userCheck.length > 0 || user.length == 0){
     res.redirect('/settings-email?error=1')
   } else {
-    const filter = { "_id": new ObjectId(req.session.userId)};
+    const filter = { "_id": req.session.userId};
     const updatedValues = {
       "email": new_email
     };
@@ -1779,7 +1778,8 @@ app.get('/settings-profile', async (req, res) => {
 
 
       const db = await connectToDatabase();
-      const user = await db.collection('users').find({'_id' : new ObjectId(req.session.userId)}).toArray();
+      const user = await db.collection('users').find({'_id' : req.session.userId}).toArray();
+
 
       console.log(user);
 
@@ -1846,7 +1846,7 @@ app.post('/settings-profile', async(req, res) => {
   const pronouns = req.body.pchoice;
   const profile_pic = req.body.imagesrc;
 
-    const filter = { "_id": new ObjectId(req.session.userId)};
+    const filter = { "_id": req.session.userId};
     const updatedValues = {
       "profile_picture": profile_pic,
       "first_name": capitalizeWords(first_name),
@@ -1922,7 +1922,7 @@ app.post('/settings-password', async(req, res) => {
   console.log(past_password);
   const db = await connectToDatabase();
 
-  const user = await db.collection('users').find({'_id': new ObjectId(req.session.userId)}).toArray();
+  const user = await db.collection('users').find({'_id': req.session.userId}).toArray();
 
   console.log(user);
   var check = await bcrypt.compare(past_password, user[0].password);
@@ -1931,7 +1931,7 @@ app.post('/settings-password', async(req, res) => {
   if (!check){
     res.redirect('/settings-password?error=1')
   } else {
-    const filter = { "_id": new ObjectId(req.session.userId)};
+    const filter = { "_id": req.session.userId};
     var new_password = "";
     bcrypt.genSalt(10, function (err, salt) {
         bcrypt.hash(req.body.new_password, salt, async function (err, hash) {

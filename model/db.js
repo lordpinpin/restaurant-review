@@ -244,10 +244,7 @@ const removeReply = async(review_id) => {
   const db = await connectToDatabase();
 
   const filter = { "_id": review_id};
-  const updatedValues = {
-    "reply": "",
-  };
-  const update = { $set: updatedValues };
+  const update = { $set: { "reply" : "" }};
   const options = { returnOriginal: false };
   const updatedRating = await db.collection('reviews').findOneAndUpdate(filter, update, options);
   console.log(updatedRating);

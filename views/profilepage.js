@@ -128,9 +128,9 @@ function profilepage (document, cur_user_id, user, num, reviews, restaurants) {
         var modifyReview = []
 
 
-        console.log(`${cur_user_id === user._id.toString()}`);
+        console.log(`${cur_user_id.toString() === user._id.toString()}`);
 
-        if(cur_user_id != undefined && cur_user_id === user._id.toString()){
+        if(cur_user_id != undefined && cur_user_id.toString() === user._id.toString()){
             console.log("adding modify");
             const modifyReviewDiv = document.createElement("div");
             modifyReviewDiv.classList.add('modify-review');
@@ -245,18 +245,18 @@ function profilepage (document, cur_user_id, user, num, reviews, restaurants) {
         var questionAnswered = false;
 
         for (let helped of helpful){
-            if (cur_user_id == helped){
+            if (cur_user_id.toString() == helped){
                 questionAnswered = true;
             }
         }
 
         for (let unhelped of unhelpful){
-            if (cur_user_id == unhelped){
+            if (cur_user_id.toString() == unhelped){
                 questionAnswered = true;
             }
         }
 
-        if(cur_user_id && !questionAnswered && !(review.user.toString() == cur_user_id)){
+        if(cur_user_id && !questionAnswered && !(review.user.toString() == cur_user_id.toString())){
             const usefulSectionElement = document.createElement('div');
             usefulSectionElement.classList.add('useful-section');
             const usefulQuestionElement = document.createElement('div');

@@ -2348,6 +2348,7 @@ img::after {
 }
 
 .restaurant-reply {
+    margin-top: 10px;
     margin-left: 80px;
     margin-right: 20px;
     margin-bottom: 20px;
