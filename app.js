@@ -2,10 +2,11 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const session = require('express-session');
-const bodyParser = require("body-parser");
 const { JSDOM } = require('jsdom');
+const MongoDBStore = require('connect-mongodb-session')(session);
 const { ObjectId } = require('mongodb');
 const cloudinary = require('cloudinary').v2;
+const bcrypt = require('bcrypt');
 require('dotenv').config();
 
 
@@ -19,15 +20,16 @@ cloudinary.config({
   api_secret: process.env.CLOUD_SECRET
 });
 
-const { connectToDatabase, fetchRest, topRest6, topRest5, botRest5, alphaRest5, dateRev5, topRev5, botRev5, getRestReviewsLatest, getUserofReview, getUserofURL, userLatest5, getUserReviewsLatest, getRestofReview, getReview, getRestofUrl, getUnreviewed, deleteReview, updateRating, checkIfExists } = require('./public/js/db');
-const { homepage } = require('./public/js/homepage');
-const { searchdisplay } = require('./public/js/searchdisplay');
-const { profilepage } = require('./public/js/profilepage.js');
-const { editreview } = require('./public/js/editreview.js');
-const { createreview, createreviewRest } = require('./public/js/createreview.js');
-const { restaurantpage } = require('./public/js/restaurantpage.js');
-const { dashboard } = require('./public/js/dashboard.js');
-const { createreply } = require('./public/js/createreply.js');
+const { connectToDatabase, fetchRest, topRest6, topRest5, botRest5, alphaRest5, dateRev5, topRev5, botRev5, getRestReviewsLatest, getUserofReview, getUserofURL, userLatest5, getUserReviewsLatest, getRestofReview, getReview, getRestofUrl, getUnreviewed, deleteReview, updateRating, removeReply, checkIfExists } = require('./model/db');
+const { homepage } = require('./views/homepage.js');
+const { searchdisplay } = require('./views/searchdisplay.js');
+const { profilepage } = require('./views/profilepage.js');
+const { editreview } = require('./views/editreview.js');
+const { createreview, createreviewRest } = require('./views/createreview.js');
+const { restaurantpage } = require('./views/restaurantpage.js');
+const { dashboard } = require('./views/dashboard.js');
+const { createreply } = require('./views/createreply.js');
+const { editreply } = require('./views/editreply.js');
 
 const app = express();
 const port = 3000;
@@ -35,9 +37,10 @@ const port = 3000;
 
 connectToDatabase();
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
+const store = new MongoDBStore({
+  uri: process.env.DB_URL,
+  collection: 'sessions', // The name of the collection to store the sessions
+});
 
 app.use((req, res, next) => {
   res.setHeader('Cache-Control', 'no-store');
@@ -49,16 +52,17 @@ app.use((req, res, next) => {
 app.use(session({
   secret: 'restar-aunt',
   resave: false,
-  saveUninitialized: false,
+  saveUninitialized: true,
+  store: store,
   cookie: {
-    maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days in milliseconds
+    maxAge: 1 * 24 * 60 * 60 * 1000, // 3 days in milliseconds
   },
 }));
 
-app.use(bodyParser.json({ limit: "20mb" }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
 
-// Increase payload size limit for urlencoded requests (default is 100kb)
-app.use(bodyParser.urlencoded({ limit: "20mb", extended: true }));
 
 app.get('/', async (req, res) => {
   var file;
@@ -81,14 +85,43 @@ app.get('/', async (req, res) => {
     profilepic.src = `${req.session.profile_picture}`;
 
     var name = document.querySelector(".name");
-    name.textContent = `${req.session.name}`;
+    name.textContent = `${req.session.name}`;;
   }
 
   var restaurants = await topRest6();
   homepage(document, restaurants);
 
   var html = dom.serialize();
+  console.log(req.session);
+  res.send(html);
+});
 
+
+app.get('/about', async (req, res) => {
+  var file;
+
+  if (req.session.isLoggedIn) {
+    file = 'about-logged.html';
+  } else if(req.session.isRestaurantLogged){
+    file = 'about-restlogged.html'
+  } else {
+    file = 'about.html';
+  }
+  var html = fs.readFileSync(path.join(__dirname,'public',  'html', file));
+
+  var dom = new JSDOM(html);
+  var { window } = dom;
+  var { document } = window;
+
+  if (req.session.isLoggedIn || req.session.isRestaurantLogged) {
+    var profilepic = document.querySelector(".dropdown-profile img");
+    profilepic.src = `${req.session.profile_picture}`;
+
+    var name = document.querySelector(".name");
+    name.textContent = `${req.session.name}`;;
+  }
+
+  var html = dom.serialize();
   res.send(html);
 });
 
@@ -144,6 +177,7 @@ app.get('/dashboard', async (req, res) => {
 
     console.log(req.query.type);
 
+    const all_reviews = await getRestReviewsLatest(restaurant[0]);
 
     if (req.query.type === "latest"){
       sortbyName.textContent = "Sort by: Latest";
@@ -156,7 +190,7 @@ app.get('/dashboard', async (req, res) => {
         console.log(reviewSet.user);
         users.push(await getUserofReview(reviewSet));
       }
-      dashboard(document, restaurant[0], reviews, users);
+      dashboard(document, restaurant[0],  all_reviews, reviews, users);
       console.log("RESTAURANT PAGE SET");
     } else if(req.query.type === "highestrated"){
       sortbyName.textContent = "Sort by: Highest Rated";
@@ -166,7 +200,7 @@ app.get('/dashboard', async (req, res) => {
       for(let reviewSet of reviews){
         users.push(await getUserofReview(reviewSet));
       }
-      dashboard(document, restaurant[0], reviews, users);
+      dashboard(document, restaurant[0], all_reviews, reviews, users);
     } else if(req.query.type === "lowestrated"){
       sortbyName.textContent = "Sort by: Lowest Rated";
       var pageNum = parseInt(req.query.page);
@@ -175,7 +209,7 @@ app.get('/dashboard', async (req, res) => {
       for(let reviewSet of reviews){
         users.push(await getUserofReview(reviewSet));
       }
-      dashboard(document, restaurant[0], reviews, users);
+      dashboard(document, restaurant[0], all_reviews, reviews, users);
     }
 
     sortbyItem = document.querySelectorAll(".sortby-item");
@@ -266,7 +300,7 @@ app.get('/create-review', async (req, res) => {
       profilepic.src = `${req.session.profile_picture}`;
 
       var name = document.querySelector(".name");
-      name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+      name.textContent = `${req.session.name}`;
 
       const restaurants = await getUnreviewed(new ObjectId(req.session.userId));
 
@@ -332,7 +366,7 @@ app.get('/create-review/:url', async (req, res) => {
       profilepic.src = `${req.session.profile_picture}`;
 
       var name = document.querySelector(".name");
-      name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+      name.textContent = `${req.session.name}`;
 
 
 
@@ -402,7 +436,6 @@ app.post('/create-review/:url', async (req, res) => {
     await updateRating(restaurant[0]);
 
     /* console.log(insertedReview); */
-
     res.redirect(`/restaurants/${restaurant[0].url}`);
 });
 
@@ -436,8 +469,7 @@ app.get('/create-reply', async (req, res) => {
       var { document } = window;
 
 
-      const db = await connectToDatabase();
-      const restaurant = await db.collection('restaurants').find({'_id': new ObjectId(req.session.userId)}).toArray();
+      const restaurant = await getRestofUrl(new ObjectId(req.session.userId));
       const user = await getUserofReview(review[0]);
 
       console.log(review);
@@ -494,7 +526,7 @@ app.get('/confirm-delete', async (req, res) => {
         profilepic.src = `${req.session.profile_picture}`;
 
         var name = document.querySelector(".name");
-        name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+        name.textContent = `${req.session.name}`;
       }
 
       const messageTitle = document.querySelector('.settings-title h1');
@@ -508,7 +540,7 @@ app.get('/confirm-delete', async (req, res) => {
       profilepic.src = `${req.session.profile_picture}`;
 
       var name = document.querySelector(".name");
-      name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+      name.textContent = `${req.session.name}`;
 
       const messageTitle = document.querySelector('.settings-title h1');
       messageTitle.textContent = "Are you sure?";
@@ -556,11 +588,83 @@ app.post('/confirm-delete', async (req, res) => {
     res.redirect('/back-2');
 });
 
+app.get('/confirm-reply-delete', async (req, res) => {
+
+  const review = await getReview(new ObjectId(req.query.review));
+  var file;
+  if (req.session.isRestaurantLogged || req.session.isLoggedIn) {
+    file = 'message-logged.html';
+  } else {
+    file = 'message.html';
+  }
+  var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+  var dom = new JSDOM(html);
+  var { window } = dom;
+  var { document } = window;
+
+    if(!req.session.isRestaurantLogged || !(req.session.userId == review[0].restaurant.toString())){
+
+      if (req.session.isLoggedIn) {
+        var profilepic = document.querySelector(".dropdown-profile img");
+        profilepic.src = `${req.session.profile_picture}`;
+
+        var name = document.querySelector(".name");
+        name.textContent = `${req.session.name}`;
+      }
+
+      const messageTitle = document.querySelector('.settings-title h1');
+      messageTitle.textContent = "Unauthorized delete."
+
+      var html = dom.serialize();
+
+      res.send(html);
+    } else {
+      var profilepic = document.querySelector(".dropdown-profile img");
+      profilepic.src = `${req.session.profile_picture}`;
+
+      var name = document.querySelector(".name");
+      name.textContent = `${req.session.name}`;
+
+      const messageTitle = document.querySelector('.settings-title h1');
+      messageTitle.textContent = "Are you sure?";
+      const settings = document.querySelector('.settings-title');
+      settings.classList.add('inline');
+
+      const deleteForm = document.createElement('form');
+      deleteForm.setAttribute('method', 'POST');
+      deleteForm.setAttribute('action', '/confirm-delete')
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'review';
+      input.value = req.query.review;
+      deleteLink = document.createElement('button');
+      deleteLink.type = "submit";
+      deleteLink.textContent = 'DELETE';
+      deleteLink.classList.add('btnSubmit');
+      deleteLink.classList.add('confirm');
+      deleteForm.append(input);
+      deleteForm.append(deleteLink);
+      settings.append(deleteForm);
+
+      var html = dom.serialize();
+
+      res.send(html);
+    }
+});
+
+
+app.post('/confirm-reply-delete', async (req, res) => {
+    await removeReply(new ObjectId(req.body.review));
+    res.redirect('/back-2');
+});
+
 
 
 
 app.get('/edit-review', async (req, res) => {
 
+  var review = null;
   if(ObjectId.isValid(req.query.review)){
     review = await getReview(new ObjectId(req.query.review));
   }
@@ -583,7 +687,7 @@ app.get('/edit-review', async (req, res) => {
           profilepic.src = `${req.session.profile_picture}`;
 
           var name = document.querySelector(".name");
-          name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+          name.textContent = `${req.session.name}`;
         }
 
         const messageTitle = document.querySelector('.settings-title h1');
@@ -605,7 +709,7 @@ app.get('/edit-review', async (req, res) => {
       profilepic.src = `${req.session.profile_picture}`;
 
       var name = document.querySelector(".name");
-      name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+      name.textContent = `${req.session.name}`;
 
       const restaurant = await getRestofReview(review[0])
 
@@ -687,11 +791,94 @@ app.post('/edit-review', async (req, res) => {
     res.redirect('/back-2');
 });
 
+
+
+
+app.get('/edit-reply', async (req, res) => {
+
+  var review = null;
+  if(ObjectId.isValid(req.query.review)){
+    review = await getReview(new ObjectId(req.query.review));
+  }
+
+  if(!ObjectId.isValid(req.query.review) || review.length === 0 || !req.session.isRestaurantLogged || review[0].restaurant.toString() != req.session.userId){
+      var file;
+        if (req.session.isLoggedIn) {
+          file = 'message-logged.html';
+        } else {
+          file = 'message.html';
+        }
+        var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+        var dom = new JSDOM(html);
+        var { window } = dom;
+        var { document } = window;
+
+        if (req.session.isLoggedIn) {
+          var profilepic = document.querySelector(".dropdown-profile img");
+          profilepic.src = `${req.session.profile_picture}`;
+
+          var name = document.querySelector(".name");
+          name.textContent = `${req.session.name}`;
+        }
+
+        const messageTitle = document.querySelector('.settings-title h1');
+        messageTitle.textContent = "Action/URL invalid."
+
+      var html = dom.serialize();
+
+      res.send(html);
+  } else {
+      var file = 'create-reply.html';
+      console.log(file);
+      var html = fs.readFileSync(path.join(__dirname,'public', 'html', file));
+
+      var dom = new JSDOM(html);
+      var { window } = dom;
+      var { document } = window;
+
+      var profilepic = document.querySelector(".dropdown-profile img");
+      profilepic.src = `${req.session.profile_picture}`;
+
+      var name = document.querySelector(".name");
+      name.textContent = `${req.session.name}`;
+
+      const restaurant = await getRestofReview(review[0])
+      const user = await getUserofReview(review[0]);
+
+
+      editreply(document, review[0], user[0]);
+
+      var html = dom.serialize();
+
+      res.send(html);
+  }
+});
+
+app.post('/edit-reply', async (req, res) => {
+
+  const reviewid = req.query.review;
+
+  const filter = { "_id": new ObjectId(reviewid)};
+  const updatedValues = {
+    "reply" : req.body.reply
+  };
+  const update = { $set: updatedValues };
+
+  const options = { returnOriginal: false };
+  const db = await connectToDatabase();
+  const updatedReview = await db.collection('reviews').findOneAndUpdate(filter, update, options);
+
+  res.redirect('/back-2');
+});
+
 app.get('/login', async (req, res) => {
 
     if (req.session.isLoggedIn) {
       res.redirect("/");
-    } else{
+    } else if (req.session.isRestaurantLogged){
+      res.redirect('/dashboard');
+    } else {
     var html = fs.readFileSync(path.join(__dirname,'public',  'html', 'login.html'));
 
     var dom = new JSDOM(html);
@@ -713,39 +900,46 @@ app.post('/login', async (req, res) => {
   const email = req.body.email;
   console.log(email);
   const password = req.body.password
+
   console.log(password);
   const db = await connectToDatabase();
   console.log("findone to start");
-  db.collection('users').findOne({ email: email, password: password })
-    .then(user => {
+  db.collection('users').findOne({ email: email})
+    .then(async user => {
       if (user) {
-        req.session.isLoggedIn = true;
-        req.session.userId = user._id;
-        req.session.url = user.url;
-        req.session.profile_picture = user.profile_picture;
-        req.session.first_name = user.first_name;
-        req.session.last_name = user.last_name;
-        if(req.body.remember){
-          console.log("REMEMBER");
-          req.session.cookie.maxAge = 3 * 24 * 60 * 60 * 1000;
-        }
-        res.redirect('/');
+        var check = await bcrypt.compare(password, user.password);
+        console.log(check);
+          if (check) {
+              req.session.isLoggedIn = true;
+              req.session.userId = user._id;
+              req.session.url = user.url;
+              req.session.profile_picture = user.profile_picture;
+              req.session.name = user.first_name + " " + user.last_name;
+              if(req.body.remember){
+                console.log("REMEMBER");
+                req.session.cookie.maxAge = 3 * 24 * 60 * 60 * 1000;
+              }
+              return res.redirect('/');
+          } else {
+              return res.redirect('/login?error=1');
+          }
       } else {
-
-        res.redirect('/login?error=1');
+        return res.redirect('/login?error=1');
       }
     })
     .catch(err => {
-      res.redirect('/login?error=1');
+      return res.redirect('/login?error=1');
     });
 });
 
 
 app.get('/register', async (req, res) => {
   if (req.session.isLoggedIn) {
-    res.redirect("/");
+    return res.redirect("/");
+  } else if (req.session.isRestaurantLogged){
+    res.redirect('/dashboard');
   } else{
-  var html = fs.readFileSync(path.join(__dirname,'public',  'html', 'login-restaurant.html'));
+  var html = fs.readFileSync(path.join(__dirname,'public',  'html', 'register.html'));
 
   var dom = new JSDOM(html);
   var { window } = dom;
@@ -770,8 +964,6 @@ app.post('/register', async (req, res) => {
   if(usercheck){
     res.redirect('/register?error=1');
   } else {
-
-    const password = req.body.password
     const first_name = req.body.firstname;
     const last_name = req.body.lastname;
     const nickname = req.body.nickname;
@@ -793,30 +985,35 @@ app.post('/register', async (req, res) => {
         }
     }
 
-      const insertingValues = {
-        "email": email,
-        "password": password,
-        "url": url,
-        "profile_picture": profile_pic,
-        "first_name": capitalizeWords(first_name),
-        "last_name": capitalizeWords(last_name),
-        "description": profiledesc,
-        "nickname": nickname,
-        "pronouns": pronouns,
-        "gender": gender
-      };
-      await db.collection('users').insertOne(insertingValues);
-      const insertedUser = await db.collection('users').findOne({'url': url});
+    bcrypt.genSalt(10, function (err, salt) {
+      bcrypt.hash(req.body.password, salt, async function (err, hash) {
+        const insertingValues = {
+          "email": email,
+          "password": hash,
+          "url": url,
+          "profile_picture": profile_pic,
+          "first_name": capitalizeWords(first_name),
+          "last_name": capitalizeWords(last_name),
+          "description": profiledesc,
+          "nickname": nickname,
+          "pronouns": pronouns,
+          "gender": gender
+        };
+        await db.collection('users').insertOne(insertingValues);
+        const insertedUser = await db.collection('users').findOne({'url': url});
 
-      req.session.isLoggedIn = true;
-      req.session.userId = insertedUser._id;
-      req.session.url = url;
-      req.session.profile_picture = profile_pic;
-      req.session.first_name = first_name;
-      req.session.last_name = last_name;
+        req.session.isLoggedIn = true;
+        req.session.userId = insertedUser._id;
+        req.session.url = url;
+        req.session.profile_picture = profile_pic;
+        req.session.name = first_name + " " + last_name;
 
-      req.session.cookie.maxAge = 3 * 24 * 60 * 60 * 1000;
-      res.redirect('/');
+        req.session.cookie.maxAge = 3 * 24 * 60 * 60 * 1000;
+        return res.redirect('/');
+      });
+    });
+
+
   }
 });
 
@@ -824,8 +1021,24 @@ app.post('/register', async (req, res) => {
 app.get('/login-restaurant', async (req, res) => {
   if(res.isLoggedIn){
     res.redirect('/');
-  } else {
-    res.sendFile(path.join(__dirname,'public', 'html', 'login-restaurant.html'));
+  } else if (req.isRestaurantLogged){
+    res.redirect('/dashboard');
+  }
+  else {
+    var html = fs.readFileSync(path.join(__dirname,'public',  'html', 'login-restaurant.html'));
+
+    var dom = new JSDOM(html);
+    var { window } = dom;
+    var { document } = window;
+
+    if(req.query.error === "1"){
+      document.querySelector("#errorLogin").classList.remove("hide");
+      document.querySelector("#errorLogin").classList.add("visible");
+    }
+
+    var html = dom.serialize();
+
+    res.send(html);
   }
 });
 
@@ -836,24 +1049,34 @@ app.post('/login-restaurant', async (req, res) => {
  console.log(password);
  const db= await connectToDatabase();
  console.log("findone to start");
- db.collection('restaurants').findOne({ email: email, password: password })
-   .then(restaurant => {
+ db.collection('restaurants').findOne({ email: email})
+   .then(async restaurant => {
      if (restaurant) {
-       req.session.isRestaurantLogged = true;
-       req.session.userId = restaurant._id;
-       req.session.profile_picture = restaurant.mini_pic_url;
-       req.session.name = restaurant.name;
-       console.log(restaurant._id);
+        var check = await bcrypt.compare(password, user.password);
+        console.log(check);
+          if (check) {
+              req.session.isRestaurantLogged = true;
+              req.session.userId = restaurant._id;
+              req.session.profile_picture = restaurant.mini_pic_url;
+              req.session.name = restaurant.name;
+              console.log(restaurant._id);
 
-       req.session.cookie.maxAge = 3 * 24 * 60 * 60 * 1000;
-       res.redirect('/dashboard');
+              if(req.body.remember){
+                console.log("REMEMBER");
+                req.session.cookie.maxAge = 3 * 24 * 60 * 60 * 1000;
+              }
+              return res.redirect('/dashboard');
+          } else {
+              return res.redirect('/login-restaurant?error=1');
+          }
+
      } else {
-       res.redirect('/login-restaurant?error=1');
+       return res.redirect('/login-restaurant?error=1');
      }
    })
    .catch(err => {
      console.error('Error finding restaurant:', err);
-     res.redirect('/login-restaurant?error=1');
+     return res.redirect('/login-restaurant?error=1');
    });
 });
 
@@ -880,7 +1103,7 @@ app.get('/restaurants/:url', async (req, res) => {
       profilepic.src = `${req.session.profile_picture}`;
 
       var name = document.querySelector(".name");
-      name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+      name.textContent = `${req.session.name}`;
     }
 
     var types = ["latest", "highestrated", "lowestrated"];
@@ -902,10 +1125,12 @@ app.get('/restaurants/:url', async (req, res) => {
     console.log(req.query.type);
 
 
+    var pageNum = parseInt(req.query.page);
+    const restaurant = await getRestofUrl(req.params.url);
+    const allreviews = await getRestReviewsLatest(restaurant[0]);
     if (req.query.type === "latest"){
       sortbyName.textContent = "Sort by: Latest";
-      var pageNum = parseInt(req.query.page);
-      const restaurant = await getRestofUrl(req.params.url);
+
       console.log("DATEREV5");
       const reviews = await dateRev5(pageNum, restaurant[0], req.query.search);
       var users = [];
@@ -913,22 +1138,18 @@ app.get('/restaurants/:url', async (req, res) => {
         console.log(reviewSet.user);
         users.push(await getUserofReview(reviewSet));
       }
-      restaurantpage(document, restaurant[0], reviews, req.session.userId, users);
+      restaurantpage(document, restaurant[0], allreviews, reviews, req.session.userId, users);
       console.log("RESTAURANT PAGE SET");
     } else if(req.query.type === "highestrated"){
       sortbyName.textContent = "Sort by: Highest Rated";
-      var pageNum = parseInt(req.query.page);
-      const restaurant = await getRestofUrl(req.params.url);
       const reviews = await topRev5(pageNum, restaurant[0], req.query.search);
       var users = [];
       for(let reviewSet of reviews){
         users.push(await getUserofReview(reviewSet));
       }
-      restaurantpage(document, restaurant[0], reviews, req.session.userId, users);
+      restaurantpage(document, restaurant[0], allreviews, reviews, req.session.userId, users);
     } else if(req.query.type === "lowestrated"){
       sortbyName.textContent = "Sort by: Lowest Rated";
-      var pageNum = parseInt(req.query.page);
-      const restaurant = await getRestofUrl(req.params.url);
       const reviews = await botRev5(pageNum, restaurant[0], req.query.search);
       var users = [];
       for(let reviewSet of reviews){
@@ -1015,7 +1236,7 @@ app.get('/restaurants', async (req, res) => {
     profilepic.src = `${req.session.profile_picture}`;
 
     var name = document.querySelector(".name");
-    name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+    name.textContent = `${req.session.name}`;
   }
 
   var types = ["highestrated", "lowestrated", "alphabetical"];
@@ -1167,7 +1388,7 @@ app.get('/helpful', async (req, res) => {
       profilepic.src = `${req.session.profile_picture}`;
 
       var name = document.querySelector(".name");
-      name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+      name.textContent = `${req.session.name}`;
     }
 
     const messageTitle = document.querySelector('.settings-title h1');
@@ -1233,7 +1454,7 @@ app.get('/non_helpful', async (req, res) => {
       profilepic.src = `${req.session.profile_picture}`;
 
       var name = document.querySelector(".name");
-      name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+      name.textContent = `${req.session.name}`;
     }
 
     const messageTitle = document.querySelector('.settings-title h1');
@@ -1278,7 +1499,7 @@ app.get('/user', async (req, res) => {
         profilepic.src = `${req.session.profile_picture}`;
 
         var name = document.querySelector(".name");
-        name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+        name.textContent = `${req.session.name}`;
       }
 
       const messageTitle = document.querySelector('.settings-title h1');
@@ -1312,7 +1533,7 @@ app.get('/user/:url', async (req, res) => {
           profilepic.src = `${req.session.profile_picture}`;
 
           var name = document.querySelector(".name");
-          name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+          name.textContent = `${req.session.name}`;
         }
 
         const messageTitle = document.querySelector('.settings-title h1');
@@ -1340,7 +1561,7 @@ app.get('/user/:url', async (req, res) => {
         profilepic.src = `${req.session.profile_picture}`;
 
         var name = document.querySelector(".name");
-        name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+        name.textContent = `${req.session.name}`;
       }
 
       if (!req.query.page){
@@ -1468,7 +1689,7 @@ app.get('/settings-email', (req, res) => {
     profilepic.src = `${req.session.profile_picture}`;
 
     var name = document.querySelector(".name");
-    name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+    name.textContent = `${req.session.name}`;
 
       if(req.query.error === "1"){
         document.querySelector("#errorEmail").classList.remove("hide");
@@ -1489,7 +1710,7 @@ app.get('/settings-email', (req, res) => {
         profilepic.src = `${req.session.profile_picture}`;
 
         var name = document.querySelector(".name");
-        name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+        name.textContent = `${req.session.name}`;
       }
 
       const messageTitle = document.querySelector('.settings-title h1');
@@ -1524,7 +1745,7 @@ app.post('/settings-email', async(req, res) => {
     const updatedUser = await db.collection('users').findOneAndUpdate(filter, update, options);
 
     console.log(updatedUser);
-    res.redirect('/');
+    return res.redirect('/');
   }
 });
 
@@ -1543,7 +1764,7 @@ app.get('/settings-profile', async (req, res) => {
     profilepic.src = `${req.session.profile_picture}`;
 
     var name = document.querySelector(".name");
-    name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+    name.textContent = `${req.session.name}`;
 
       if(req.query.error === "1"){
         document.querySelector("#errorProfile").classList.remove("hide");
@@ -1553,8 +1774,7 @@ app.get('/settings-profile', async (req, res) => {
       profile_picture.src = req.session.profile_picture;
       console.log(document.querySelector('#last-name-input').value);
 
-      document.querySelector('.first_name').defaultValue = req.session.first_name;
-      document.querySelector('.last_name').defaultValue = req.session.last_name;
+
 
 
 
@@ -1562,6 +1782,9 @@ app.get('/settings-profile', async (req, res) => {
       const user = await db.collection('users').find({'_id' : new ObjectId(req.session.userId)}).toArray();
 
       console.log(user);
+
+      document.querySelector('.first_name').defaultValue = user[0].first_name;
+      document.querySelector('.last_name').defaultValue = user[0].last_name;
 
       const nickname = document.querySelector('.nick_name');
       console.log(user[0].nickname);
@@ -1600,7 +1823,7 @@ app.get('/settings-profile', async (req, res) => {
         profilepic.src = `${req.session.profile_picture}`;
 
         var name = document.querySelector(".name");
-        name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+        name.textContent = `${req.session.name}`;
       }
 
       const messageTitle = document.querySelector('.settings-title h1');
@@ -1618,7 +1841,7 @@ app.post('/settings-profile', async(req, res) => {
   const first_name = req.body.firstname;
   const last_name = req.body.lastname;
   const nickname = req.body.nickname;
-  const profiledesc = req.body.description;
+  const profiledesc = DOMPurify.sanitize(req.body.description);
   const gender = req.body.gchoice;
   const pronouns = req.body.pchoice;
   const profile_pic = req.body.imagesrc;
@@ -1644,7 +1867,7 @@ app.post('/settings-profile', async(req, res) => {
     req.session.first_name = first_name;
     req.session.last_name = last_name;
 
-    res.redirect('/');
+    return res.redirect('/');
 });
 
 app.get('/settings-password', (req, res) => {
@@ -1661,7 +1884,7 @@ app.get('/settings-password', (req, res) => {
     profilepic.src = `${req.session.profile_picture}`;
 
     var name = document.querySelector(".name");
-    name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+    name.textContent = `${req.session.name}`;
 
       if(req.query.error === "1"){
         document.querySelector("#errorPass").classList.remove("hide");
@@ -1682,7 +1905,7 @@ app.get('/settings-password', (req, res) => {
         profilepic.src = `${req.session.profile_picture}`;
 
         var name = document.querySelector(".name");
-        name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+        name.textContent = `${req.session.name}`;
       }
 
       const messageTitle = document.querySelector('.settings-title h1');
@@ -1696,32 +1919,35 @@ app.get('/settings-password', (req, res) => {
 
 app.post('/settings-password', async(req, res) => {
   const past_password = req.body.old_password;
-  const new_password = req.body.new_password;
   console.log(past_password);
-  console.log(new_password);
   const db = await connectToDatabase();
-  const user = await db.collection('users').find({'password': past_password}).toArray();
+
+  const user = await db.collection('users').find({'_id': new ObjectId(req.session.userId)}).toArray();
+
   console.log(user);
-  console.log("user found");
-  if (user.length == 0 || user[0]._id.toString() != req.session.userId){
+  var check = await bcrypt.compare(past_password, user[0].password);
+  console.log(check);
+
+  if (!check){
     res.redirect('/settings-password?error=1')
   } else {
     const filter = { "_id": new ObjectId(req.session.userId)};
-    const updatedValues = {
-      "password": new_password
-    };
-    const update = { $set: updatedValues };
-    const options = { returnOriginal: false };
+    var new_password = "";
+    bcrypt.genSalt(10, function (err, salt) {
+        bcrypt.hash(req.body.new_password, salt, async function (err, hash) {
+            const updatedValues = {
+              "password": hash
+            };
+            const update = { $set: updatedValues };
+            const options = { returnOriginal: false };
 
-    const updatedUser = await db.collection('users').findOneAndUpdate(filter, update, options);
+            const updatedUser = await db.collection('users').findOneAndUpdate(filter, update, options);
 
-    console.log(updatedUser);
-    res.redirect('/');
+            console.log(updatedUser);
+            return res.redirect('/');
+        });
+    });
   }
-});
-
-app.get('/restaurant-settings-password.html', (req, res) => {
-  res.sendFile(path.join(__dirname,'public', 'html', 'restaurant-settings-password.html'));
 });
 
 app.get('/logout', async (req, res) => {
@@ -1803,7 +2029,7 @@ app.use((req, res, next) => {
     profilepic.src = `${req.session.profile_picture}`;
 
     var name = document.querySelector(".name");
-    name.textContent = `${req.session.first_name} ${req.session.last_name}`;
+    name.textContent = `${req.session.name}`;
   }
 
   const messageTitle = document.querySelector('.settings-title h1');
@@ -1853,4 +2079,17 @@ function capitalizeWords(inputString) {
   }
   return words.join(' ');
 }
+
+
+
+async function hashPassword(password) {
+  try {
+    const saltRounds = 10; // The higher, the more secure but slower it will be
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    return hashedPassword;
+  } catch (err) {
+    throw err;
+  }
+}
+
 

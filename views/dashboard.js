@@ -1,4 +1,4 @@
-function restaurantpage(document, restaurant, reviews, cur_user_id, users) {
+function dashboard(document, restaurant, all_reviews, reviews, users) {
     const pic = document.querySelector('.banner-container img');
     pic.src = restaurant.banner_url;
     const name = document.querySelector('.banner-first-line h1');
@@ -66,7 +66,7 @@ function restaurantpage(document, restaurant, reviews, cur_user_id, users) {
     document.querySelector('.restaurant-description p').textContent = restaurant.description;
 
     var allratings = [];
-    for(let review of reviews){
+    for(let review of all_reviews){
         allratings.push(review.rating);
     }
     var occurences = {
@@ -123,7 +123,6 @@ function restaurantpage(document, restaurant, reviews, cur_user_id, users) {
         const profileDetailsElement = document.createElement('div');
         profileDetailsElement.classList.add('profile-details');
 
-        console.log(users);
         // Add profile pic and name
         const profilePicElement = document.createElement('img');
         profilePicElement.src = users[i][0].profile_picture;
@@ -131,7 +130,6 @@ function restaurantpage(document, restaurant, reviews, cur_user_id, users) {
         profilePicElement.classList.add('profile-pic');
 
         const nameLinkElement = document.createElement('a');
-        nameLinkElement.href = `/user/${users[i][0].url}`;
         nameLinkElement.classList.add('name');
         nameLinkElement.textContent = `${users[i][0].first_name} ${users[i][0].last_name}`;
 
@@ -173,40 +171,6 @@ function restaurantpage(document, restaurant, reviews, cur_user_id, users) {
         // Add profile-details and review-rating to review-top
         reviewTopElement.appendChild(profileDetailsElement);
         profileDetailsElement.appendChild(reviewRatingElement);
-
-        var modifyReview = []
-        if(cur_user_id != undefined && cur_user_id === users[i][0]._id.toString()){
-            console.log("adding modify");
-            const modifyReviewDiv = document.createElement("div");
-            modifyReviewDiv.classList.add('modify-review');
-
-            // Create the edit link
-            const editLink = document.createElement('a');
-            editLink.classList.add('edit');
-            editLink.textContent = 'Edit';
-            editLink.href = `/edit-review?review=${reviews[i]._id}`;
-
-            // Create the "|" paragraph element
-            const separator = document.createElement('p');
-            separator.textContent = '|';
-
-            // Create the delete link
-            const deleteLink = document.createElement('a');
-            deleteLink.classList.add('delete');
-            deleteLink.textContent = 'Delete';
-            deleteLink.href = `/confirm-delete?review=${reviews[i]._id}`
-
-            // Append the elements to the modify-review div
-            modifyReviewDiv.appendChild(editLink);
-            modifyReviewDiv.appendChild(separator);
-            modifyReviewDiv.appendChild(deleteLink);
-
-            modifyReview.push(modifyReviewDiv);
-        }
-        if(modifyReview.length > 0){
-            reviewTopElement.appendChild(modifyReview[0]);
-        }
-
 
         // Add date
         const dateElement = document.createElement('h4');
@@ -286,54 +250,15 @@ function restaurantpage(document, restaurant, reviews, cur_user_id, users) {
 
         const helpfulElement = document.createElement('div');
         helpfulElement.classList.add('helpful');
+
+
         helpfulElement.appendChild(usefulCountElement);
-
-        var helpful = reviews[i].helpful;
-        var unhelpful = reviews[i].non_helpful;
-        var questionAnswered = false;
-
-        for (let helped of helpful){
-            if (cur_user_id == helped){
-                questionAnswered = true;
-            }
-        }
-
-        for (let unhelped of unhelpful){
-            if (cur_user_id == unhelped){
-                questionAnswered = true;
-            }
-        }
-
-
-        if(cur_user_id && !questionAnswered && !(reviews[i].user.toString() == cur_user_id)){
-            const usefulSectionElement = document.createElement('div');
-            usefulSectionElement.classList.add('useful-section');
-            const usefulQuestionElement = document.createElement('div');
-            usefulQuestionElement.classList.add('useful-question');
-            usefulQuestionElement.textContent = 'Was this review helpful?';
-
-            const usefulOptionElement = document.createElement('div');
-            usefulOptionElement.classList.add('useful-option');
-
-            const optionContentElement = document.createElement('div');
-            optionContentElement.classList.add('option-content');
-
+        if(reviews[i].reply == undefined || reviews[i].reply.length == 0){
             const yesButtonElement = document.createElement('a');
-            yesButtonElement.classList.add('btnSubmit');
-            yesButtonElement.textContent = 'Yes';
-            yesButtonElement.href = `/helpful?review=${reviews[i]._id.toString()}`;
-
-            const noButtonElement = document.createElement('a');
-            noButtonElement.classList.add('btnSubmit');
-            noButtonElement.textContent = 'No';
-            noButtonElement.href = `/non_helpful?review=${reviews[i]._id.toString()}`;
-
-            optionContentElement.appendChild(yesButtonElement);
-            optionContentElement.appendChild(noButtonElement);
-            usefulOptionElement.appendChild(optionContentElement);
-            usefulSectionElement.appendChild(usefulQuestionElement);
-            usefulSectionElement.appendChild(usefulOptionElement);
-            helpfulElement.appendChild(usefulSectionElement);
+            yesButtonElement.classList.add('btnSubmit', 'reply');
+            yesButtonElement.textContent = 'Reply';
+            yesButtonElement.href = `/create-reply?review=${reviews[i]._id.toString()}`;
+            helpfulElement.appendChild(yesButtonElement)
         }
 
 
@@ -343,12 +268,11 @@ function restaurantpage(document, restaurant, reviews, cur_user_id, users) {
         reviewDetailsElement.appendChild(descriptionTextElement);
         reviewDetailsElement.appendChild(mediaElement);
 
-
-
         // Add review-top and review-details to restaurant-review
         reviewElement.appendChild(reviewTopElement);
         reviewElement.appendChild(reviewDetailsElement);
         reviewElement.appendChild(helpfulElement);
+
         if(reviews[i].reply != undefined && reviews[i].reply.length > 0){
             const restaurantReply = document.createElement('div');
             restaurantReply.classList.add('restaurant-reply');
@@ -357,7 +281,35 @@ function restaurantpage(document, restaurant, reviews, cur_user_id, users) {
             const replyContent = document.createElement('p');
             replyContent.textContent = reviews[i].reply;
             restaurantReply.appendChild(replyOwner);
+
+            const modifyReplyDiv = document.createElement("div");
+            modifyReplyDiv.classList.add('modify-review');
+
+            // Create the edit link
+            const editLink = document.createElement('a');
+            editLink.classList.add('edit');
+            editLink.textContent = 'Edit';
+            editLink.href = `/edit-reply?review=${reviews[i]._id}`;
+
+            // Create the "|" paragraph element
+            const separator = document.createElement('p');
+            separator.textContent = '|';
+
+            // Create the delete link
+            const deleteLink = document.createElement('a');
+            deleteLink.classList.add('delete');
+            deleteLink.textContent = 'Delete';
+            deleteLink.href = `/confirm-reply-delete?review=${reviews[i]._id}`
+
+            // Append the elements to the modify-review div
+            modifyReplyDiv.appendChild(editLink);
+            modifyReplyDiv.appendChild(separator);
+            modifyReplyDiv.appendChild(deleteLink);
+
+            restaurantReply.appendChild(modifyReplyDiv);
+
             restaurantReply.appendChild(replyContent);
+
             reviewElement.appendChild(restaurantReply);
         }
 
@@ -373,5 +325,5 @@ function restaurantpage(document, restaurant, reviews, cur_user_id, users) {
 }
 
 module.exports = {
-    restaurantpage
+    dashboard
 }

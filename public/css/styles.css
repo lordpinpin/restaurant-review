@@ -2572,3 +2572,18 @@ a.btnSubmit {
     margin-right: 20px;
     font-size: 23px;
 }
+
+
+.search-sort .btnReview {
+    width: 220px;
+    font-weight: 800;
+    margin-right: 0px;
+    margin-left: 0px;
+    font-size: 24px;
+    left: 0;
+}
+
+dd {
+    margin-left: 20px;
+}
+
