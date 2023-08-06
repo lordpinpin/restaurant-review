@@ -1,7 +1,9 @@
 # restaurant-review
 Finished project in CCPAPDEV. This is a restaurant review website with users and logging in. Many features are implemented such as searching restaurants, creating reviews, editing and deleting reviews, registering, tagging reviews as helpful, searching and editing your settings. Password hashing and session management are also implemented. Restaurants can also login and reeply to reviews as well as edit and delete their own replies.
 
-The web application should be run using node.js. After installing node.js, install all necessary modules with 'npm install'. Run with 'node app.js'.
+The web application can be run using node.js. After installing node.js, install all necessary modules with 'npm install'. Run with 'node app.js'.
+
+This web application can also be accessed at restar.fly.dev
 
 For sample users to test out features:
     {"email": "kenbarbie@gmail.com",
